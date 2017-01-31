@@ -9,18 +9,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.Persistence.Ser
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{326AE049-0F11-448A-8171-F87C668EBA4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{326AE049-0F11-448A-8171-F87C668EBA4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{326AE049-0F11-448A-8171-F87C668EBA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{326AE049-0F11-448A-8171-F87C668EBA4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Debug|x64.ActiveCfg = Debug|x64
+		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Debug|x64.Build.0 = Debug|x64
+		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Release|x64.ActiveCfg = Release|x64
+		{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}.Release|x64.Build.0 = Release|x64
+		{326AE049-0F11-448A-8171-F87C668EBA4B}.Debug|x64.ActiveCfg = Debug|x64
+		{326AE049-0F11-448A-8171-F87C668EBA4B}.Debug|x64.Build.0 = Debug|x64
+		{326AE049-0F11-448A-8171-F87C668EBA4B}.Release|x64.ActiveCfg = Release|x64
+		{326AE049-0F11-448A-8171-F87C668EBA4B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

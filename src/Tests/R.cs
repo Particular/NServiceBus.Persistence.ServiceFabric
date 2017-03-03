@@ -88,10 +88,10 @@
                 var clusterManifest = await GetClusterManifest(new Uri("http://localhost:19080")).ConfigureAwait(false);
                 imageStoreConnectionString = clusterManifest["Management"]["ImageStoreConnectionString"];
 
-                // ReSharper disable once RedundantAssignment
-                var directoryName = "Release";
 #if DEBUG
-                directoryName = "Debug";
+                var directoryName = "Debug";
+#else
+                var directoryName = "Release";
 #endif
 
                 var testAppPkgPath = Path.Combine(DetermineCallerFilePath(), $@"..\NServiceBus.Persistence.ServiceFabric.Application\pkg\{directoryName}");

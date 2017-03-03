@@ -9,7 +9,7 @@ namespace NServiceBus.Persistence.ServiceFabric.Tests
     [TestFixture]
     public class TestAccessingReliableStateManager : INeed<IReliableStateManager>
     {
-        private IReliableStateManager stateManager;
+        IReliableStateManager stateManager;
 
         [Test]
         public async Task SomeTest()

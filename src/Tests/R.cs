@@ -147,9 +147,10 @@
         static Uri ApplicationName;
         static Uri ServiceUri;
 
-        private static string imageStoreConnectionString;
-        private static ITestRunner testRunner;
+        static string imageStoreConnectionString;
+        static ITestRunner testRunner;
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public class ClusterManifest
         {
             public string Manifest { get; set; }

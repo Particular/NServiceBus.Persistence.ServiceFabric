@@ -31,6 +31,6 @@
         {
         }
 
-        private StatefulServiceContext statefulServiceContext;
+        StatefulServiceContext statefulServiceContext;
     }
 }

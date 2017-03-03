@@ -1,5 +1,6 @@
 namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
@@ -14,8 +15,8 @@ namespace NServiceBus.Persistence.ServiceFabric.Tests
         [Test]
         public async Task SomeTest()
         {
-            var state = await stateManager.GetOrAddAsync<IReliableDictionary<string, string>>("state").ConfigureAwait(false);
-            Assert.AreEqual("urn:somestate", state.Name);
+            var state = await stateManager.GetOrAddAsync<IReliableDictionary<string, string>>("state", TimeSpan.FromSeconds(30)).ConfigureAwait(false);
+            Assert.AreEqual("urn:state", state.Name.ToString());
         }
 
         [TearDown]

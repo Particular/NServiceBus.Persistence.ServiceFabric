@@ -24,6 +24,6 @@ namespace TestRunner
         {
         }
 
-        private TService service;
+        TService service;
     }
 }

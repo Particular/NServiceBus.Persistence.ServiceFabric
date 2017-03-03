@@ -58,10 +58,7 @@ namespace TestRunner
         {
         }
 
-        public ActionTargets Targets
-        {
-            get {  return ActionTargets.Suite; }
-        }
+        public ActionTargets Targets => ActionTargets.Suite;
 
         struct TypeInfo
         {

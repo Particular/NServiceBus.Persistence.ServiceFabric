@@ -86,7 +86,7 @@ namespace TestRunner
             testNameCache.Add(test.FullName);
         }
 
-        private NUnitTestAssemblyRunner runner;
+        NUnitTestAssemblyRunner runner;
 
         Task<string[]> cachedTestNames;
         TService statefulService;

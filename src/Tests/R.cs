@@ -88,6 +88,7 @@
                 var clusterManifest = await GetClusterManifest(new Uri("http://localhost:19080")).ConfigureAwait(false);
                 imageStoreConnectionString = clusterManifest["Management"]["ImageStoreConnectionString"];
 
+                // ReSharper disable once RedundantAssignment
                 var directoryName = "Release";
 #if DEBUG
                 directoryName = "Debug";

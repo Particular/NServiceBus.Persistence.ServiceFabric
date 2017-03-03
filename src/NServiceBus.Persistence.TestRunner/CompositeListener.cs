@@ -33,6 +33,6 @@
             }
         }
 
-        private ITestListener[] testListeners;
+        ITestListener[] testListeners;
     }
 }

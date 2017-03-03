@@ -37,6 +37,6 @@ namespace TestRunner
             }
         }
 
-        private ICommunicationListener[] listeners;
+        ICommunicationListener[] listeners;
     }
 }

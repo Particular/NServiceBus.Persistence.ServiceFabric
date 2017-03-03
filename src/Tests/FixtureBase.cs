@@ -131,9 +131,9 @@
         }
 
         const string ImageStorePath = "3b4f2d75acf24d02a34918ee4d7c08b7";
-        const string ApplicationTypeName = "TestApplicationType";
+        const string ApplicationTypeName = "NServiceBus.Persistence.ServiceFabric.ApplicationType";
         const string ApplicationTypeVersion = "1.0.0";
-        static readonly Uri ApplicationName = new Uri(@"fabric:/TestApplication");
+        static readonly Uri ApplicationName = new Uri(@"fabric:/NServiceBus.Persistence.ServiceFabric.Application");
         static readonly Uri ServiceUri = new Uri(@"fabric:/TestApplication/TestRunner");
 
         private static string imageStoreConnectionString;

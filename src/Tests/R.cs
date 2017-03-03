@@ -7,6 +7,7 @@
     using System.IO;
     using System.Linq;
     using System.Net.Http;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using System.Runtime.Serialization.Json;
     using System.Threading.Tasks;
@@ -17,8 +18,18 @@
     using TestRunner.Interfaces;
 
     [TestFixture]
-    public class FixtureBase
+    public abstract class R<TSelf>
     {
+        static R()
+        {
+            var properties = typeof(TSelf).GetProperties(BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public).ToDictionary(p => p.Name, p => p.GetValue(null));
+            ImageStorePath = (Guid)properties[nameof(ImageStorePath)];
+            ApplicationTypeName = (string)properties[nameof(ApplicationTypeName)];
+            ApplicationTypeVersion = (Version)properties[nameof(ApplicationTypeVersion)];
+            ApplicationName = (Uri)properties[nameof(ApplicationName)];
+            ServiceUri = (Uri)properties[nameof(ServiceUri)];
+        }
+
         [Timeout(600000)]
         [TestCaseSource(nameof(GetTestCases))]
         public async Task _(string testName)
@@ -50,8 +61,8 @@
                 if (applications.Any())
                 {
                     await app.DeleteApplicationAsync(new DeleteApplicationDescription(ApplicationName)).ConfigureAwait(false);
-                    await app.UnprovisionApplicationAsync(ApplicationTypeName, ApplicationTypeVersion).ConfigureAwait(false);
-                    app.RemoveApplicationPackage(imageStoreConnectionString, ImageStorePath);
+                    await app.UnprovisionApplicationAsync(ApplicationTypeName, ApplicationTypeVersion.ToString()).ConfigureAwait(false);
+                    app.RemoveApplicationPackage(imageStoreConnectionString, ImageStorePath.ToString());
                 }
             }
         }
@@ -88,9 +99,9 @@
                 {
                     var app = fabric.ApplicationManager;
                     await TearDown().ConfigureAwait(false); // TODO we need a more optimal way
-                    app.CopyApplicationPackage(imageStoreConnectionString, testAppPkgPath, ImageStorePath);
-                    await app.ProvisionApplicationAsync(ImageStorePath).ConfigureAwait(false);
-                    await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion)).ConfigureAwait(false);
+                    app.CopyApplicationPackage(imageStoreConnectionString, testAppPkgPath, ImageStorePath.ToString());
+                    await app.ProvisionApplicationAsync(ImageStorePath.ToString()).ConfigureAwait(false);
+                    await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion.ToString())).ConfigureAwait(false);
                 }
 
                 testRunner = ServiceProxy.Create<ITestRunner>(ServiceUri);
@@ -130,11 +141,11 @@
             return Path.GetDirectoryName(path);
         }
 
-        const string ImageStorePath = "3b4f2d75acf24d02a34918ee4d7c08b7";
-        const string ApplicationTypeName = "NServiceBus.Persistence.ServiceFabric.ApplicationType";
-        const string ApplicationTypeVersion = "1.0.0";
-        static readonly Uri ApplicationName = new Uri(@"fabric:/NServiceBus.Persistence.ServiceFabric.Application");
-        static readonly Uri ServiceUri = new Uri(@"fabric:/TestApplication/TestRunner");
+        static Guid ImageStorePath;
+        static string ApplicationTypeName;
+        static Version ApplicationTypeVersion;
+        static Uri ApplicationName;
+        static Uri ServiceUri;
 
         private static string imageStoreConnectionString;
         private static ITestRunner testRunner;

@@ -3,11 +3,13 @@
     using System.Fabric;
     using TestRunner;
 
-    internal sealed class AcceptanceTests : AbstractTestRunner
+    sealed class AcceptanceTests : AbstractTestRunner<AcceptanceTests>
     {
         public AcceptanceTests(StatefulServiceContext context)
             : base(context)
         {
         }
+
+        protected override AcceptanceTests Self => this;
     }
 }

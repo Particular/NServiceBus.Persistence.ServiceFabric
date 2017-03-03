@@ -28,7 +28,7 @@ namespace TestRunner
                 {
                     {"SynchronousEvents", true} // crucial to run listeners sync
                 };
-                var testSuite = runner.Load(GetType().Assembly, settings);
+                var testSuite = runner.Load(typeof(TService).Assembly, settings);
                 var testNameCache = new HashSet<string>();
                 CacheTests(testNameCache, testSuite);
                 cachedTestNames = Task.FromResult(testNameCache.ToArray());

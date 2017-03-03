@@ -35,6 +35,7 @@ namespace TestRunner
                 {
                     return
                         type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                            .Distinct(Comparer)
                             .ToDictionary(p => p.PropertyType, p => p);
                 });
 
@@ -70,5 +71,20 @@ namespace TestRunner
 
         static ConcurrentDictionary<Type, TypeInfo[]> typeInfoCache = new ConcurrentDictionary<Type, TypeInfo[]>();
         static ConcurrentDictionary<Type, Dictionary<Type, PropertyInfo>> statefulServicePropertyCache = new ConcurrentDictionary<Type, Dictionary<Type, PropertyInfo>>();
+
+        static PropertyTypeComparer Comparer = new PropertyTypeComparer();
+
+        class PropertyTypeComparer : IEqualityComparer<PropertyInfo>
+        {
+            public bool Equals(PropertyInfo x, PropertyInfo y)
+            {
+                return x.PropertyType == y.PropertyType;
+            }
+
+            public int GetHashCode(PropertyInfo obj)
+            {
+                return obj.PropertyType.GetHashCode();
+            }
+        }
     }
 }

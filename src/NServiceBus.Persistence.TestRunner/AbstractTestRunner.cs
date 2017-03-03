@@ -8,19 +8,21 @@ namespace TestRunner
     using Microsoft.ServiceFabric.Services.Remoting.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
 
-    public abstract class AbstractTestRunner : StatefulService, ITestRunner
+    public abstract class AbstractTestRunner<TSelf> : StatefulService, ITestRunner
+        where TSelf : StatefulService
     {
         protected AbstractTestRunner(StatefulServiceContext context)
             : base(context)
         {
-
         }
+
+        protected abstract TSelf Self { get; }
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
             return new[] { new ServiceReplicaListener(context =>
             {
-                communicationListener = new CommunicationListener<AbstractTestRunner>(this);
+                communicationListener = new CommunicationListener<TSelf>(Self);
                 return new CompositeCommunicationListener(communicationListener, this.CreateServiceRemotingListener(context));
             }) };
         }
@@ -35,6 +37,6 @@ namespace TestRunner
             return communicationListener.Run(testName);
         }
 
-        CommunicationListener<AbstractTestRunner> communicationListener;
+        CommunicationListener<TSelf> communicationListener;
     }
 }

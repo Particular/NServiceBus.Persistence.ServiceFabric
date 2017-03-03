@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{F953E221-368B-4850-9AE2-E2F7A012A32D}</ProjectGuid>
+    <ProjectGuid>{06901074-7B2E-4544-B388-8B0EB9B3735E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NServiceBus.Persistence.ServiceFabric.Tests</RootNamespace>
-    <AssemblyName>NServiceBus.Persistence.ServiceFabric.Tests</AssemblyName>
+    <RootNamespace>NServiceBus.Persistence.ServiceFabric.AcceptanceTests</RootNamespace>
+    <AssemblyName>NServiceBus.Persistence.ServiceFabric.AcceptanceTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -59,14 +59,6 @@
       <HintPath>..\packages\Microsoft.ServiceFabric.Services.2.4.145\lib\net45\Microsoft.ServiceFabric.Services.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunitlite, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnitLite.3.6.1\lib\net45\nunitlite.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="ServiceFabricServiceModel, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
       <HintPath>..\packages\Microsoft.ServiceFabric.Services.2.4.145\lib\net45\ServiceFabricServiceModel.dll</HintPath>
       <Private>True</Private>
@@ -85,13 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests.cs" />
+    <Compile Include="AcceptanceTests.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PackageRoot\Config\Settings.xml" />
     <None Include="PackageRoot\ServiceManifest.xml" />
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NServiceBus.Persistence.ServiceFabric.Tests")]
+[assembly: AssemblyTitle("NServiceBus.Persistence.ServiceFabric.AcceptanceTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NServiceBus.Persistence.ServiceFabric.Tests")]
+[assembly: AssemblyProduct("NServiceBus.Persistence.ServiceFabric.AcceptanceTests")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f953e221-368b-4850-9ae2-e2f7a012a32d")]
+[assembly: Guid("06901074-7b2e-4544-b388-8b0eb9b3735e")]
 
 // Version information for an assembly consists of the following four values:
 //

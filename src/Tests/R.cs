@@ -95,6 +95,7 @@
 #endif
 
                 var testAppPkgPath = Path.Combine(DetermineCallerFilePath(), $@"..\NServiceBus.Persistence.ServiceFabric.Application\pkg\{directoryName}");
+                Console.WriteLine(testAppPkgPath);
 
                 using (var fabric = new FabricClient())
                 {

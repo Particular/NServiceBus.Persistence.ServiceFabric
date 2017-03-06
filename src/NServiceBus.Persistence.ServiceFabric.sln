@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.Persistence.Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.Persistence.TestRunner", "NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj", "{2A4EE72F-E17F-4858-ADAA-34FB47068F5C}"
 EndProject
-Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "NServiceBus.Persistence.ServiceFabric.AcceptanceTestApplication", "NServiceBus.Persistence.ServiceFabric.AcceptanceTestApplication\NServiceBus.Persistence.ServiceFabric.AcceptanceTestApplication.sfproj", "{6722AAC7-F141-4492-85BB-BE0C82EF7F98}"
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "NServiceBus.Persistence.ServiceFabric.AcceptanceTestsApplication", "NServiceBus.Persistence.ServiceFabric.AcceptanceTestsApplication\NServiceBus.Persistence.ServiceFabric.AcceptanceTestsApplication.sfproj", "{6722AAC7-F141-4492-85BB-BE0C82EF7F98}"
 EndProject
-Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "NServiceBus.Persistence.ServiceFabric.TestApplication", "NServiceBus.Persistence.ServiceFabric.TestApplication\NServiceBus.Persistence.ServiceFabric.TestApplication.sfproj", "{6722AAC7-F141-4492-85BB-BE0C82EF7F99}"
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "NServiceBus.Persistence.ServiceFabric.TestsApplication", "NServiceBus.Persistence.ServiceFabric.TestsApplication\NServiceBus.Persistence.ServiceFabric.TestsApplication.sfproj", "{6722AAC7-F141-4492-85BB-BE0C82EF7F99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.Persistence.ServiceFabric.AcceptanceTests", "NServiceBus.Persistence.ServiceFabric.AcceptanceTests\NServiceBus.Persistence.ServiceFabric.AcceptanceTests.csproj", "{06901074-7B2E-4544-B388-8B0EB9B3735E}"
 EndProject

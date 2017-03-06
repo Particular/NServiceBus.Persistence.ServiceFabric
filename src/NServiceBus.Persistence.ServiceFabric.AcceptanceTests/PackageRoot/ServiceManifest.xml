@@ -5,7 +5,7 @@
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <ServiceTypes>
-    <StatefulServiceType ServiceTypeName="AcceptanceTestsType" HasPersistedState="true" />
+    <StatefulServiceType ServiceTypeName="TestsType" HasPersistedState="true" />
   </ServiceTypes>
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>

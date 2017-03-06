@@ -25,6 +25,7 @@
             var properties = typeof(TSelf).GetProperties(BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public).ToDictionary(p => p.Name, p => p.GetValue(null));
             ImageStorePath = (Guid)properties[nameof(ImageStorePath)];
             ApplicationTypeName = (string)properties[nameof(ApplicationTypeName)];
+            ProjectName = (string)properties[nameof(ProjectName)];
             ApplicationTypeVersion = (Version)properties[nameof(ApplicationTypeVersion)];
             ApplicationName = (Uri)properties[nameof(ApplicationName)];
             ServiceUri = (Uri)properties[nameof(ServiceUri)];
@@ -94,7 +95,7 @@
                 var directoryName = "Release";
 #endif
 
-                var testAppPkgPath = Path.Combine(DetermineCallerFilePath(), $@"..\NServiceBus.Persistence.ServiceFabric.Application\pkg\{directoryName}");
+                var testAppPkgPath = Path.Combine(DetermineCallerFilePath(), $@"..\{ProjectName}\pkg\{directoryName}");
                 Console.WriteLine(testAppPkgPath);
 
                 using (var fabric = new FabricClient())
@@ -145,6 +146,7 @@
 
         static Guid ImageStorePath;
         static string ApplicationTypeName;
+        static string ProjectName;
         static Version ApplicationTypeVersion;
         static Uri ApplicationName;
         static Uri ServiceUri;

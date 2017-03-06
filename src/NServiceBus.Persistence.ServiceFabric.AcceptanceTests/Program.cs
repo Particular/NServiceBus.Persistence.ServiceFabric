@@ -15,8 +15,8 @@
             // When Service Fabric creates an instance of this service type,
             // an instance of the class is created in this host process.
 
-            ServiceRuntime.RegisterServiceAsync("AcceptanceTestsType",
-                context => new AcceptanceTests(context)).GetAwaiter().GetResult();
+            ServiceRuntime.RegisterServiceAsync("TestsType",
+                context => new Tests(context)).GetAwaiter().GetResult();
 
             // Prevents this host process from terminating so services keep running.
             Thread.Sleep(Timeout.Infinite);

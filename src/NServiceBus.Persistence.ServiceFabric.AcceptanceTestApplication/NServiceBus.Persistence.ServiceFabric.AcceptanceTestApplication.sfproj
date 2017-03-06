@@ -30,7 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric.AcceptanceTests\NServiceBus.Persistence.ServiceFabric.AcceptanceTests.csproj" />
-    <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric.Tests\NServiceBus.Persistence.ServiceFabric.Tests.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

@@ -64,13 +64,13 @@ public class IntegrationTest
 In order to be able to access the reliable state manager in the above test we have to deploy and run the Integration Test above into the cluster as an application with a stateful service. There are a few unique challenges:
 
 - An application is needed to package and deploy the service containing the tests
-- The application needs to be deployed and executed every time the tests are executed either on the build server or locall
+- The application needs to be deployed and executed every time the tests are executed either on the build server or locally
 - The build server or the local test runner needs to be able to report the current state of the tests
 - Components such as the reliable state manager need to be "injected" into the tests
 
-A first glance it might seems simple to just run the build server agent inside the Service Fabric cluster. Unfortunately this has a number of drawbacks:
+At first glance it might seems simple to just run the build server agent inside the Service Fabric cluster. Unfortunately this has a number of drawbacks:
 
-- Build agents need to be licensed
+- Number of build agents that need to be licensed
 - Build agents might make assumptions about local disk access, permissions etc. that might not be true inside the cluster
 - Build agents need to report information back to the build server which requires infrastructure or configuration
 - An integration tests has no clear way of interacting with the agent in order to get automagically the reliable state manager and other infrastructure provided by Service Fabric
@@ -80,8 +80,8 @@ A first glance it might seems simple to just run the build server agent inside t
 NServiceBus.Persistence.TestRunner project contains
 
 - `AbstractTestRunner` which acts as a stateful test runner service
-- `CommunicationListener` which inspects the service library for tests, exposes them and has the possibility to run individual tests
-- `INeed` interace to allow dependency injection into integration tests
+- `CommunicationListener` which inspects the service library for tests, exposes them and has the ability to run individual tests
+- `INeed` interface to allow dependency injection into integration tests
 - `StatefulServiceProviderListener` which injects the stateful service into the `TestContext`
 
 Service Fabric remoting is used as a communication channel and therefore the tests need to be run on the same machine that contains the Service Fabric cluster.
@@ -99,7 +99,7 @@ Let's assume a new test library called NServiceBus.Persistence.ServiceFabric.Com
 - Create a new stateful service library called `NServiceBus.Persistence.ServiceFabric.ComponentTests`
 - Reference `NServiceBus.Persistence.TestRunner`
 - Add `NUnitLite` as a nuget package dependency
-- Implement Test Service like
+- Implement Test Service in the following way
 
 ```
     sealed class Tests : AbstractTestRunner<Tests>
@@ -121,7 +121,7 @@ Let's assume a new test library called NServiceBus.Persistence.ServiceFabric.Com
       </StatefulService>
     </Service>
 ```
-- Edit `NServiceBus.Persistence.ServiceFabric.ComponentTestApplication` to contain
+- Edit `NServiceBus.Persistence.ServiceFabric.ComponentTestApplication.sfproj` to contain
 ```
   <Target Name="ReleaseAfterBuild" AfterTargets="AfterBuild">
     <MSBuild Projects="$(ProjectPath)" Targets="Package" />
@@ -134,4 +134,6 @@ Let's assume a new test library called NServiceBus.Persistence.ServiceFabric.Com
     public class ComponentTests : R<Tests>
     {
     }
-```    
+```
+
+- Run tests by executing the `ComponentTest.cs`

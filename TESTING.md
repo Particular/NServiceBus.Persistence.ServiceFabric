@@ -89,3 +89,49 @@ Service Fabric remoting is used as a communication channel and therefore the tes
 Tests project contains
 
 - A base class called R which acts as a remoting client to the TestRunner service
+
+
+### Usage
+
+Let's assume a new test library called NServiceBus.Persistence.ServiceFabric.ComponentTests needs to be created. These are the steps required:
+
+- Create a service fabric application called `NServiceBus.Persistence.ServiceFabric.ComponentTestsApplication`
+- Create a new stateful service library called `NServiceBus.Persistence.ServiceFabric.ComponentTests`
+- Reference `NServiceBus.Persistence.TestRunner`
+- Add `NUnitLite` as a nuget package dependency
+- Implement Test Service like
+
+```
+    sealed class Tests : AbstractTestRunner<Tests>
+    {
+        public Tests(StatefulServiceContext context)
+            : base(context)
+        {
+        }
+
+        protected override Tests Self => this;
+    }
+```
+- Application manifest should contain
+
+```
+    <Service Name="Tests">
+      <StatefulService ServiceTypeName="TestsType" TargetReplicaSetSize="[Tests_TargetReplicaSetSize]" MinReplicaSetSize="[Tests_MinReplicaSetSize]">
+        <SingletonPartition />
+      </StatefulService>
+    </Service>
+```
+- Edit `NServiceBus.Persistence.ServiceFabric.ComponentTestApplication` to contain
+```
+  <Target Name="ReleaseAfterBuild" AfterTargets="AfterBuild">
+    <MSBuild Projects="$(ProjectPath)" Targets="Package" />
+  </Target>
+```
+
+- Add to the Tests project the following test
+
+```
+    public class ComponentTests : R<Tests>
+    {
+    }
+```    

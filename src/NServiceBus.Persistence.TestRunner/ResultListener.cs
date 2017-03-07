@@ -4,7 +4,7 @@
     using NUnit.Framework;
     using NUnit.Framework.Interfaces;
 
-    class Listener : ITestListener
+    class ResultListener : ITestListener
     {
         public Exception Exception { get; private set; }
         public string Output { get; private set; }

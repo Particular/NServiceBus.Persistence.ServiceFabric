@@ -1,11 +1,12 @@
-﻿using System;
-using System.Runtime.Serialization;
-using NUnit.Framework;
-
-namespace TestRunner.Interfaces
+﻿namespace TestRunner.Interfaces
 {
+    using System;
+    using System.Runtime.Serialization;
+    using NUnit.Framework;
+
     /// <summary>
-    /// Allows to marshal test results back to the client. For compatibility all exception types that need to be marshalled have to be declared with the KnownTypeAttribute.
+    /// Allows to marshal test results back to the client. For compatibility all exception types that need to be marshalled
+    /// have to be declared with the KnownTypeAttribute.
     /// </summary>
     [DataContract]
     [KnownType(typeof(AssertionException))]
@@ -26,7 +27,7 @@ namespace TestRunner.Interfaces
 
         [DataMember]
         public string Output { get; set; }
-        
+
         [DataMember]
         public Exception Exception { get; set; }
 

@@ -12,11 +12,12 @@ namespace TestRunner
     using NUnit.Framework.Internal.Filters;
 
     /// <summary>
-    /// The communication listener reflects the assembly containing TService for tests and loads them into an NUnitTestAssemblyRunner.
-    /// It also acts as a gateway to the hosted tests. The listener is stateful and there is a coupling between the Run method and the Tests method.
+    /// The communication listener reflects the assembly containing TService for tests and loads them into an
+    /// NUnitTestAssemblyRunner.
+    /// It also acts as a gateway to the hosted tests. The listener is stateful and there is a coupling between the Run method
+    /// and the Tests method.
     /// Only test names that are returned from the Tests method can be passed into the Run method.
     /// </summary>
-    /// <typeparam name="TService"></typeparam>
     class CommunicationListener<TService> : ICommunicationListener
         where TService : StatefulService
     {

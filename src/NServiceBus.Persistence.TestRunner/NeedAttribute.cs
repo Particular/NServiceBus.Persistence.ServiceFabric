@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Microsoft.ServiceFabric.Services.Runtime;
-using NUnit.Framework;
-using NUnit.Framework.Interfaces;
-
-namespace TestRunner
+﻿namespace TestRunner
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Microsoft.ServiceFabric.Services.Runtime;
+    using NUnit.Framework;
+    using NUnit.Framework.Interfaces;
+
     /// <summary>
-    /// This attribute is an extensibility point of type ITestAction that is applied to the <see cref="INeed{TDependency}"/> interface. The implementation does the following:
-    /// 
-    /// - When the test fixture implements <see cref="INeed{TDependency}"/> the dependency type is search on the StatefulService hierarchy. 
+    /// This attribute is an extensibility point of type ITestAction that is applied to the <see cref="INeed{TDependency}" />
+    /// interface. The implementation does the following:
+    /// - When the test fixture implements <see cref="INeed{TDependency}" /> the dependency type is search on the
+    /// StatefulService hierarchy.
     /// - If a property of type TDependency exists the instance will be passed into the Need method.
     /// - Caching is applied for performance reasons.
     /// </summary>
@@ -32,7 +33,11 @@ namespace TestRunner
                             let dependencyType = t.GetGenericArguments()[0]
                             let genericType = typeof(INeed<>).MakeGenericType(dependencyType)
                             where genericType.IsAssignableFrom(t)
-                            select new TypeInfo { GenericType = genericType, DependencyType = dependencyType })
+                            select new TypeInfo
+                            {
+                                GenericType = genericType,
+                                DependencyType = dependencyType
+                            })
                         .Distinct()
                         .ToArray();
                 });
@@ -54,7 +59,10 @@ namespace TestRunner
                         var methodInfo = testFixtureType.GetInterfaceMap(type.GenericType).TargetMethods.FirstOrDefault();
                         if (methodInfo != null)
                         {
-                            methodInfo.Invoke(test.Fixture, new[] { property.GetValue(statefulService) });
+                            methodInfo.Invoke(test.Fixture, new[]
+                            {
+                                property.GetValue(statefulService)
+                            });
                         }
                     }
                 }
@@ -67,16 +75,16 @@ namespace TestRunner
 
         public ActionTargets Targets => ActionTargets.Suite;
 
+        static ConcurrentDictionary<Type, TypeInfo[]> typeInfoCache = new ConcurrentDictionary<Type, TypeInfo[]>();
+        static ConcurrentDictionary<Type, Dictionary<Type, PropertyInfo>> statefulServicePropertyCache = new ConcurrentDictionary<Type, Dictionary<Type, PropertyInfo>>();
+
+        static PropertyTypeComparer Comparer = new PropertyTypeComparer();
+
         struct TypeInfo
         {
             public Type GenericType;
             public Type DependencyType;
         }
-
-        static ConcurrentDictionary<Type, TypeInfo[]> typeInfoCache = new ConcurrentDictionary<Type, TypeInfo[]>();
-        static ConcurrentDictionary<Type, Dictionary<Type, PropertyInfo>> statefulServicePropertyCache = new ConcurrentDictionary<Type, Dictionary<Type, PropertyInfo>>();
-
-        static PropertyTypeComparer Comparer = new PropertyTypeComparer();
 
         class PropertyTypeComparer : IEqualityComparer<PropertyInfo>
         {

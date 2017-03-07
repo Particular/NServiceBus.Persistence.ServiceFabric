@@ -22,7 +22,6 @@
     /// <summary>
     /// This class has a short name on purpose to not clutter the Tree node in VS when the tests are run.
     /// Applications are detected by convention or all the parameters have to be set manually.
-    /// 
     /// Usage:
     /// <code>
     /// <![CDATA[
@@ -36,9 +35,7 @@
     /// - ApplicationName: fabric:/SomeTests
     /// - ServiceUri: fabric:/SomeTests/Tests
     /// - TestAppPkgPath: ..\*.SomeTestsApplication
-    /// 
     /// If the convention needs to be bypassed set it manually with:
-    /// 
     /// <code>
     /// <![CDATA[
     /// public class SomeTests : R<SomeTests> { 

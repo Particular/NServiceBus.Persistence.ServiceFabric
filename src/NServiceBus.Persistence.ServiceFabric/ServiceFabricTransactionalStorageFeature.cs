@@ -9,6 +9,7 @@
         /// </summary>
         protected override void Setup(FeatureConfigurationContext context)
         {
+            //context.Container.ConfigureComponent<ServiceFabricSynchronizedStorage>(builder => new ServiceFabricSynchronizedStorage(context.Settings.Get("StateManager")), DependencyLifecycle.SingleInstance);
             context.Container.ConfigureComponent<ServiceFabricSynchronizedStorage>(DependencyLifecycle.SingleInstance);
             context.Container.ConfigureComponent<ServiceFabricTransactionalSynchronizedStorageAdapter>(DependencyLifecycle.SingleInstance);
         }

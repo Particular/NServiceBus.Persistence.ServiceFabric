@@ -7,27 +7,28 @@
    // [SkipWeaving]
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {
+        // ReSharper disable once EmptyConstructor
         public ServiceFabricOutboxTransaction()
         {
-            Transaction = new ServiceFabricTransaction();
+//            Transaction = new ServiceFabricTransaction();
         }
 
-        public ServiceFabricTransaction Transaction { get; private set; }
+//        public ServiceFabricTransaction Transaction { get; private set; }
 
         public void Dispose()
         {
-            Transaction = null;
+//            Transaction = null;
         }
 
         public Task Commit()
         {
-            Transaction.Commit();
+//            Transaction.Commit();
             return Task.CompletedTask;
         }
 
         public void Enlist(Action action)
         {
-            Transaction.Enlist(action);
+//            Transaction.Enlist(action);
         }
     }
 }

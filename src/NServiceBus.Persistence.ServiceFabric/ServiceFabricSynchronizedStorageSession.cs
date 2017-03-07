@@ -2,43 +2,39 @@ namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
     using System.Threading.Tasks;
+    using Microsoft.ServiceFabric.Data;
     using Persistence;
 
-   // [SkipWeaving]
     class ServiceFabricSynchronizedStorageSession : CompletableSynchronizedStorageSession
     {
-        public ServiceFabricSynchronizedStorageSession(ServiceFabricTransaction transaction)
+        Lazy<ITransaction> lazyTransaction;
+
+        public ServiceFabricSynchronizedStorageSession(IReliableStateManager stateManager)
         {
-            Transaction = transaction;
+            StateManager = stateManager;
+            lazyTransaction = new Lazy<ITransaction>(() => StateManager.CreateTransaction());
         }
 
-        public ServiceFabricSynchronizedStorageSession()
-            : this(new ServiceFabricTransaction())
-        {
-            ownsTransaction = true;
-        }
+        public IReliableStateManager StateManager { get; }
 
-        public ServiceFabricTransaction Transaction { get; private set; }
+        public ITransaction Transaction => lazyTransaction.Value;
 
         public void Dispose()
         {
-            Transaction = null;
+            if (lazyTransaction.IsValueCreated)
+            {
+                lazyTransaction.Value.Dispose();
+                lazyTransaction = null;
+            }
         }
 
         public Task CompleteAsync()
         {
-            if (ownsTransaction)
+            if (lazyTransaction.IsValueCreated)
             {
-                Transaction.Commit();
+                return lazyTransaction.Value.CommitAsync();
             }
             return Task.CompletedTask;
         }
-
-        public void Enlist(Action action)
-        {
-            Transaction.Enlist(action);
-        }
-
-        bool ownsTransaction;
     }
 }

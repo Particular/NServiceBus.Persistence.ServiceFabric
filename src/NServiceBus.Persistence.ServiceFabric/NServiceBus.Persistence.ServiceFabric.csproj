@@ -99,7 +99,6 @@
     <Compile Include="Gateway\ServiceFabricGatewayPersistence.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
     <Compile Include="ServiceFabricSynchronizedStorage.cs" />
-    <Compile Include="ServiceFabricTransaction.cs" />
     <Compile Include="ServiceFabricTransactionalStorageFeature.cs" />
     <Compile Include="ServiceFabricSynchronizedStorageSession.cs" />
     <Compile Include="ServiceFabricTransactionalSynchronizedStorageAdapter.cs" />

@@ -6,10 +6,8 @@
     using System.Fabric.Description;
     using System.IO;
     using System.Linq;
-    using System.Net.Http;
     using System.Reflection;
     using System.Runtime.CompilerServices;
-    using System.Runtime.Serialization.Json;
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
@@ -38,8 +36,8 @@
     /// If the convention needs to be bypassed set it manually with:
     /// <code>
     /// <![CDATA[
-    /// public class SomeTests : R<SomeTests> { 
-    ///             public static Guid ImageStorePath { get; set; } = new Guid("2DA66BEE-2747-4185-9E5F-3A4951EA074A"); 
+    /// public class SomeTests : R<SomeTests> {
+    ///             public static Guid ImageStorePath { get; set; } = new Guid("2DA66BEE-2747-4185-9E5F-3A4951EA074A");
     ///             public static string ProjectName { get; set; } = "NServiceBus.Persistence.ServiceFabric.SomeTestsApplication";
     ///             public static string ApplicationTypeName { get; set; } = "SomeTestsType";
     ///             public static Version ApplicationTypeVersion { get; set; } = new Version(1, 0, 0);
@@ -79,12 +77,12 @@
             // grab or throw
             else
             {
-                ImageStorePath = (Guid) properties[nameof(ImageStorePath)];
-                ApplicationTypeName = (string) properties[nameof(ApplicationTypeName)];
-                TestAppPkgPath = (string) properties[nameof(TestAppPkgPath)];
-                ApplicationTypeVersion = (Version) properties[nameof(ApplicationTypeVersion)];
-                ApplicationName = (Uri) properties[nameof(ApplicationName)];
-                ServiceUri = (Uri) properties[nameof(ServiceUri)];
+                ImageStorePath = (Guid)properties[nameof(ImageStorePath)];
+                ApplicationTypeName = (string)properties[nameof(ApplicationTypeName)];
+                TestAppPkgPath = (string)properties[nameof(TestAppPkgPath)];
+                ApplicationTypeVersion = (Version)properties[nameof(ApplicationTypeVersion)];
+                ApplicationName = (Uri)properties[nameof(ApplicationName)];
+                ServiceUri = (Uri)properties[nameof(ServiceUri)];
             }
         }
 
@@ -105,9 +103,9 @@
         }
 
         [OneTimeTearDown]
-        public async Task ServiceFabricTearDown()
+        public Task ServiceFabricTearDown()
         {
-            await TearDown().ConfigureAwait(false);
+            return TearDown();
         }
 
         static async Task TearDown()
@@ -143,13 +141,12 @@
         {
             if (testRunner == null)
             {
-                var clusterManifest = await GetClusterManifest(new Uri("http://localhost:19080")).ConfigureAwait(false);
-                imageStoreConnectionString = clusterManifest["Management"]["ImageStoreConnectionString"];
-
                 using (var fabric = new FabricClient())
                 {
+                    var clusterManifest = await GetClusterManifest(fabric).ConfigureAwait(false);
+                    imageStoreConnectionString = clusterManifest["Management"]["ImageStoreConnectionString"];
+                    await TearDown().ConfigureAwait(false);
                     var app = fabric.ApplicationManager;
-                    await TearDown().ConfigureAwait(false); // TODO we need a more optimal way
                     app.CopyApplicationPackage(imageStoreConnectionString, TestAppPkgPath, ImageStorePath.ToString());
                     await app.ProvisionApplicationAsync(ImageStorePath.ToString()).ConfigureAwait(false);
                     await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion.ToString())).ConfigureAwait(false);
@@ -159,32 +156,24 @@
             }
         }
 
-        static async Task<Dictionary<string, Dictionary<string, string>>> GetClusterManifest(Uri clusterUri)
+        static async Task<Dictionary<string, Dictionary<string, string>>> GetClusterManifest(FabricClient fabricClient)
         {
-            using (var client = new HttpClient())
-            using (var response = await client.GetStreamAsync(new Uri(clusterUri, "/$/GetClusterManifest?api-version=1.0")).ConfigureAwait(false))
+            var rawManifest = await fabricClient.ClusterManager.GetClusterManifestAsync().ConfigureAwait(false);
+            var document = XDocument.Parse(rawManifest);
+            var ns = document.Root.GetDefaultNamespace();
+            var sections = new Dictionary<string, Dictionary<string, string>>();
+            foreach (var section in document.Descendants(ns + "Section"))
             {
-                var serializer = new DataContractJsonSerializer(typeof(ClusterManifest));
-                var clusterManifest = (ClusterManifest) serializer.ReadObject(response);
-                using (var reader = new StringReader(clusterManifest.Manifest))
+                var dictionary = new Dictionary<string, string>();
+
+                foreach (var parameter in section.Descendants(ns + "Parameter"))
                 {
-                    var document = XDocument.Load(reader);
-                    var ns = document.Root.GetDefaultNamespace();
-                    var sections = new Dictionary<string, Dictionary<string, string>>();
-                    foreach (var section in document.Descendants(ns + "Section"))
-                    {
-                        var dictionary = new Dictionary<string, string>();
-
-                        foreach (var parameter in section.Descendants(ns + "Parameter"))
-                        {
-                            dictionary.Add(parameter.Attribute("Name").Value, parameter.Attribute("Value").Value);
-                        }
-
-                        sections.Add(section.Attribute("Name").Value, dictionary);
-                    }
-                    return sections;
+                    dictionary.Add(parameter.Attribute("Name").Value, parameter.Attribute("Value").Value);
                 }
+
+                sections.Add(section.Attribute("Name").Value, dictionary);
             }
+            return sections;
         }
 
         static string DetermineCallerFilePath([CallerFilePath] string path = null)

@@ -2,6 +2,9 @@
 {
     using NUnit.Framework.Interfaces;
 
+    /// <summary>
+    /// Orchestrates multiple test listeners
+    /// </summary>
     class CompositeListener : ITestListener
     {
         public CompositeListener(params ITestListener[] listeners)

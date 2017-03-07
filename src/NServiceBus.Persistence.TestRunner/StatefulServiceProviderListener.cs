@@ -3,6 +3,10 @@ namespace TestRunner
     using Microsoft.ServiceFabric.Services.Runtime;
     using NUnit.Framework.Interfaces;
 
+    /// <summary>
+    /// Provides the service into the TestContext.
+    /// </summary>
+    /// <typeparam name="TService">The service.</typeparam>
     class StatefulServiceProviderListener<TService> : ITestListener
         where TService : StatefulService
     {

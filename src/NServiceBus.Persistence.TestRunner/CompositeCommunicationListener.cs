@@ -4,6 +4,9 @@ namespace TestRunner
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
 
+    /// <summary>
+    /// Orchestrates multiple communication listener.
+    /// </summary>
     class CompositeCommunicationListener : ICommunicationListener
     {
         public CompositeCommunicationListener(params ICommunicationListener[] listeners)

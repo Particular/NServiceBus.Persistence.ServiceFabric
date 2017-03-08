@@ -8,6 +8,10 @@
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="NServiceBus.Persistence.ServiceFabric.AcceptanceTestsPkg" ServiceManifestVersion="1.0.0" />
+    <EnvironmentOverrides CodePackageRef="Code">
+      <EnvironmentVariable Name="AzureServiceBus.ConnectionString" Value="[Tests_AzureServiceBus.ConnectionString]" />
+      <EnvironmentVariable Name="AzureServiceBusTransport.ConnectionString" Value="[Tests_AzureServiceBus.ConnectionString]" />
+    </EnvironmentOverrides>
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="Tests">

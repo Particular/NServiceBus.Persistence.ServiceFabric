@@ -3,7 +3,6 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Threading.Tasks;
     using Extensibility;
     using Microsoft.ServiceFabric.Data;
-    using Persistence;
 
     class ServiceFabricSynchronizedStorage : ISynchronizedStorage
     {

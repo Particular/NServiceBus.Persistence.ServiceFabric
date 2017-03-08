@@ -98,10 +98,6 @@
     <Compile Include="Gateway\ServiceFabricGatewayDeduplication.cs" />
     <Compile Include="Gateway\ServiceFabricGatewayPersistence.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
-    <Compile Include="ServiceFabricSynchronizedStorage.cs" />
-    <Compile Include="ServiceFabricTransactionalStorageFeature.cs" />
-    <Compile Include="ServiceFabricSynchronizedStorageSession.cs" />
-    <Compile Include="ServiceFabricTransactionalSynchronizedStorageAdapter.cs" />
     <Compile Include="Outbox\Guard.cs" />
     <Compile Include="Outbox\ServiceFabricOutboxPersistence.cs" />
     <Compile Include="Outbox\ServiceFabricOutboxSettingsExtensions.cs" />
@@ -113,6 +109,10 @@
     <Compile Include="SagaPersister\ServiceFabricSagaPersister.cs" />
     <Compile Include="SubscriptionStorage\ServiceFabricSubscriptionPersistence.cs" />
     <Compile Include="SubscriptionStorage\ServiceFabricSubscriptionStorage.cs" />
+    <Compile Include="SynchronizedStorage\ServiceFabricSynchronizedStorage.cs" />
+    <Compile Include="SynchronizedStorage\ServiceFabricSynchronizedStorageSession.cs" />
+    <Compile Include="SynchronizedStorage\ServiceFabricTransactionalStorageFeature.cs" />
+    <Compile Include="SynchronizedStorage\ServiceFabricTransactionalSynchronizedStorageAdapter.cs" />
     <Compile Include="TimeoutPersister\ServiceFabricTimeoutPersistence.cs" />
     <Compile Include="TimeoutPersister\ServiceFabricTimeoutPersister.cs" />
   </ItemGroup>

@@ -14,7 +14,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Test.snk</AssemblyOriginatorKeyFile>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>    
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -87,16 +87,10 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\NServiceBus.Persistence.ServiceFabric.Tests\Successful.cs">
-      <Link>Successful.cs</Link>
-    </Compile>
-    <Compile Include="..\NServiceBus.Persistence.ServiceFabric.Tests\TestAccessingReliableStateManager.cs">
-      <Link>TestAccessingReliableStateManager.cs</Link>
-    </Compile>
-    <Compile Include="..\NServiceBus.Persistence.ServiceFabric.Tests\TestAccessingStatefulContext.cs">
-      <Link>TestAccessingStatefulContext.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Successful.cs" />
+    <Compile Include="TestAccessingReliableStateManager.cs" />
+    <Compile Include="TestAccessingStatefulContext.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

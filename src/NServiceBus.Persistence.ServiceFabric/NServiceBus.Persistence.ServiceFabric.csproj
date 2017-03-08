@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ServiceFabricPersistenceConfig.cs" />
     <Compile Include="Gateway\ServiceFabricGatewayDeduplication.cs" />
     <Compile Include="Gateway\ServiceFabricGatewayPersistence.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />

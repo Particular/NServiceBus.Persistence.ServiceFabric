@@ -6,9 +6,10 @@
     {
         protected override void Setup(FeatureConfigurationContext context)
         {
-            //context.Container.ConfigureComponent<SynchronizedStorage>(builder => new SynchronizedStorage(context.Settings.Get("StateManager")), DependencyLifecycle.SingleInstance);
-            context.Container.ConfigureComponent<SynchronizedStorage>(DependencyLifecycle.SingleInstance);
-            context.Container.ConfigureComponent<SynchronizedStorageAdapter>(DependencyLifecycle.SingleInstance);
+            var stateManager = context.Settings.StateManager();
+            var container = context.Container;
+            container.ConfigureComponent(b => new SynchronizedStorage(stateManager), DependencyLifecycle.SingleInstance);
+            container.ConfigureComponent(b => new SynchronizedStorageAdapter(), DependencyLifecycle.SingleInstance);
         }
     }
 }

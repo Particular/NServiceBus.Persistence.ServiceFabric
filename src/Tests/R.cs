@@ -152,8 +152,8 @@
                     await app.ProvisionApplicationAsync(ImageStorePath.ToString()).ConfigureAwait(false);
                     var nameValueCollection = new NameValueCollection();
                     // currently hardcoded
-                    var connectionString = Environment.GetEnvironmentVariable("AzureServiceBusTransport.ConnectionString");
-                    nameValueCollection["Tests_AzureServiceBusTransport.ConnectionString"] = connectionString;
+                    var connectionString = Environment.GetEnvironmentVariable("AzureServiceBus.ConnectionString", EnvironmentVariableTarget.User);
+                    nameValueCollection["Tests_AzureServiceBus.ConnectionString"] = connectionString;
                     await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion.ToString(), nameValueCollection)).ConfigureAwait(false);
                 }
 

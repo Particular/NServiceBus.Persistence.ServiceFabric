@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.AcceptanceTesting;
 using NServiceBus.AcceptanceTesting.Support;
-using NServiceBus.AcceptanceTests.ScenarioDescriptors;
 using NServiceBus.MessageMutator;
 using NServiceBus.Pipeline;
 
@@ -11,7 +10,7 @@ public class ConfigureEndpointAzureServiceBusTransport : IConfigureEndpointTestE
 {
     public Task Configure(string endpointName, EndpointConfiguration configuration, RunSettings settings, PublisherMetadata publisherMetadata)
     {
-        var connectionString = EnvironmentHelper.GetEnvironmentVariable("AzureServiceBusTransport.ConnectionString");
+        var connectionString = settings.Get<string>("Transport.ConnectionString");
 
         var transportConfig = configuration.UseTransport<AzureServiceBusTransport>();
 

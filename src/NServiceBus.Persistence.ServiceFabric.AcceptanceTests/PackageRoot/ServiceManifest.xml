@@ -14,7 +14,9 @@
       </ExeHost>
     </EntryPoint>
     <EnvironmentVariables>
-      <EnvironmentVariable Name="AzureServiceBusTransport.ConnectionString" Value="[Tests_AzureServiceBusTransport.ConnectionString]"/>
+      <EnvironmentVariable Name="AzureServiceBus.ConnectionString" Value="[Tests_AzureServiceBus.ConnectionString]"/>
+      <EnvironmentVariable Name="AzureServiceBusTransport.ConnectionString" Value="[Tests_AzureServiceBus.ConnectionString]"/>
+      <EnvironmentVariable Name="Transport.UseSpecific" Value="AzureServiceBusTransport"/>
     </EnvironmentVariables>
   </CodePackage>
 

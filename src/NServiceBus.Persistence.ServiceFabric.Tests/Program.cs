@@ -3,6 +3,8 @@ using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
+    using Timeout = System.Threading.Timeout;
+
     internal static class Program
     {
         /// <summary>

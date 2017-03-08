@@ -11,7 +11,7 @@ public class ConfigureEndpointAzureServiceBusTransport : IConfigureEndpointTestE
 {
     public Task Configure(string endpointName, EndpointConfiguration configuration, RunSettings settings, PublisherMetadata publisherMetadata)
     {
-        var connectionString = EnvironmentHelper.GetEnvironmentVariable("AzureServiceBus.ConnectionString");
+        var connectionString = EnvironmentHelper.GetEnvironmentVariable("AzureServiceBusTransport.ConnectionString");
 
         var transportConfig = configuration.UseTransport<AzureServiceBusTransport>();
 

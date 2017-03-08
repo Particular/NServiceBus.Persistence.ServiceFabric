@@ -23,7 +23,6 @@ namespace NServiceBus.Persistence.ServiceFabric
             if (lazyTransaction.IsValueCreated)
             {
                 lazyTransaction.Value.Dispose();
-                lazyTransaction = null;
             }
         }
 

@@ -15,7 +15,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SubscriptionStorage
             var dict = storage.GetOrAdd(messageType, type => new ConcurrentDictionary<string, Subscriber>(StringComparer.OrdinalIgnoreCase));
 
             dict.AddOrUpdate(subscriber.TransportAddress, _ => subscriber, (_, __) => subscriber);
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public Task Unsubscribe(Subscriber subscriber, MessageType messageType, ContextBag context)
@@ -26,7 +26,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SubscriptionStorage
                 Subscriber _;
                 dict.TryRemove(subscriber.TransportAddress, out _);
             }
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public Task<IEnumerable<Subscriber>> GetSubscriberAddressesForMessage(IEnumerable<MessageType> messageTypes, ContextBag context)

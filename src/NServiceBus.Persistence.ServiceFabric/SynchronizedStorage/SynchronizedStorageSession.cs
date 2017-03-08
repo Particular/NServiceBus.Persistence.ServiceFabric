@@ -33,7 +33,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             {
                 return lazyTransaction.Value.CommitAsync();
             }
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
     }
 }

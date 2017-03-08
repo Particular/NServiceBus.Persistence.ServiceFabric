@@ -38,7 +38,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 //               }
 //           });
 
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public Task<TSagaData> Get<TSagaData>(Guid sagaId, Persistence.SynchronizedStorageSession session, ContextBag context)
@@ -92,7 +92,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 //               }
 //           });
 
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public Task Update(IContainSagaData sagaData, Persistence.SynchronizedStorageSession session, ContextBag context)
@@ -107,7 +107,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 //               }
 //           });
 
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         static void SetEntry(ContextBag context, Guid sagaId, Entry value)

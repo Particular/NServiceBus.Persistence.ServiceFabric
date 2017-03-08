@@ -43,7 +43,7 @@
             protected override Task OnStart(IMessageSession session)
             {
                 cleanupTimer = new Timer(PerformCleanup, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
-                return Task.CompletedTask;
+                return TaskEx.CompletedTask;
             }
 
             protected override Task OnStop(IMessageSession session)
@@ -55,7 +55,7 @@
                     // TODO: Use async synchronization primitive
                     waitHandle.WaitOne();
                 }
-                return Task.CompletedTask;
+                return TaskEx.CompletedTask;
             }
 
             void PerformCleanup(object state)

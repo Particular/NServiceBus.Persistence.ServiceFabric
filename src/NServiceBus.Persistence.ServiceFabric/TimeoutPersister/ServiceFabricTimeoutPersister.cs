@@ -32,7 +32,7 @@ namespace NServiceBus.Persistence.ServiceFabric.TimeoutPersister
                 readerWriterLock.ExitWriteLock();
             }
 
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public Task<TimeoutData> Peek(string timeoutId, ContextBag context)
@@ -93,7 +93,7 @@ namespace NServiceBus.Persistence.ServiceFabric.TimeoutPersister
                 readerWriterLock.ExitWriteLock();
             }
 
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public Task<TimeoutsChunk> GetNextChunk(DateTime startSlice)

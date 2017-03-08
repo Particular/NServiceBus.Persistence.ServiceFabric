@@ -4,17 +4,17 @@ namespace NServiceBus.Persistence.ServiceFabric
     using Extensibility;
     using Microsoft.ServiceFabric.Data;
 
-    class ServiceFabricSynchronizedStorage : ISynchronizedStorage
+    class SynchronizedStorage : ISynchronizedStorage
     {
         IReliableStateManager stateManager;
 
-        public ServiceFabricSynchronizedStorage(IReliableStateManager stateManager)
+        public SynchronizedStorage(IReliableStateManager stateManager)
         {
             this.stateManager = stateManager;
         }
         public Task<CompletableSynchronizedStorageSession> OpenSession(ContextBag contextBag)
         {
-            var session = (CompletableSynchronizedStorageSession) new ServiceFabricSynchronizedStorageSession(stateManager);
+            var session = (CompletableSynchronizedStorageSession) new SynchronizedStorageSession(stateManager);
             return Task.FromResult(session);
         }
     }

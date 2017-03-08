@@ -14,7 +14,7 @@
         internal ServiceFabricOutboxPersistence()
         {
             DependsOn<Outbox>();
-            Defaults(s => s.EnableFeature(typeof(ServiceFabricTransactionalStorageFeature)));
+            Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
         }
 
         /// <summary>

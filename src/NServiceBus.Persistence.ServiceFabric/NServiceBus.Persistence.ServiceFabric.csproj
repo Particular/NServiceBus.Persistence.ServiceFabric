@@ -109,10 +109,10 @@
     <Compile Include="SagaPersister\ServiceFabricSagaPersister.cs" />
     <Compile Include="SubscriptionStorage\ServiceFabricSubscriptionPersistence.cs" />
     <Compile Include="SubscriptionStorage\ServiceFabricSubscriptionStorage.cs" />
-    <Compile Include="SynchronizedStorage\ServiceFabricSynchronizedStorage.cs" />
-    <Compile Include="SynchronizedStorage\ServiceFabricSynchronizedStorageSession.cs" />
-    <Compile Include="SynchronizedStorage\ServiceFabricTransactionalStorageFeature.cs" />
-    <Compile Include="SynchronizedStorage\ServiceFabricTransactionalSynchronizedStorageAdapter.cs" />
+    <Compile Include="SynchronizedStorage\SynchronizedStorage.cs" />
+    <Compile Include="SynchronizedStorage\SynchronizedStorageSession.cs" />
+    <Compile Include="SynchronizedStorage\SynchronizedStorageFeature.cs" />
+    <Compile Include="SynchronizedStorage\SynchronizedStorageAdapter.cs" />
     <Compile Include="TimeoutPersister\ServiceFabricTimeoutPersistence.cs" />
     <Compile Include="TimeoutPersister\ServiceFabricTimeoutPersister.cs" />
   </ItemGroup>

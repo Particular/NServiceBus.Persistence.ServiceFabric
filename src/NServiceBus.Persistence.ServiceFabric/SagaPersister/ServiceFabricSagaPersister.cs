@@ -5,7 +5,6 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
     using Extensibility;
     using Microsoft.ServiceFabric.Data.Collections;
     using Newtonsoft.Json;
-    using Persistence;
     using Sagas;
 
     class ServiceFabricSagaPersister : ISagaPersister
@@ -15,9 +14,9 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
         {
         }
 
-        public Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
+        public Task Complete(IContainSagaData sagaData, Persistence.SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (ServiceFabricSynchronizedStorageSession)session;
+            var storageSession = (SynchronizedStorageSession)session;
             // ReSharper disable once UnusedVariable
             var sagasDictionary = storageSession.StateManager.GetOrAddAsync<IReliableDictionary<CorrelationId, object>>(storageSession.Transaction, "sagas").ConfigureAwait(false);
 
@@ -42,7 +41,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             return Task.CompletedTask;
         }
 
-        public Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context)
+        public Task<TSagaData> Get<TSagaData>(Guid sagaId, Persistence.SynchronizedStorageSession session, ContextBag context)
             where TSagaData : IContainSagaData
         {
 //            Entry value;
@@ -58,7 +57,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             return DefaultSagaDataTask<TSagaData>.Default;
         }
 
-        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
+        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, Persistence.SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
         {
 //            var key = new CorrelationId(typeof(TSagaData), propertyName, propertyValue);
 //            Guid id;
@@ -72,9 +71,9 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             return DefaultSagaDataTask<TSagaData>.Default;
         }
 
-        public Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
+        public Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, Persistence.SynchronizedStorageSession session, ContextBag context)
         {
-//            ((ServiceFabricSynchronizedStorageSession)session).Enlist(() =>
+//            ((SynchronizedStorageSession)session).Enlist(() =>
 //           {
 //               var correlationId = NoCorrelationId;
 //               if (correlationProperty != SagaCorrelationProperty.None)
@@ -96,9 +95,9 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             return Task.CompletedTask;
         }
 
-        public Task Update(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
+        public Task Update(IContainSagaData sagaData, Persistence.SynchronizedStorageSession session, ContextBag context)
         {
-//            ((ServiceFabricSynchronizedStorageSession)session).Enlist(() =>
+//            ((SynchronizedStorageSession)session).Enlist(() =>
 //           {
 //               var entry = GetEntry(context, sagaData.Id);
 //

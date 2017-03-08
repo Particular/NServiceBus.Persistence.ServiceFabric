@@ -4,11 +4,11 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
 
-    class ServiceFabricSynchronizedStorageSession : CompletableSynchronizedStorageSession
+    class SynchronizedStorageSession : CompletableSynchronizedStorageSession
     {
         Lazy<ITransaction> lazyTransaction;
 
-        public ServiceFabricSynchronizedStorageSession(IReliableStateManager stateManager)
+        public SynchronizedStorageSession(IReliableStateManager stateManager)
         {
             StateManager = stateManager;
             lazyTransaction = new Lazy<ITransaction>(() => StateManager.CreateTransaction());

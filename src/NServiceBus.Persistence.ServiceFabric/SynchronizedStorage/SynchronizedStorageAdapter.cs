@@ -6,14 +6,14 @@ namespace NServiceBus.Persistence.ServiceFabric
     using Outbox;
     using Transport;
 
-    class ServiceFabricTransactionalSynchronizedStorageAdapter : ISynchronizedStorageAdapter
+    class SynchronizedStorageAdapter : ISynchronizedStorageAdapter
     {
         public Task<CompletableSynchronizedStorageSession> TryAdapt(OutboxTransaction transaction, ContextBag context)
         {
             var inMemOutboxTransaction = transaction as ServiceFabricOutboxTransaction;
             if (inMemOutboxTransaction != null)
             {
-                CompletableSynchronizedStorageSession session = new ServiceFabricSynchronizedStorageSession(null);
+                CompletableSynchronizedStorageSession session = new SynchronizedStorageSession(null);
                 return Task.FromResult(session);
             }
             return EmptyTask;

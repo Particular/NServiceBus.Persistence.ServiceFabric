@@ -14,7 +14,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         }
         public Task<CompletableSynchronizedStorageSession> OpenSession(ContextBag contextBag)
         {
-            var session = (CompletableSynchronizedStorageSession) new SynchronizedStorageSession(stateManager);
+            var session = (CompletableSynchronizedStorageSession) new StorageSession(stateManager);
             return Task.FromResult(session);
         }
     }

@@ -94,10 +94,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SagaPersister\ServiceFabricSagaPersistence.cs" />
     <Compile Include="SagaPersister\ServiceFabricSagaPersister.cs" />
+    <Compile Include="ServiceFabricPersistenceStorageSessionExtensions.cs" />
     <Compile Include="SubscriptionStorage\ServiceFabricSubscriptionPersistence.cs" />
     <Compile Include="SubscriptionStorage\ServiceFabricSubscriptionStorage.cs" />
+    <Compile Include="SynchronizedStorage\IServiceFabricStorageSession.cs" />
     <Compile Include="SynchronizedStorage\SynchronizedStorage.cs" />
-    <Compile Include="SynchronizedStorage\SynchronizedStorageSession.cs" />
+    <Compile Include="SynchronizedStorage\StorageSession.cs" />
     <Compile Include="SynchronizedStorage\SynchronizedStorageFeature.cs" />
     <Compile Include="SynchronizedStorage\SynchronizedStorageAdapter.cs" />
     <Compile Include="TaskEx.cs" />

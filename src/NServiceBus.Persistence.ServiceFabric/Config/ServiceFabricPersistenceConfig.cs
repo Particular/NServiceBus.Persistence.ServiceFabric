@@ -1,8 +1,9 @@
-namespace NServiceBus.Persistence.ServiceFabric
+namespace NServiceBus
 {
     using System;
     using Configuration.AdvanceExtensibility;
     using Microsoft.ServiceFabric.Data;
+    using Persistence.ServiceFabric;
     using Settings;
 
     /// <summary>

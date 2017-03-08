@@ -8,15 +8,15 @@
     using TestRunner;
 
     [TestFixture]
-    public class SynchronizedStorageSessionTests : INeed<IReliableStateManager>
+    public class StorageSessionTests : INeed<IReliableStateManager>
     {
         IReliableStateManager stateManager;
-        SynchronizedStorageSession session;
+        StorageSession session;
 
         [SetUp]
         public void SetUp()
         {
-            session = new SynchronizedStorageSession(stateManager);
+            session = new StorageSession(stateManager);
         }
 
         [Test]

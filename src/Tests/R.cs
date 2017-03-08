@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Fabric;
     using System.Fabric.Description;
     using System.IO;
@@ -149,7 +150,11 @@
                     var app = fabric.ApplicationManager;
                     app.CopyApplicationPackage(imageStoreConnectionString, TestAppPkgPath, ImageStorePath.ToString());
                     await app.ProvisionApplicationAsync(ImageStorePath.ToString()).ConfigureAwait(false);
-                    await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion.ToString())).ConfigureAwait(false);
+                    var nameValueCollection = new NameValueCollection();
+                    // currently hardcoded
+                    var connectionString = Environment.GetEnvironmentVariable("AzureServiceBusTransport.ConnectionString");
+                    nameValueCollection["Tests_AzureServiceBusTransport.ConnectionString"] = connectionString;
+                    await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion.ToString(), nameValueCollection)).ConfigureAwait(false);
                 }
 
                 testRunner = ServiceProxy.Create<ITestRunner>(ServiceUri);

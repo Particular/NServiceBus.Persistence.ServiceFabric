@@ -13,6 +13,9 @@
         <Program>NServiceBus.Persistence.ServiceFabric.AcceptanceTests.exe</Program>
       </ExeHost>
     </EntryPoint>
+    <EnvironmentVariables>
+      <EnvironmentVariable Name="AzureServiceBusTransport.ConnectionString" Value="[Tests_AzureServiceBusTransport.ConnectionString]"/>
+    </EnvironmentVariables>
   </CodePackage>
 
   <ConfigPackage Name="Config" Version="1.0.0" />

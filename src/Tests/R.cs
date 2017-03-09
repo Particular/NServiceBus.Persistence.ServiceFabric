@@ -53,7 +53,17 @@
     {
         static R()
         {
-            var properties = typeof(TSelf).GetProperties(BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public).ToDictionary(p => p.Name, p => p.GetValue(null));
+            var properties = typeof(TSelf).GetProperties(BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public).Where(p => !p.Name.StartsWith("EnvironmentVariables")).ToDictionary(p => p.Name, p => p.GetValue(null));
+            var environmentVariables = typeof(TSelf).GetProperties(BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Public).SingleOrDefault(p => p.Name.StartsWith("EnvironmentVariables"));
+
+            if (environmentVariables == null)
+            {
+                environmentVariablesToPromote = new string[0];
+            }
+            else
+            {
+                environmentVariablesToPromote = (string[]) environmentVariables.GetValue(null);
+            }
 
             // apply conventions
             if (properties.Count == 0)
@@ -126,9 +136,20 @@
 
         public static IEnumerable<ITestCaseData> GetTestCases()
         {
-            SetUp().GetAwaiter().GetResult();
+            string[] enumerable;
+            try
+            {
+                SetUp().GetAwaiter().GetResult();
 
-            foreach (var test in testRunner.Tests().GetAwaiter().GetResult())
+                enumerable = testRunner.Tests().GetAwaiter().GetResult();
+            }
+            catch (Exception)
+            {
+                TearDown().GetAwaiter().GetResult();
+                throw;
+            }
+
+            foreach (var test in enumerable)
             {
                 var testCaseData = new TestCaseData(test)
                 {
@@ -152,8 +173,11 @@
                     await app.ProvisionApplicationAsync(ImageStorePath.ToString()).ConfigureAwait(false);
                     var nameValueCollection = new NameValueCollection();
                     // currently hardcoded
-                    var connectionString = Environment.GetEnvironmentVariable("AzureServiceBus.ConnectionString");
-                    nameValueCollection["Tests_AzureServiceBus.ConnectionString"] = connectionString;
+                    foreach (var toPromote in environmentVariablesToPromote)
+                    {
+                        var value = Environment.GetEnvironmentVariable(toPromote);
+                        nameValueCollection[$"Tests_{toPromote}"] = value;
+                    }
                     await app.CreateApplicationAsync(new ApplicationDescription(ApplicationName, ApplicationTypeName, ApplicationTypeVersion.ToString(), nameValueCollection)).ConfigureAwait(false);
                 }
 
@@ -199,6 +223,7 @@
 
         static Guid ImageStorePath;
 
+
         static string ApplicationTypeName;
         static string TestAppPkgPath;
         static Version ApplicationTypeVersion;
@@ -207,6 +232,7 @@
 
         static string imageStoreConnectionString;
         static ITestRunner testRunner;
+        static string[] environmentVariablesToPromote;
 
         // ReSharper disable once MemberCanBePrivate.Global
         public class ClusterManifest

@@ -62,8 +62,9 @@
       <HintPath>..\packages\Microsoft.ServiceFabric.Services.2.4.145\lib\net45\Microsoft.ServiceFabric.Services.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NServiceBus.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c">
-      <HintPath>..\packages\NServiceBus.6.1.2\lib\net452\NServiceBus.Core.dll</HintPath>
+    <Reference Include="NServiceBus.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NServiceBus.6.2.0-alpha0282\lib\net452\NServiceBus.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
@@ -91,6 +92,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
+    <Compile Include="ComponentTests\Sagas\AnotherSagaWithUniquePropertyData.cs" />
+    <Compile Include="ComponentTests\Sagas\SagaMetadataHelper.cs" />
+    <Compile Include="ComponentTests\Sagas\SagaPersisterTests.cs" />
+    <Compile Include="ComponentTests\Sagas\SagaWithoutUniquePropertyData.cs" />
+    <Compile Include="ComponentTests\Sagas\SagaWithUniquePropertyData.cs" />
+    <Compile Include="ComponentTests\Sagas\SimpleSagaEntitySaga.cs" />
+    <Compile Include="ComponentTests\Sagas\TestSagaData.cs" />
+    <Compile Include="ComponentTests\Sagas\When_completing_a_saga_with_no_defined_unique_property.cs" />
     <Compile Include="ComponentTests\TimeoutStorageTests.cs" />
     <Compile Include="PersistenceTestsConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

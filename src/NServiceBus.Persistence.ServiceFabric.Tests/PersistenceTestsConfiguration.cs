@@ -6,6 +6,7 @@
     using Outbox;
     using Sagas;
     using ServiceFabric;
+    using ServiceFabric.SagaPersister;
     using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
     using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;
@@ -17,6 +18,7 @@
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
 
             SynchronizedStorage = new SynchronizedStorage(statefulService.StateManager);
+            SagaStorage = new ServiceFabricSagaPersister();
         }
 
         public ISagaPersister SagaStorage { get; }

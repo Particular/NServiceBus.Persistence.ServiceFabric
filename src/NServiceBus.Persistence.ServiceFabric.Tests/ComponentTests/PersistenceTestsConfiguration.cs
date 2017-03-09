@@ -12,6 +12,7 @@
     public partial class PersistenceTestsConfiguration : IPersistenceTestsConfiguration
     {
         public Func<ContextBag> GetContextBagForTimeoutPersister { get; set; } = () => new ContextBag();
+        public Func<ContextBag> GetContextBagForSagaStorage { get; set; } = () => new ContextBag();
 
         public Func<Action, ContextBag> Func;
     }

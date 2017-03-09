@@ -90,6 +90,9 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
+    <Compile Include="ComponentTests\TimeoutStorageTests.cs" />
+    <Compile Include="PersistenceTestsConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynchronizedStorage\StorageSessionTests.cs" />
     <Compile Include="Tests.cs" />

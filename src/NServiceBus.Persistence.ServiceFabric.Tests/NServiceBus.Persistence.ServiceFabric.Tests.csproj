@@ -100,6 +100,7 @@
     <Compile Include="ComponentTests\Sagas\SimpleSagaEntitySaga.cs" />
     <Compile Include="ComponentTests\Sagas\TestSagaData.cs" />
     <Compile Include="ComponentTests\Sagas\When_completing_a_saga_with_no_defined_unique_property.cs" />
+    <Compile Include="ComponentTests\Sagas\When_completing_a_saga.cs" />
     <Compile Include="ComponentTests\TimeoutStorageTests.cs" />
     <Compile Include="PersistenceTestsConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

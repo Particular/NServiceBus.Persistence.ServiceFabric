@@ -42,7 +42,7 @@
             TestSagaData completedSaga;
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                completedSaga = await persister.Get<TestSagaData>(saga.Id, readSession, new ContextBag());
+                completedSaga = await persister.Get<TestSagaData>(saga.Id, readSession, configuration.GetContextBagForSagaStorage());
             }
 
             Assert.NotNull(sagaData);

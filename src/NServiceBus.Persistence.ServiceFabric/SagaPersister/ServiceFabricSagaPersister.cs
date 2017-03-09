@@ -16,9 +16,12 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
         public Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
+//            IReliableDictionary<CorrelationId, Guid>
+//            IReliableDictionary<Guid, SagaEntry>
+
             var storageSession = (StorageSession)session;
             // ReSharper disable once UnusedVariable
-            var sagasDictionary = storageSession.StateManager.GetOrAddAsync<IReliableDictionary<CorrelationId, object>>(storageSession.Transaction, "sagas").ConfigureAwait(false);
+            var sagasDictionary = storageSession.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(storageSession.Transaction, "sagas").ConfigureAwait(false);
 
 
 //            storageSession.Enlist(() =>
@@ -41,34 +44,35 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             return TaskEx.CompletedTask;
         }
 
-        public Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context)
+        public async Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context)
             where TSagaData : IContainSagaData
         {
-//            Entry value;
-//
-//            if (sagas.TryGetValue(sagaId, out value))
-//            {
-//                SetEntry(context, sagaId, value);
-//
-//                var data = value.GetSagaCopy();
-//                return Task.FromResult((TSagaData)data);
-//            }
+            var storageSession = (StorageSession)session;
+            var tx = storageSession.Transaction;
 
-            return DefaultSagaDataTask<TSagaData>.Default;
+            var sagasDictionary = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(tx, "sagas").ConfigureAwait(false);
+            var conditionalValue = await sagasDictionary.TryGetValueAsync(tx, sagaId, LockMode.Update).ConfigureAwait(false);
+            if (conditionalValue.HasValue)
+            {
+                return conditionalValue.Value.ToSagaData<TSagaData>();
+            }
+            return default(TSagaData);
         }
 
-        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
+        public async Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
         {
-//            var key = new CorrelationId(typeof(TSagaData), propertyName, propertyValue);
-//            Guid id;
-//
-//            if (byCorrelationId.TryGetValue(key, out id))
-//            {
-//                // this isn't updated atomically and may return null for an entry that has been indexed but not inserted yet
-//                return Get<TSagaData>(id, session, context);
-//            }
+            var storageSession = (StorageSession)session;
+            var tx = storageSession.Transaction;
 
-            return DefaultSagaDataTask<TSagaData>.Default;
+            var serializedPropertyValue = JsonConvert.SerializeObject(propertyValue);
+            var key = new CorrelationPropertyEntry { SagaDataType = typeof(TSagaData).FullName, Name = propertyName, Value = serializedPropertyValue, Type = propertyValue.GetType().FullName };
+            var byCorrelationId = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>(tx, "bycorrelationid").ConfigureAwait(false);
+            var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key, LockMode.Update).ConfigureAwait(false);
+            if (conditionalValue.HasValue)
+            {
+                return await Get<TSagaData>(conditionalValue.Value, session, context).ConfigureAwait(false);
+            }
+            return default(TSagaData);
         }
 
         public Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
@@ -168,16 +172,16 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
         }
 
         /// <summary>
-        /// This correlation id is cheap to create as type and the propertyName are not allocated (they are stored in the saga
+        /// This correlation id is cheap to create as sagaType and the propertyName are not allocated (they are stored in the saga
         /// metadata).
         /// The only thing that is allocated is the correlationId itself and the propertyValue, which again, is allocated anyway
         /// by the saga behavior.
         /// </summary>
         class CorrelationId : IComparable<CorrelationId>, IEquatable<CorrelationId>
         {
-            public CorrelationId(Type type, string propertyName, object propertyValue)
+            public CorrelationId(Type sagaType, string propertyName, object propertyValue)
             {
-                this.type = type;
+                this.sagaType = sagaType;
                 this.propertyName = propertyName;
                 this.propertyValue = propertyValue;
             }
@@ -189,7 +193,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
             bool Equals(CorrelationId other)
             {
-                return type == other.type && String.Equals(propertyName, other.propertyName) && propertyValue.Equals(other.propertyValue);
+                return sagaType == other.sagaType && String.Equals(propertyName, other.propertyName) && propertyValue.Equals(other.propertyValue);
             }
 
             public override bool Equals(object obj)
@@ -205,13 +209,13 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 unchecked
                 {
                     // propertyName isn't taken into consideration as there will be only one property per saga to correlate.
-                    var hashCode = type.GetHashCode();
+                    var hashCode = sagaType.GetHashCode();
                     hashCode = (hashCode * 397) ^ propertyValue.GetHashCode();
                     return hashCode;
                 }
             }
 
-            readonly Type type;
+            readonly Type sagaType;
             readonly string propertyName;
             readonly object propertyValue;
 

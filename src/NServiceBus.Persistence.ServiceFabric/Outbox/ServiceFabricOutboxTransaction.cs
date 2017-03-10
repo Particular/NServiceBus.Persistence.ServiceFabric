@@ -20,7 +20,7 @@
         
         public void Dispose()
         {
-           Transaction = null;
+           Transaction.Dispose();
         }
 
         public Task Commit()

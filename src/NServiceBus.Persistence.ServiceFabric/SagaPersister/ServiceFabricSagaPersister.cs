@@ -15,8 +15,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             var storageSession = (StorageSession)session;
             var tx = storageSession.Transaction;
 
-            var sagasDictionary = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(storageSession.Transaction, "sagas").ConfigureAwait(false);
-
+            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
 
             var entry = GetEntry(context, sagaData.Id);
 
@@ -30,7 +29,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             // clean the index
             if (Equals(entry.CorrelationProperty, NoCorrelationId) == false)
             {
-                var byCorrelationId = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>(tx, "bycorrelationid").ConfigureAwait(false);
+                var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
 
                 await byCorrelationId.TryRemoveAsync(tx, entry.CorrelationProperty).ConfigureAwait(false);
             }
@@ -42,7 +41,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             var storageSession = (StorageSession) session;
             var tx = storageSession.Transaction;
 
-            var sagasDictionary = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(tx, "sagas").ConfigureAwait(false);
+            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
             var conditionalValue = await sagasDictionary.TryGetValueAsync(tx, sagaId, LockMode.Update).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
@@ -65,7 +64,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 Value = serializedPropertyValue,
                 Type = propertyValue.GetType().FullName
             };
-            var byCorrelationId = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>(tx, "bycorrelationid").ConfigureAwait(false);
+            var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
             var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key, LockMode.Update).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
@@ -91,7 +90,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                     Type = correlationProperty.Value.GetType().FullName
                 };
 
-                var byCorrelationId = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>(tx, "bycorrelationid").ConfigureAwait(false);
+                var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
 
                 if (!await byCorrelationId.TryAddAsync(tx, correlationId, sagaData.Id).ConfigureAwait(false))
                 {
@@ -104,7 +103,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 CorrelationProperty = correlationId,
                 Data = sagaData.FromSagaData(),
             };
-            var sagasDictionary = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(tx, "sagas").ConfigureAwait(false);
+            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
             if (!await sagasDictionary.TryAddAsync(tx, sagaData.Id, entry).ConfigureAwait(false))
             {
                 throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
@@ -116,7 +115,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             var storageSession = (StorageSession)session;
             var tx = storageSession.Transaction;
 
-            var sagasDictionary = await storageSession.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(tx, "sagas").ConfigureAwait(false);
+            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 

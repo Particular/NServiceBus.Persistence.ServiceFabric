@@ -7,6 +7,7 @@ namespace TestRunner
     using Interfaces;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
     using Microsoft.ServiceFabric.Services.Runtime;
+    using NServiceBus.Persistence.TestRunner;
     using NUnit.Framework.Api;
     using NUnit.Framework.Interfaces;
     using NUnit.Framework.Internal.Filters;
@@ -66,7 +67,8 @@ namespace TestRunner
             {
                 var resultListener = new ResultListener();
                 var provider = new StatefulServiceProviderListener<TService>(statefulService);
-                var compositeListener = new CompositeListener(provider, resultListener);
+                var eventSourceTestListener = new EventSourceTestListener();
+                var compositeListener = new CompositeListener(provider, resultListener, eventSourceTestListener);
 
                 var fullNameFilter = new FullNameFilter(testName);
                 runner.Run(compositeListener, fullNameFilter);

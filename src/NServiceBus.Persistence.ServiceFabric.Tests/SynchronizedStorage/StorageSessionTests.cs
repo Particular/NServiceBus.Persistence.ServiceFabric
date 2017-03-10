@@ -2,10 +2,10 @@
 {
     using System;
     using System.Threading.Tasks;
+    using global::TestRunner;
     using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
     using NUnit.Framework;
-    using TestRunner;
 
     [TestFixture]
     public class StorageSessionTests : INeed<IReliableStateManager>

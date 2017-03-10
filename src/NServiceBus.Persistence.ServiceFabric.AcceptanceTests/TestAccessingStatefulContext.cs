@@ -2,8 +2,8 @@
 {
     using System;
     using System.Fabric;
+    using global::TestRunner;
     using NUnit.Framework;
-    using TestRunner;
 
     [TestFixture]
     public class TestAccessingStatefulContext : INeed<StatefulServiceContext>

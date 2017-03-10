@@ -1,7 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric.AcceptanceTests
 {
     using System.Fabric;
-    using TestRunner;
+    using global::TestRunner;
 
     sealed class Tests : AbstractTestRunner<Tests>
     {

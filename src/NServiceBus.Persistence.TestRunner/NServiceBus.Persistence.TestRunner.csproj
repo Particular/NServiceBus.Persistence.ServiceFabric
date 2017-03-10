@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\NServiceBus.snk</AssemblyOriginatorKeyFile>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>    
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -88,6 +88,8 @@
     <Compile Include="CommunicationListener.cs" />
     <Compile Include="CompositeCommunicationListener.cs" />
     <Compile Include="CompositeListener.cs" />
+    <Compile Include="EventSourceLogger.cs" />
+    <Compile Include="EventSourceTestListener.cs" />
     <Compile Include="INeed.cs" />
     <Compile Include="ITestRunner.cs" />
     <Compile Include="ResultListener.cs" />

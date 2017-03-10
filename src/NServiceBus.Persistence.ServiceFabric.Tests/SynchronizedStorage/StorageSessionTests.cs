@@ -16,7 +16,7 @@
         [SetUp]
         public void SetUp()
         {
-            session = new StorageSession(stateManager);
+            session = new StorageSession(stateManager, new Lazy<ITransaction>(() => stateManager.CreateTransaction()));
         }
 
         [Test]

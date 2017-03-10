@@ -2,33 +2,38 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
 
    // [SkipWeaving]
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {
         // ReSharper disable once EmptyConstructor
-        public ServiceFabricOutboxTransaction()
+        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager)
         {
-//            Transaction = new ServiceFabricTransaction();
+            StateManager = stateManager;
+            Transaction = stateManager.CreateTransaction();
         }
 
-//        public ServiceFabricTransaction Transaction { get; private set; }
-
+        internal IReliableStateManager StateManager { get; set; }
+        internal ITransaction Transaction { get; set; }
+        
         public void Dispose()
         {
-//            Transaction = null;
+           Transaction = null;
         }
 
         public Task Commit()
         {
-//            Transaction.Commit();
+            return Transaction.CommitAsync();
+        }
+
+        public Task Abort()
+        {
+            Transaction.Abort();
+
             return TaskEx.CompletedTask;
         }
 
-        public void Enlist(Action action)
-        {
-//            Transaction.Enlist(action);
-        }
     }
 }

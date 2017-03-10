@@ -27,7 +27,7 @@
 
             SynchronizedStorage = new SynchronizedStorage(stateManager);
             SagaStorage = new ServiceFabricSagaPersister();
-            OutboxStorage = new ServiceFabricOutboxStorage();
+            OutboxStorage = new ServiceFabricOutboxStorage(statefulService.StateManager);
 
             var timeouts = new ServiceFabricTimeoutPersister(()=>DateTime.Now);
             TimeoutStorage = timeouts;

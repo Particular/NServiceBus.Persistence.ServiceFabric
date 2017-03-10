@@ -4,10 +4,16 @@
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
     using Extensibility;
+    using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
 
     class ServiceFabricOutboxStorage : IOutboxStorage
     {
+        public ServiceFabricOutboxStorage(IReliableStateManager reliableStateManager)
+        {
+            this.reliableStateManager = reliableStateManager;
+        }
+
         public Task<OutboxMessage> Get(string messageId, ContextBag context)
         {
             StoredMessage storedMessage;
@@ -21,19 +27,19 @@
 
         public Task<OutboxTransaction> BeginTransaction(ContextBag context)
         {
-            return Task.FromResult<OutboxTransaction>(new ServiceFabricOutboxTransaction());
+            return Task.FromResult<OutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager));
         }
 
         public Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
         {
-            var tx = (ServiceFabricOutboxTransaction) transaction;
-            tx.Enlist(() =>
-            {
-                if (!storage.TryAdd(message.MessageId, new StoredMessage(message.MessageId, message.TransportOperations)))
-                {
-                    throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
-                }
-            });
+            //var tx = (ServiceFabricOutboxTransaction) transaction;
+            //tx.Enlist(() =>
+            //{
+            //    if (!storage.TryAdd(message.MessageId, new StoredMessage(message.MessageId, message.TransportOperations)))
+            //    {
+            //        throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
+            //    }
+            //});
             return TaskEx.CompletedTask;
         }
 
@@ -67,6 +73,7 @@
 
         ConcurrentDictionary<string, StoredMessage> storage = new ConcurrentDictionary<string, StoredMessage>();
         static Task<OutboxMessage> NoOutboxMessageTask = Task.FromResult(default(OutboxMessage));
+        private IReliableStateManager reliableStateManager;
 
         class StoredMessage
         {

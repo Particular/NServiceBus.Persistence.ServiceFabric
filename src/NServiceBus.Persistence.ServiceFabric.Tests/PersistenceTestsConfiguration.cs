@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using Gateway.Deduplication;
+    using Microsoft.ServiceFabric.Data;
     using NUnit.Framework;
     using Outbox;
     using Sagas;
@@ -17,11 +18,14 @@
 
     public partial class PersistenceTestsConfiguration
     {
+        IReliableStateManager stateManager;
+
         public PersistenceTestsConfiguration()
         {
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
+            stateManager = statefulService.StateManager;
 
-            SynchronizedStorage = new SynchronizedStorage(statefulService.StateManager);
+            SynchronizedStorage = new SynchronizedStorage(stateManager);
             SagaStorage = new ServiceFabricSagaPersister();
             OutboxStorage = new ServiceFabricOutboxStorage();
 
@@ -42,7 +46,7 @@
 
         public Task Configure()
         {
-            return Task.FromResult(0);
+            return stateManager.RegisterDictionaries();
         }
 
         public Task Cleanup()

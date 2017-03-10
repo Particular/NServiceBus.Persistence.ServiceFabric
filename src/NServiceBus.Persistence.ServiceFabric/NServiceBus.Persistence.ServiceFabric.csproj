@@ -87,6 +87,7 @@
     <Compile Include="SagaPersister\CorrelationPropertyEntry.cs" />
     <Compile Include="SagaPersister\SagaEntry.cs" />
     <Compile Include="SagaPersister\SagaEntryExtensions.cs" />
+    <Compile Include="SagaPersister\SagaStateManagerExtensions.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
     <Compile Include="Outbox\Guard.cs" />
     <Compile Include="Outbox\ServiceFabricOutboxPersistence.cs" />

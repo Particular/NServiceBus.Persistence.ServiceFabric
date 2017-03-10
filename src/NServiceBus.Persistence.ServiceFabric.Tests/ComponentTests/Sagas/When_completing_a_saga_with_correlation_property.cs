@@ -5,7 +5,7 @@
     using NUnit.Framework;
     
     [TestFixture]
-    class When_completing_a_saga_with_correlation_property : SagaPersisterTests
+    public class When_completing_a_saga_with_correlation_property : SagaPersisterTests
     {
         [Test]
         public async Task Should_delete_the_saga()

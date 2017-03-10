@@ -91,6 +91,8 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentTests\OutboxStorageTests.cs" />
+    <Compile Include="ComponentTests\SubscriptionStorageTests.cs" />
     <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
     <Compile Include="ComponentTests\Sagas\AnotherSagaWithUniquePropertyData.cs" />
     <Compile Include="ComponentTests\Sagas\SagaMetadataHelper.cs" />

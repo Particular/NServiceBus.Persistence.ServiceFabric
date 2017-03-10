@@ -1,12 +1,16 @@
 ﻿namespace NServiceBus.Persistence.ComponentTests
 {
+    using System;
     using System.Threading.Tasks;
     using Gateway.Deduplication;
     using NUnit.Framework;
     using Outbox;
     using Sagas;
     using ServiceFabric;
+    using ServiceFabric.Outbox;
     using ServiceFabric.SagaPersister;
+    using ServiceFabric.SubscriptionStorage;
+    using ServiceFabric.TimeoutPersister;
     using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
     using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;
@@ -19,6 +23,13 @@
 
             SynchronizedStorage = new SynchronizedStorage(statefulService.StateManager);
             SagaStorage = new ServiceFabricSagaPersister();
+            OutboxStorage = new ServiceFabricOutboxStorage();
+
+            var timeouts = new ServiceFabricTimeoutPersister(()=>DateTime.Now);
+            TimeoutStorage = timeouts;
+            TimeoutQuery = timeouts;
+
+            SubscriptionStorage = new ServiceFabricSubscriptionStorage();
         }
 
         public ISagaPersister SagaStorage { get; }

@@ -6,31 +6,31 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class StorageSession : CompletableSynchronizedStorageSession, IServiceFabricStorageSession
     {
-        Lazy<ITransaction> lazyTransaction;
+        Lazy<ITransaction> _transaction;
 
-        public StorageSession(IReliableStateManager stateManager)
+        public StorageSession(IReliableStateManager stateManager, Lazy<ITransaction> transaction)
         {
             StateManager = stateManager;
-            lazyTransaction = new Lazy<ITransaction>(() => StateManager.CreateTransaction());
+            _transaction = transaction;
         }
 
         public IReliableStateManager StateManager { get; }
 
-        public ITransaction Transaction => lazyTransaction.Value;
+        public ITransaction Transaction => _transaction.Value;
 
         public void Dispose()
         {
-            if (lazyTransaction.IsValueCreated)
+            if (_transaction.IsValueCreated)
             {
-                lazyTransaction.Value.Dispose();
+                _transaction.Value.Dispose();
             }
         }
 
         public Task CompleteAsync()
         {
-            if (lazyTransaction.IsValueCreated)
+            if (_transaction.IsValueCreated)
             {
-                return lazyTransaction.Value.CommitAsync();
+                return _transaction.Value.CommitAsync();
             }
             return TaskEx.CompletedTask;
         }

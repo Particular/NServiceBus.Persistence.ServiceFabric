@@ -22,7 +22,7 @@
         /// </summary>
         protected override void Setup(FeatureConfigurationContext context)
         {
-            var outboxStorage = new ServiceFabricOutboxStorage();
+            var outboxStorage = new ServiceFabricOutboxStorage(context.Settings.StateManager());
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
             var timeSpan = context.Settings.Get<TimeSpan>(TimeToKeepDeduplicationEntries);

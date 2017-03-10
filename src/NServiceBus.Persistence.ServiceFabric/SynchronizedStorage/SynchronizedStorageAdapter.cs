@@ -1,7 +1,9 @@
 namespace NServiceBus.Persistence.ServiceFabric
 {
+    using System;
     using System.Threading.Tasks;
     using Extensibility;
+    using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
     using Outbox;
     using Transport;
@@ -10,10 +12,10 @@ namespace NServiceBus.Persistence.ServiceFabric
     {
         public Task<CompletableSynchronizedStorageSession> TryAdapt(OutboxTransaction transaction, ContextBag context)
         {
-            var inMemOutboxTransaction = transaction as ServiceFabricOutboxTransaction;
-            if (inMemOutboxTransaction != null)
+            var outboxTransaction = transaction as ServiceFabricOutboxTransaction;
+            if (outboxTransaction != null)
             {
-                CompletableSynchronizedStorageSession session = new StorageSession(null);
+                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.StateManager, new Lazy<ITransaction>(() => outboxTransaction.Transaction));
                 return Task.FromResult(session);
             }
             return EmptyTask;

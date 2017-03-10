@@ -8,5 +8,23 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
         {
             return JsonConvert.DeserializeObject<TSagaData>(entry.Data);
         }
+
+        public static string FromSagaData(this IContainSagaData data)
+        {
+            return JsonConvert.SerializeObject(data);
+        }
+
+        public static CorrelationPropertyEntry CopyCorrelationProperty(this SagaEntry entry)
+        {
+            var correlationProperty = entry.CorrelationProperty;
+            return new CorrelationPropertyEntry
+            {
+                ExtensionData = correlationProperty.ExtensionData,
+                Name = correlationProperty.Name,
+                SagaDataType = correlationProperty.SagaDataType,
+                Value = correlationProperty.Value,
+                Type = correlationProperty.Type
+            };
+        }
     }
 }

@@ -39,7 +39,7 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithCorrelationProperty(), default(SagaWithCorrelationPropertyData));
+                SetActiveSagaInstance(readContextBag, new SagaWithCorrelationProperty(), new SagaWithCorrelationPropertyData { CorrelatedProperty = "whatever" });
 
                 completedSaga = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), "whatever", readSession, readContextBag);
             }

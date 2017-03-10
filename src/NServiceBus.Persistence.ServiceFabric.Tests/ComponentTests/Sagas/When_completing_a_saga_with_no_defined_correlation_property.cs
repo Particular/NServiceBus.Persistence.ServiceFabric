@@ -22,12 +22,10 @@
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var savingSession = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var sagaData = new SagaWithoutCorrelationPropertyData { Id = sagaId, NonUniqueString = "whatever" };
-                SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), sagaData);
+                var sagaData = new SagaWithoutCorrelationPropertyData { Id = sagaId, CorrelatedProperty = "whatever" };
+                var correlationProperty = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), sagaData);
 
-                SagaCorrelationProperty noCorrelationProperty = null;
-                // ReSharper disable once ExpressionIsAlwaysNull
-                await persister.Save(sagaData, noCorrelationProperty, savingSession, savingContextBag);
+                await persister.Save(sagaData, SagaCorrelationProperty.None, savingSession, savingContextBag);
                 await savingSession.CompleteAsync();
             }
 
@@ -44,7 +42,7 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), default(SagaWithoutCorrelationPropertyData));
+                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { CorrelatedProperty = "whatever" });
 
                 var result = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaId, readSession, readContextBag);
                 Assert.That(result, Is.Null);

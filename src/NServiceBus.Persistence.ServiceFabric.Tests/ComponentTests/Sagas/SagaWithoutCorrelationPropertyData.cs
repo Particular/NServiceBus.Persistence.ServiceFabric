@@ -3,7 +3,8 @@
     using System;
     using System.Threading.Tasks;
 
-    class SagaWithoutCorrelationProperty : Saga<SagaWithoutCorrelationPropertyData>, IAmStartedByMessages<SagaWithoutCorrelationPropertyStartingMessage>
+    class SagaWithoutCorrelationProperty : Saga<SagaWithoutCorrelationPropertyData>, 
+        IAmStartedByMessages<SagaWithoutCorrelationPropertyStartingMessage>
     {
         public Task Handle(SagaWithoutCorrelationPropertyStartingMessage message, IMessageHandlerContext context)
         {
@@ -12,16 +13,17 @@
 
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<SagaWithoutCorrelationPropertyData> mapper)
         {
-            //not implemented
+            mapper.ConfigureMapping<SagaWithoutCorrelationPropertyStartingMessage>(m => m.CorrelatedProperty).ToSaga(s => s.CorrelatedProperty);
         }
     }
+
     public class SagaWithoutCorrelationPropertyData : ContainSagaData
     {
-        public string NonUniqueString { get; set; }
+        public string CorrelatedProperty { get; set; }
     }
 
-    class SagaWithoutCorrelationPropertyStartingMessage
+    public class SagaWithoutCorrelationPropertyStartingMessage : IMessage
     {
-        public string NonUniqueString { get; set; }
+        public string CorrelatedProperty { get; set; }
     }
 }

@@ -23,11 +23,11 @@
             await configuration.Cleanup();
         }
 
-        protected static SagaCorrelationProperty SetActiveSagaInstance<TSaga, TSagaData>(ContextBag savingContextBag, TSaga saga, TSagaData sagaData)
+        protected static SagaCorrelationProperty SetActiveSagaInstance<TSaga, TSagaData>(ContextBag savingContextBag, TSaga saga, TSagaData sagaData, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>
             where TSagaData : IContainSagaData, new()
         {
-            var sagaInstance = new ActiveSagaInstance(saga, SagaMetadata.Create(typeof(TSaga)), () => DateTime.UtcNow);
+            var sagaInstance = new ActiveSagaInstance(saga, SagaMetadata.Create(typeof(TSaga), availableTypes, new Conventions()), () => DateTime.UtcNow);
             sagaInstance.AttachNewEntity(sagaData);
             savingContextBag.Set(sagaInstance);
             return SagaMetadataHelper.GetMetadata<TSaga>(sagaData);

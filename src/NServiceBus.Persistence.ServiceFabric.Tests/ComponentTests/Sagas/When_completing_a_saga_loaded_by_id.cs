@@ -39,7 +39,7 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), default(TestSagaData));
+                SetActiveSagaInstance(readContextBag, new TestSaga(), new TestSagaData());
 
                 completedSaga = await persister.Get<TestSagaData>(sagaId, readSession, readContextBag);
             }

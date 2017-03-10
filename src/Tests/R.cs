@@ -124,16 +124,11 @@
             using (var fabric = new FabricClient())
             {
                 var app = fabric.ApplicationManager;
-                var applications = await fabric.QueryManager.GetApplicationListAsync().ConfigureAwait(false);
-                foreach (var application in applications.Where(a => a.ApplicationName == ApplicationName))
+                var applications = await fabric.QueryManager.GetApplicationListAsync(ApplicationName).ConfigureAwait(false);
+                if (applications.Any())
                 {
-                    await app.DeleteApplicationAsync(new DeleteApplicationDescription(application.ApplicationName)).ConfigureAwait(false);
-                }
-
-                var applicationTypeList = await fabric.QueryManager.GetApplicationTypeListAsync().ConfigureAwait(false);
-                foreach (var applicationType in applicationTypeList.Where(a => a.ApplicationTypeName == ApplicationTypeName))
-                {
-                    await app.UnprovisionApplicationAsync(applicationType.ApplicationTypeName, applicationType.ApplicationTypeVersion);
+                    await app.DeleteApplicationAsync(new DeleteApplicationDescription(ApplicationName)).ConfigureAwait(false);
+                    await app.UnprovisionApplicationAsync(ApplicationTypeName, ApplicationTypeVersion.ToString()).ConfigureAwait(false);
                     app.RemoveApplicationPackage(imageStoreConnectionString, ImageStorePath.ToString());
                 }
             }

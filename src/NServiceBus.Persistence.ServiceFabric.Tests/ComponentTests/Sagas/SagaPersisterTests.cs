@@ -27,7 +27,7 @@
             where TSaga : Saga<TSagaData>
             where TSagaData : IContainSagaData, new()
         {
-            var sagaInstance = new ActiveSagaInstance(saga, SagaMetadata.Create(typeof(TSagaData)), () => DateTime.UtcNow);
+            var sagaInstance = new ActiveSagaInstance(saga, SagaMetadata.Create(typeof(TSaga)), () => DateTime.UtcNow);
             sagaInstance.AttachNewEntity(sagaData);
             savingContextBag.Set(sagaInstance);
             return SagaMetadataHelper.GetMetadata<TSaga>(sagaData);

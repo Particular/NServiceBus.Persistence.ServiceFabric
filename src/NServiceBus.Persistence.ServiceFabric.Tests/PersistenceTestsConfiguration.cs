@@ -44,9 +44,19 @@
         public IOutboxStorage OutboxStorage { get; }
         public IDeduplicateMessages GatewayStorage { get; }
 
-        public Task Configure()
+        public async Task Configure()
         {
-            return stateManager.RegisterDictionaries();
+            await stateManager.RegisterDictionaries().ConfigureAwait(false);
+            using (var transaction = stateManager.CreateTransaction())
+            {
+                var sagas = await stateManager.Sagas(transaction).ConfigureAwait(false);
+                var correlations = await stateManager.Correlations(transaction).ConfigureAwait(false);
+                var junkKey = Guid.NewGuid();// needs to be a const
+                await sagas.GetOrAddAsync(transaction, junkKey, guid => new SagaEntry()).ConfigureAwait(false);
+                var junkCorrelationPropertyKey = new CorrelationPropertyEntry();
+                await correlations.GetOrAddAsync(transaction, junkCorrelationPropertyKey, key => junkKey).ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
         }
 
         public Task Cleanup()

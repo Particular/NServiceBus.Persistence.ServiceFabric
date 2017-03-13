@@ -68,7 +68,7 @@
             }
         }
 
-        internal async Task CleanupMessagesOlderThan(DateTimeOffset date, bool rescheduleFutureCleanups)
+        internal async Task CleanupMessagesOlderThan(DateTimeOffset date)
         {
             using (var tx = reliableStateManager.CreateTransaction())
             {
@@ -81,7 +81,7 @@
                         var storage = await reliableStateManager.Outbox(tx);
                         await storage.TryRemoveAsync(tx, message.Value.MessageId);
                     }
-                    else if (rescheduleFutureCleanups)
+                    else 
                     {
                         await queue.EnqueueAsync(tx, new CleanupStoredOutboxCommand
                         {

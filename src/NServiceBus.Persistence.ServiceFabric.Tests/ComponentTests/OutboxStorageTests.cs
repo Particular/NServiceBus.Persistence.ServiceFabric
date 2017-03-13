@@ -148,7 +148,7 @@
 
         Task CleanOlderThan(IOutboxStorage storage, DateTimeOffset beforeStore)
         {
-            return ((ServiceFabricOutboxStorage) storage).CleanupMessagesOlderThan(beforeStore, true);
+            return ((ServiceFabricOutboxStorage) storage).CleanupMessagesOlderThan(beforeStore);
         }
     }
 }

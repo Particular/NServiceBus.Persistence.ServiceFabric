@@ -1,6 +1,5 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric.Outbox
 {
-    using System;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;

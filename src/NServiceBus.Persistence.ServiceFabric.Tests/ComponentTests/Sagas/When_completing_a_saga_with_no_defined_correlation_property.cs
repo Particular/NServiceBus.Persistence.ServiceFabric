@@ -23,7 +23,7 @@
             using (var savingSession = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
                 var sagaData = new SagaWithoutCorrelationPropertyData { Id = sagaId, CorrelatedProperty = "whatever" };
-                var correlationProperty = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), sagaData);
+                SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), sagaData);
 
                 await persister.Save(sagaData, SagaCorrelationProperty.None, savingSession, savingContextBag);
                 await savingSession.CompleteAsync();

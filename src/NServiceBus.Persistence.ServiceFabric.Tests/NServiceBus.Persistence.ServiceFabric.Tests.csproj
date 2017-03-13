@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentTests\OutboxStorageTests.cs" />
+    <Compile Include="ComponentTests\Sagas\When_multiple_workers_retrieve_same_saga.cs" />
     <Compile Include="ComponentTests\SubscriptionStorageTests.cs" />
     <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
     <Compile Include="ComponentTests\Sagas\AnotherSagaWithUniquePropertyData.cs" />

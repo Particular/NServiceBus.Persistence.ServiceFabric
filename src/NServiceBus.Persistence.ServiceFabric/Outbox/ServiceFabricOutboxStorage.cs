@@ -67,6 +67,33 @@
                 await tx.CommitAsync();
             }
         }
-        
+
+        internal async Task CleanupMessagesOlderThan(DateTimeOffset date, bool rescheduleFutureCleanups)
+        {
+            using (var tx = reliableStateManager.CreateTransaction())
+            {
+                var queue = await reliableStateManager.OutboxCleanup(tx);
+                var message = await queue.TryDequeueAsync(tx);
+                if (message.HasValue)
+                {
+                    if (message.Value.StoredAt <= date)
+                    {
+                        var storage = await reliableStateManager.Outbox(tx);
+                        await storage.TryRemoveAsync(tx, message.Value.MessageId);
+                    }
+                    else if (rescheduleFutureCleanups)
+                    {
+                        await queue.EnqueueAsync(tx, new CleanupStoredOutboxCommand
+                        {
+                            MessageId = message.Value.MessageId,
+                            StoredAt = message.Value.StoredAt
+                        });
+                    }
+
+                    await tx.CommitAsync();
+                }
+            }
+        }
+
     }
 }

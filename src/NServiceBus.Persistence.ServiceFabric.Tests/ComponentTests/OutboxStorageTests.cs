@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using NUnit.Framework;
     using Outbox;
+    using ServiceFabric.Outbox;
 
     [TestFixture]
     class OutboxStorageTests
@@ -64,7 +65,7 @@
                 await transaction.Commit();
             }
 
-            CleanOlderThan(storage, DateTime.UtcNow);
+            await CleanOlderThan(storage, DateTimeOffset.UtcNow);
 
             var message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.NotNull(message);
@@ -78,7 +79,7 @@
 
             var messageId = Guid.NewGuid().ToString();
 
-            var beforeStore = DateTime.UtcNow;
+            var beforeStore = DateTimeOffset.UtcNow;
 
             var messageToStore = new OutboxMessage(messageId, new[] { new TransportOperation("x", null, null, null) });
             using (var transaction = await storage.BeginTransaction(ctx))
@@ -89,16 +90,16 @@
             }
 
             // Account for the low resolution of DateTime.UtcNow.
-            var afterStore = DateTime.UtcNow.AddTicks(1);
+            var afterStore = DateTimeOffset.UtcNow.AddTicks(1);
 
             await storage.SetAsDispatched(messageId, configuration.GetContextBagForOutbox());
 
-            CleanOlderThan(storage, beforeStore);
+            await CleanOlderThan(storage, beforeStore);
             
             var message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.NotNull(message);
 
-            CleanOlderThan(storage, afterStore);
+            await CleanOlderThan(storage, afterStore);
 
             message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.Null(message);
@@ -144,10 +145,10 @@
             Assert.NotNull(message);
         }
 
-        static void CleanOlderThan(IOutboxStorage storage, DateTime before)
+
+        Task CleanOlderThan(IOutboxStorage storage, DateTimeOffset beforeStore)
         {
-            throw new NotImplementedException("Consider how to prune old outbox entries");
-            //storage.RemoveEntriesOlderThan(before);
+            return ((ServiceFabricOutboxStorage) storage).CleanupMessagesOlderThan(beforeStore, true);
         }
     }
 }

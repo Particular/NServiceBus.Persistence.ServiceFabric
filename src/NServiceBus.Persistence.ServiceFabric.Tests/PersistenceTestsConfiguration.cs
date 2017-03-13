@@ -18,8 +18,6 @@
 
     public partial class PersistenceTestsConfiguration
     {
-        IReliableStateManager stateManager;
-
         public PersistenceTestsConfiguration()
         {
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
@@ -35,6 +33,8 @@
 
             SubscriptionStorage = new ServiceFabricSubscriptionStorage();
         }
+
+        IReliableStateManager stateManager;
 
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }

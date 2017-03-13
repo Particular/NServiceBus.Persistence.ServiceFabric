@@ -28,7 +28,7 @@
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
             var timeSpan = context.Settings.Get<TimeSpan>(TimeToKeepDeduplicationEntries);
-            context.RegisterStartupTask(new OutboxCleaner(context.Settings.StateManager(), timeSpan));
+            context.RegisterStartupTask(new OutboxCleaner(outboxStorage, timeSpan));
 
             context.RegisterStartupTask(new RegisterStores(context.Settings.StateManager()));
         }
@@ -37,15 +37,15 @@
 
         class OutboxCleaner : FeatureStartupTask
         {
-            readonly IReliableStateManager _stateManager;
+            readonly ServiceFabricOutboxStorage _storage;
             readonly TimeSpan _timeToKeepDeduplicationData;
             CancellationTokenSource _tokenSource;
             Task _cleanupTask;
 
-            public OutboxCleaner(IReliableStateManager stateManager, TimeSpan timeToKeepDeduplicationData)
+            public OutboxCleaner(IOutboxStorage storage, TimeSpan timeToKeepDeduplicationData)
             {
                 _timeToKeepDeduplicationData = timeToKeepDeduplicationData;
-                _stateManager = stateManager;
+                _storage = (ServiceFabricOutboxStorage)storage;
             }
 
             protected override Task OnStart(IMessageSession session)
@@ -67,31 +67,11 @@
             {
                 while (!token.IsCancellationRequested)
                 {
-                    using (var tx = _stateManager.CreateTransaction())
-                    {
-                        var queue = await _stateManager.OutboxCleanup(tx);
-                        var message = await queue.TryDequeueAsync(tx);
-                        if (message.HasValue)
-                        {
-                            if (message.Value.StoredAt + _timeToKeepDeduplicationData <= DateTimeOffset.UtcNow)
-                            {
-                                var storage = await _stateManager.Outbox(tx);
-                                await storage.TryRemoveAsync(tx, message.Value.MessageId);
-                            }
-                            else
-                            {
-                                await queue.EnqueueAsync(tx, new CleanupStoredOutboxCommand()
-                                {
-                                    MessageId = message.Value.MessageId,
-                                    StoredAt = message.Value.StoredAt
-                                });
-                            }
-
-                           await tx.CommitAsync();
-                        }
-                    }
+                    await _storage.CleanupMessagesOlderThan(DateTimeOffset.UtcNow - _timeToKeepDeduplicationData, true);
                 }
             }
+
+           
         }
 
         internal class RegisterStores : FeatureStartupTask

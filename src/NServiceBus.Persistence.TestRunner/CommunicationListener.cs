@@ -61,6 +61,7 @@ namespace TestRunner
             return cachedTestNames;
         }
 
+
         public Task<Result> Run(string testName)
         {
             return Task.Run(() =>
@@ -73,8 +74,7 @@ namespace TestRunner
                 var fullNameFilter = new FullNameFilter(testName);
                 runner.Run(compositeListener, fullNameFilter);
 
-                var result = new Result(resultListener.Output, resultListener.Exception);
-                return result;
+                return resultListener.Result;
             });
         }
 

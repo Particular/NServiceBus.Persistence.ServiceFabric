@@ -1,13 +1,13 @@
 ﻿namespace TestRunner
 {
     using System;
+    using Interfaces;
     using NUnit.Framework;
     using NUnit.Framework.Interfaces;
 
     class ResultListener : ITestListener
     {
-        public Exception Exception { get; private set; }
-        public string Output { get; private set; }
+        public Result Result { get; private set; }
 
         public void TestStarted(ITest test)
         {
@@ -17,24 +17,30 @@
         {
             if (!result.Test.IsSuite)
             {
+                Exception exception = null;
                 switch (result.ResultState.Status)
                 {
                     case TestStatus.Passed:
                         break;
                     case TestStatus.Inconclusive:
-                        Exception = new InconclusiveException(result.Message);
+                        exception = new InconclusiveException(result.Message);
                         break;
                     case TestStatus.Skipped:
-                        Exception = new IgnoreException(result.Message);
+                        exception = new IgnoreException(result.Message);
                         break;
                     case TestStatus.Warning:
                         break;
                     case TestStatus.Failed:
-                        Exception = new AssertionException($"{result.Message}{Environment.NewLine}{result.StackTrace}");
+                        exception = new AssertionException($"{result.Message}{Environment.NewLine}{result.StackTrace}");
                         break;
                 }
 
-                Output = result.Output;
+                Result = new Result(result.Output, exception)
+                {
+                    Duration = result.Duration,
+                    StartTime = result.StartTime,
+                    EndTime = result.EndTime
+                };
             }
         }
 

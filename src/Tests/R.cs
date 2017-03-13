@@ -5,6 +5,7 @@
     using System.Collections.Specialized;
     using System.Fabric;
     using System.Fabric.Description;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -101,15 +102,27 @@
         [TestCaseSource(nameof(GetTestCases))]
         public async Task _(string testName)
         {
-            var result = await testRunner.Run(testName).ConfigureAwait(false);
-            if (result.HasOutput)
+            Result result = null;
+            try
             {
-                Console.WriteLine(result.Output);
-            }
+                result = await testRunner.Run(testName).ConfigureAwait(false);
 
-            if (result.HasException)
+                if (result.HasOutput)
+                {
+                    Console.WriteLine(result.Output);
+                }
+
+                if (result.HasException)
+                {
+                    throw result.Exception;
+                }
+            }
+            finally
             {
-                throw result.Exception;
+                Console.WriteLine("------------------------------------------------");
+                Console.WriteLine("Duration: " +  result?.Duration.ToString("0.000000", NumberFormatInfo.InvariantInfo));
+                Console.WriteLine("Start Time: " + result?.StartTime.ToString("u"));
+                Console.WriteLine("End Time: " + result?.EndTime.ToString("u"));
             }
         }
 

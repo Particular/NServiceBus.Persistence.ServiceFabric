@@ -33,5 +33,14 @@
 
         [DataMember]
         public bool HasException { get; set; }
+
+        [DataMember]
+        public double Duration { get; set; }
+
+        [DataMember]
+        public DateTime StartTime { get; set; }
+
+        [DataMember]
+        public DateTime EndTime { get; set; }
     }
 }

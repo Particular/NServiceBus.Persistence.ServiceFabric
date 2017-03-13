@@ -94,7 +94,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
                 if (!await byCorrelationId.TryAddAsync(tx, correlationId, sagaData.Id).ConfigureAwait(false))
                 {
-                    throw new InvalidOperationException($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists");
+                    throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists");
                 }
             }
 

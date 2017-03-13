@@ -1,7 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric.Outbox
 {
     using System;
-    using System.Collections.Concurrent;
+    using System.Linq;
     using System.Threading.Tasks;
     using Extensibility;
     using Microsoft.ServiceFabric.Data;
@@ -9,20 +9,25 @@
 
     class ServiceFabricOutboxStorage : IOutboxStorage
     {
+        IReliableStateManager reliableStateManager;
+
         public ServiceFabricOutboxStorage(IReliableStateManager reliableStateManager)
         {
             this.reliableStateManager = reliableStateManager;
         }
 
-        public Task<OutboxMessage> Get(string messageId, ContextBag context)
+        public async Task<OutboxMessage> Get(string messageId, ContextBag context)
         {
-            StoredMessage storedMessage;
-            if (!storage.TryGetValue(messageId, out storedMessage))
-            {
-                return NoOutboxMessageTask;
+            OutboxMessage result = null;
+            using (var tx = reliableStateManager.CreateTransaction()) { 
+                var storage = await reliableStateManager.Outbox(tx).ConfigureAwait(false);
+                var conditionalValue = await storage.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
+                if (conditionalValue.HasValue)
+                {
+                    result = new OutboxMessage(messageId, conditionalValue.Value.TransportOperations.Select(o => new TransportOperation(o.MessageId, o.Options, o.Body, o.Headers)).ToArray());
+                }
             }
-
-            return Task.FromResult(new OutboxMessage(messageId, storedMessage.TransportOperations));
+            return result;
         }
 
         public Task<OutboxTransaction> BeginTransaction(ContextBag context)
@@ -30,103 +35,38 @@
             return Task.FromResult<OutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager));
         }
 
-        public Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
+        public async Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
         {
-            //var tx = (ServiceFabricOutboxTransaction) transaction;
-            //tx.Enlist(() =>
-            //{
-            //    if (!storage.TryAdd(message.MessageId, new StoredMessage(message.MessageId, message.TransportOperations)))
-            //    {
-            //        throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
-            //    }
-            //});
-            return TaskEx.CompletedTask;
-        }
-
-        public Task SetAsDispatched(string messageId, ContextBag context)
-        {
-            StoredMessage storedMessage;
-
-            if (!storage.TryGetValue(messageId, out storedMessage))
+            var tx = ((ServiceFabricOutboxTransaction)transaction).Transaction;
+            var storage = await reliableStateManager.Outbox(tx).ConfigureAwait(false);
+            if (!await storage.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, message.TransportOperations.Select(t => new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers)).ToArray())).ConfigureAwait(false))
             {
-                return TaskEx.CompletedTask;
-            }
-
-            storedMessage.MarkAsDispatched();
-            return TaskEx.CompletedTask;
-        }
-
-        public void RemoveEntriesOlderThan(DateTime dateTime)
-        {
-            foreach (var entry in storage)
-            {
-                var storedMessage = entry.Value;
-                if (storedMessage.Dispatched && storedMessage.StoredAt < dateTime)
-                {
-                    StoredMessage toRemove;
-
-                    storage.TryRemove(entry.Key, out toRemove);
-                }
+                throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
             }
         }
 
-
-        ConcurrentDictionary<string, StoredMessage> storage = new ConcurrentDictionary<string, StoredMessage>();
-        static Task<OutboxMessage> NoOutboxMessageTask = Task.FromResult(default(OutboxMessage));
-        private IReliableStateManager reliableStateManager;
-
-        class StoredMessage
+        public async Task SetAsDispatched(string messageId, ContextBag context)
         {
-            public StoredMessage(string messageId, TransportOperation[] transportOperations)
+            using (var tx = reliableStateManager.CreateTransaction())
             {
-                TransportOperations = transportOperations;
-                Id = messageId;
-                StoredAt = DateTime.UtcNow;
-            }
-
-            public string Id { get; }
-
-            public bool Dispatched { get; private set; }
-
-            public DateTime StoredAt { get; }
-
-            public TransportOperation[] TransportOperations { get; private set; }
-
-            public void MarkAsDispatched()
-            {
-                Dispatched = true;
-                TransportOperations = new TransportOperation[0];
-            }
-
-            protected bool Equals(StoredMessage other)
-            {
-                return string.Equals(Id, other.Id) && Dispatched.Equals(other.Dispatched);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj))
+                var storage = await reliableStateManager.Outbox(tx).ConfigureAwait(false);
+                var conditionalValue = await storage.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
+                if (conditionalValue.HasValue)
                 {
-                    return false;
-                }
-                if (ReferenceEquals(this, obj))
-                {
-                    return true;
-                }
-                if (obj.GetType() != GetType())
-                {
-                    return false;
-                }
-                return Equals((StoredMessage) obj);
-            }
+                    var dispatched = conditionalValue.Value.CloneAndMarkAsDispatched();
+                    await storage.AddAsync(tx, messageId, dispatched);
 
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    return ((Id?.GetHashCode() ?? 0)*397) ^ Dispatched.GetHashCode();
+                    var cleanup = await reliableStateManager.OutboxCleanup(tx).ConfigureAwait(false);
+                    await cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand()
+                    {
+                        MessageId = messageId,
+                        StoredAt = conditionalValue.Value.StoredAt
+                    });
+
                 }
+                await tx.CommitAsync();
             }
         }
+        
     }
 }

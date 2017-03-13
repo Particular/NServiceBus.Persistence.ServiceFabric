@@ -4,7 +4,9 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Features;
+    using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
+    using SagaPersister;
 
     /// <summary>
     /// Used to configure in memory outbox persistence.
@@ -26,48 +28,90 @@
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
             var timeSpan = context.Settings.Get<TimeSpan>(TimeToKeepDeduplicationEntries);
+            context.RegisterStartupTask(new OutboxCleaner(context.Settings.StateManager(), timeSpan));
 
-            context.RegisterStartupTask(new OutboxCleaner(outboxStorage, timeSpan));
+            context.RegisterStartupTask(new RegisterStores(context.Settings.StateManager()));
         }
 
-        internal const string TimeToKeepDeduplicationEntries = "Outbox.TimeToKeepDeduplicationEntries";
+        internal const string TimeToKeepDeduplicationEntries = "ServiceFabric.Persistence.Outbox.TimeToKeepDeduplicationEntries";
 
         class OutboxCleaner : FeatureStartupTask
         {
-            public OutboxCleaner(ServiceFabricOutboxStorage storage, TimeSpan timeToKeepDeduplicationData)
+            readonly IReliableStateManager _stateManager;
+            readonly TimeSpan _timeToKeepDeduplicationData;
+            CancellationTokenSource _tokenSource;
+            Task _cleanupTask;
+
+            public OutboxCleaner(IReliableStateManager stateManager, TimeSpan timeToKeepDeduplicationData)
             {
-                this.timeToKeepDeduplicationData = timeToKeepDeduplicationData;
-                serviceFabricOutboxStorage = storage;
+                _timeToKeepDeduplicationData = timeToKeepDeduplicationData;
+                _stateManager = stateManager;
             }
 
             protected override Task OnStart(IMessageSession session)
             {
-                cleanupTimer = new Timer(PerformCleanup, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+                _tokenSource = new CancellationTokenSource();
+
+                _cleanupTask = Task.Factory.StartNew(() => Cleanup(_tokenSource.Token).GetAwaiter().GetResult() , TaskCreationOptions.LongRunning);
+
                 return TaskEx.CompletedTask;
             }
 
             protected override Task OnStop(IMessageSession session)
             {
-                using (var waitHandle = new ManualResetEvent(false))
-                {
-                    cleanupTimer.Dispose(waitHandle);
+                _tokenSource.Cancel();
+                return _cleanupTask;
+            }
 
-                    // TODO: Use async synchronization primitive
-                    waitHandle.WaitOne();
+            async Task Cleanup(CancellationToken token)
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    using (var tx = _stateManager.CreateTransaction())
+                    {
+                        var queue = await _stateManager.OutboxCleanup(tx);
+                        var message = await queue.TryDequeueAsync(tx);
+                        if (message.HasValue)
+                        {
+                            if (message.Value.StoredAt + _timeToKeepDeduplicationData <= DateTimeOffset.UtcNow)
+                            {
+                                var storage = await _stateManager.Outbox(tx);
+                                await storage.TryRemoveAsync(tx, message.Value.MessageId);
+                            }
+                            else
+                            {
+                                await queue.EnqueueAsync(tx, new CleanupStoredOutboxCommand()
+                                {
+                                    MessageId = message.Value.MessageId,
+                                    StoredAt = message.Value.StoredAt
+                                });
+                            }
+
+                           await tx.CommitAsync();
+                        }
+                    }
                 }
+            }
+        }
+
+        internal class RegisterStores : FeatureStartupTask
+        {
+            public RegisterStores(IReliableStateManager stateManager)
+            {
+                this.stateManager = stateManager;
+            }
+
+            protected override Task OnStart(IMessageSession session)
+            {
+                return stateManager.RegisterDictionaries();
+            }
+
+            protected override Task OnStop(IMessageSession session)
+            {
                 return TaskEx.CompletedTask;
             }
 
-            void PerformCleanup(object state)
-            {
-                serviceFabricOutboxStorage.RemoveEntriesOlderThan(DateTime.UtcNow - timeToKeepDeduplicationData);
-            }
-
-            readonly ServiceFabricOutboxStorage serviceFabricOutboxStorage;
-            readonly TimeSpan timeToKeepDeduplicationData;
-
-// ReSharper disable once NotAccessedField.Local
-            Timer cleanupTimer;
+            IReliableStateManager stateManager;
         }
     }
 }

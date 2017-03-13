@@ -137,3 +137,39 @@ Let's assume a new test library called NServiceBus.Persistence.ServiceFabric.Com
 ```
 
 - Run tests by executing the `ComponentTest.cs`
+
+#### Environment variables
+
+It is possible to promote environment variables automatically. The ServiceManifest needs to declare the environment variable.
+```
+...
+  <CodePackage Name="Code" Version="1.0.0">
+...
+    <EnvironmentVariables>
+      <EnvironmentVariable Name="MyEnvironmentVariable" Value=""/>
+    </EnvironmentVariables>
+  </CodePackage>
+```
+
+In the application manifest a parameter for the environment variable needs to be defined (Convention: `Tests_{VariableName}`)
+
+```
+<ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="AcceptanceTestsType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
+  <Parameters>
+...
+    <Parameter Name="Tests_MyEnvironmentVariable" DefaultValue="" />
+  </Parameters>
+  ...
+</ApplicationManifest>  
+```
+
+In the test define the name of the actual environment variable.
+
+```
+    public class ComponentTests : R<Tests>
+    {
+        public static string[] EnvironmentVariables { get; set; } = { "MyEnvironmentVariable" };
+    }
+```
+
+The deployment test will automatically read the value and promote when deploying. 

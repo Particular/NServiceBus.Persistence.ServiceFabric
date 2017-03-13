@@ -30,7 +30,7 @@
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
-            const string messageId = "myId";
+            var messageId = Guid.NewGuid().ToString();
 
             var messageToStore = new OutboxMessage(messageId, new[] { new TransportOperation("x", null, null, null) });
             using (var transaction = await storage.BeginTransaction(ctx))
@@ -53,7 +53,7 @@
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
-            const string messageId = "myId";
+            var messageId = Guid.NewGuid().ToString();
 
             var messageToStore = new OutboxMessage(messageId, new[] { new TransportOperation("x", null, null, null) });
 
@@ -75,8 +75,8 @@
         {
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
-            
-            const string messageId = "myId";
+
+            var messageId = Guid.NewGuid().ToString();
 
             var beforeStore = DateTime.UtcNow;
 
@@ -110,7 +110,7 @@
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
-            const string messageId = "myId";
+            var messageId = Guid.NewGuid().ToString();
 
             using (var transaction = await storage.BeginTransaction(ctx))
             {
@@ -130,7 +130,7 @@
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
-            const string messageId = "myId";
+            var messageId = Guid.NewGuid().ToString();
 
             using (var transaction = await storage.BeginTransaction(ctx))
             {

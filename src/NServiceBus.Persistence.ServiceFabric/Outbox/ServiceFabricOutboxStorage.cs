@@ -54,7 +54,7 @@
                 if (conditionalValue.HasValue)
                 {
                     var dispatched = conditionalValue.Value.CloneAndMarkAsDispatched();
-                    await storage.AddAsync(tx, messageId, dispatched);
+                    await storage.SetAsync(tx, messageId, dispatched);
 
                     var cleanup = await reliableStateManager.OutboxCleanup(tx).ConfigureAwait(false);
                     await cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand()

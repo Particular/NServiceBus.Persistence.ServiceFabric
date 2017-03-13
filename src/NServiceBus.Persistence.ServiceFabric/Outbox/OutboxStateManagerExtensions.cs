@@ -6,7 +6,7 @@ namespace NServiceBus.Persistence.ServiceFabric.Outbox
 
     static class OutboxStateManagerExtensions
     {
-        public static async Task RegisterStores(this IReliableStateManager stateManager)
+        public static async Task RegisterOutboxStorage(this IReliableStateManager stateManager)
         {
             using (var tx = stateManager.CreateTransaction())
             {

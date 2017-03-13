@@ -23,15 +23,16 @@
         }
 
         [DataMember(Name = "Id", Order = 0)]
-        public string Id { get; }
+        public string Id { get; set; }
 
         [DataMember(Name = "Dispatched", Order = 1)]
-        public bool Dispatched { get; }
+        public bool Dispatched { get; set; }
 
         [DataMember(Name = "StoredAt", Order = 2)]
-        public DateTimeOffset StoredAt { get; }
+        public DateTimeOffset StoredAt { get; set; }
 
-        public StoredTransportOperation[] TransportOperations { get; }
+        [DataMember(Name = "TransportOperations", Order = 3)]
+        public StoredTransportOperation[] TransportOperations { get; set; }
 
         public StoredOutboxMessage CloneAndMarkAsDispatched()
         {
@@ -73,16 +74,16 @@
     class StoredTransportOperation
     {
         [DataMember(Name = "MessageId", Order = 0)]
-        public string MessageId { get; private set; }
+        public string MessageId { get; set; }
 
         [DataMember(Name = "Options", Order = 1)]
-        public Dictionary<string, string> Options { get; private set; }
+        public Dictionary<string, string> Options { get; set; }
 
         [DataMember(Name = "Body", Order = 2)]
-        public byte[] Body { get; private set; }
+        public byte[] Body { get; set; }
 
         [DataMember(Name = "Headers", Order = 3)]
-        public Dictionary<string, string> Headers { get; private set; }
+        public Dictionary<string, string> Headers { get; set; }
           
         public StoredTransportOperation(string messageId, Dictionary<string, string> options, byte[] body, Dictionary<string, string> headers)
         {

@@ -7,7 +7,7 @@
 
     static class SagaStateManagerExtensions
     {
-        public static async Task RegisterDictionaries(this IReliableStateManager stateManager)
+        public static async Task RegisterSagaStorage(this IReliableStateManager stateManager)
         {
             using (var tx = stateManager.CreateTransaction())
             {

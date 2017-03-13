@@ -46,7 +46,9 @@
 
         public async Task Configure()
         {
-            await stateManager.RegisterDictionaries().ConfigureAwait(false);
+            await stateManager.RegisterSagaStorage().ConfigureAwait(false);
+            await stateManager.RegisterOutboxStorage().ConfigureAwait(false);
+
             using (var transaction = stateManager.CreateTransaction())
             {
                 var sagas = await stateManager.Sagas(transaction).ConfigureAwait(false);

@@ -66,10 +66,10 @@
             }
 
             var winningContext = configuration.GetContextBagForSagaStorage();
-            var losingContext = configuration.GetContextBagForSagaStorage();
             var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
+            var losingContext = configuration.GetContextBagForSagaStorage();
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-            var returnedSaga1 = await Task.Run(() => persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext));
+            var returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
             var returnedSaga2 = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
 
             await persister.Update(returnedSaga1, winningSaveSession, winningContext);
@@ -173,10 +173,9 @@
                 await insertSession.CompleteAsync();
             }
 
-
             var winningContext = configuration.GetContextBagForSagaStorage();
             var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
-            var returnedSaga1 = await Task.Run(() => persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext));
+            var returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
 
             var losingContext = configuration.GetContextBagForSagaStorage();
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
@@ -195,7 +194,7 @@
 
             losingContext = configuration.GetContextBagForSagaStorage();
             losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-            var returnedSaga3 = await Task.Run(() => persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext));
+            var returnedSaga3 = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
 
             winningContext = configuration.GetContextBagForSagaStorage();
             winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);

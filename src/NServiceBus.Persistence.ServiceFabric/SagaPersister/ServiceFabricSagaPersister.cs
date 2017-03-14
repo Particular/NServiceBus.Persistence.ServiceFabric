@@ -4,7 +4,6 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Extensibility;
-    using Microsoft.ServiceFabric.Data.Collections;
     using Newtonsoft.Json;
     using Sagas;
 
@@ -42,7 +41,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             var tx = storageSession.Transaction;
 
             var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
-            var conditionalValue = await sagasDictionary.TryGetValueAsync(tx, sagaId, LockMode.Update).ConfigureAwait(false);
+            var conditionalValue = await sagasDictionary.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
                 SetEntry(context, sagaId, conditionalValue.Value);
@@ -65,7 +64,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 Type = propertyValue.GetType().FullName
             };
             var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
-            var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key, LockMode.Update).ConfigureAwait(false);
+            var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
                 return await Get<TSagaData>(conditionalValue.Value, session, context).ConfigureAwait(false);

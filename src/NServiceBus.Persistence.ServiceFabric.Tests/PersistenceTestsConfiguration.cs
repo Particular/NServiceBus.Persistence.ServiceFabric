@@ -24,6 +24,7 @@
             stateManager = statefulService.StateManager;
 
             SynchronizedStorage = new SynchronizedStorage(stateManager);
+            SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
             SagaStorage = new ServiceFabricSagaPersister();
             OutboxStorage = new ServiceFabricOutboxStorage(statefulService.StateManager);
 
@@ -35,9 +36,11 @@
         }
 
         IReliableStateManager stateManager;
-
+        
+        public bool SupportsDtc { get; } = false;
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }
+        public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; }
         public ISubscriptionStorage SubscriptionStorage { get; }
         public IPersistTimeouts TimeoutStorage { get; }
         public IQueryTimeouts TimeoutQuery { get; }

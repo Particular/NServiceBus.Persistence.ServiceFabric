@@ -14,16 +14,17 @@
             var sagaData = new SagaWithComplexTypeEntity
             {
                 Id = Guid.NewGuid(),
-                Ints = new List<int> { 1, 2 }
+                Ints = new List<int> { 1, 2 },
+                CorrelationProperty = "whatever"
             };
 
             var persister = configuration.SagaStorage;
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                SetActiveSagaInstance(savingContextBag, new SagaWithComplexType(), sagaData);
+                var correlationProperty = SetActiveSagaInstance(savingContextBag, new SagaWithComplexType(), sagaData);
 
-                await persister.Save(sagaData, null, session, savingContextBag);
+                await persister.Save(sagaData, correlationProperty, session, savingContextBag);
                 await session.CompleteAsync();
             }
 

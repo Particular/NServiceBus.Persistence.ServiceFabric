@@ -147,11 +147,8 @@
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
 
             await persister.Update(returnedSaga1, winningSaveSession, readContextBag);
-            await persister.Update(returnedSaga1, losingSaveSession, readContextBag);
-
             await winningSaveSession.CompleteAsync();
-
-            Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.StartsWith($"InMemorySagaPersister concurrency violation: saga entity Id[{saga.Id}] already saved."));
+            Assert.That(async () => await persister.Update(returnedSaga1, losingSaveSession, readContextBag), Throws.InstanceOf<Exception>().And.Message.EndWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
         }
 
         [Test]

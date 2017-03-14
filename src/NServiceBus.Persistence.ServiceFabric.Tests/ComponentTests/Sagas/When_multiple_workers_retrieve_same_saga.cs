@@ -72,13 +72,10 @@
             var returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
             var returnedSaga2 = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
 
+            returnedSaga1.DateTimeProperty = DateTime.Now;
             await persister.Update(returnedSaga1, winningSaveSession, winningContext);
-            await persister.Update(returnedSaga2, losingSaveSession, losingContext);
-
             await winningSaveSession.CompleteAsync();
-            winningSaveSession.Dispose();
-
-            Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
+            Assert.That(async () => await persister.Update(returnedSaga2, losingSaveSession, losingContext), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
         }
 
         [Test]
@@ -106,11 +103,11 @@
             var staleRecord = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
 
             await persister.Update(record, winningSaveSession, winningContext);
-            await persister.Update(staleRecord, losingSaveSession, losingContext);
+//            await persister.Update(staleRecord, losingSaveSession, losingContext);
 
             await winningSaveSession.CompleteAsync();
 
-            Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
+            Assert.That(async () => await persister.Update(staleRecord, losingSaveSession, losingContext), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
         }
 
         [Test]

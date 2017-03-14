@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentTests\OutboxStorageTests.cs" />
+    <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_unique_properties.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_the_same_unique_property_as_another_saga.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_the_same_unique_property_as_a_completed_saga.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_no_defined_unique_property.cs" />
@@ -103,7 +104,7 @@
     <Compile Include="ComponentTests\Sagas\When_multiple_workers_retrieve_same_saga.cs" />
     <Compile Include="ComponentTests\SubscriptionStorageTests.cs" />
     <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
-    <Compile Include="ComponentTests\Sagas\AnotherSagaWithUniquePropertyData.cs" />
+    <Compile Include="ComponentTests\Sagas\AnotherSagaWithCorrelatedPropertyData.cs" />
     <Compile Include="ComponentTests\Sagas\SagaMetadataHelper.cs" />
     <Compile Include="ComponentTests\Sagas\SagaPersisterTests.cs" />
     <Compile Include="ComponentTests\Sagas\SagaWithoutCorrelationPropertyData.cs" />

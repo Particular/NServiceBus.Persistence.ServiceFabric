@@ -135,7 +135,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
             if (!await sagasDictionary.TryUpdateAsync(tx, sagaData.Id, newEntry, loadedEntry).ConfigureAwait(false))
             {
-                throw new Exception($"InMemorySagaPersister concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
+                throw new Exception($"{nameof(ServiceFabricSagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
             }
         }
 

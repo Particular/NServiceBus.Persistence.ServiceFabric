@@ -67,7 +67,7 @@
             {
                 while (!token.IsCancellationRequested)
                 {
-                    await _storage.CleanupMessagesOlderThan(DateTimeOffset.UtcNow - _timeToKeepDeduplicationData);
+                    await _storage.CleanupMessagesOlderThan(DateTimeOffset.UtcNow - _timeToKeepDeduplicationData).ConfigureAwait(false);
                 }
             }
 

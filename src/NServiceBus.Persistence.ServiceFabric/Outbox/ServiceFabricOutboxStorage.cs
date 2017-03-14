@@ -54,17 +54,17 @@
                 if (conditionalValue.HasValue)
                 {
                     var dispatched = conditionalValue.Value.CloneAndMarkAsDispatched();
-                    await storage.SetAsync(tx, messageId, dispatched);
+                    await storage.SetAsync(tx, messageId, dispatched).ConfigureAwait(false);
 
                     var cleanup = await reliableStateManager.OutboxCleanup(tx).ConfigureAwait(false);
                     await cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand()
                     {
                         MessageId = messageId,
                         StoredAt = conditionalValue.Value.StoredAt
-                    });
+                    }).ConfigureAwait(false);
 
                 }
-                await tx.CommitAsync();
+                await tx.CommitAsync().ConfigureAwait(false);
             }
         }
 
@@ -72,14 +72,14 @@
         {
             using (var tx = reliableStateManager.CreateTransaction())
             {
-                var queue = await reliableStateManager.OutboxCleanup(tx);
-                var message = await queue.TryDequeueAsync(tx);
+                var queue = await reliableStateManager.OutboxCleanup(tx).ConfigureAwait(false);
+                var message = await queue.TryDequeueAsync(tx).ConfigureAwait(false);
                 if (message.HasValue)
                 {
                     if (message.Value.StoredAt <= date)
                     {
                         var storage = await reliableStateManager.Outbox(tx);
-                        await storage.TryRemoveAsync(tx, message.Value.MessageId);
+                        await storage.TryRemoveAsync(tx, message.Value.MessageId).ConfigureAwait(false);
                     }
                     else 
                     {
@@ -87,10 +87,10 @@
                         {
                             MessageId = message.Value.MessageId,
                             StoredAt = message.Value.StoredAt
-                        });
+                        }).ConfigureAwait(false);
                     }
 
-                    await tx.CommitAsync();
+                    await tx.CommitAsync().ConfigureAwait(false);
                 }
             }
         }

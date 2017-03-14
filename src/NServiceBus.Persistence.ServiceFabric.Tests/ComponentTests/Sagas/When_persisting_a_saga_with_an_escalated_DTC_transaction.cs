@@ -23,6 +23,8 @@ namespace NServiceBus.Persistence.ComponentTests
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
+                SetActiveSagaInstance(savingContextBag, new TestSaga(), saga);
+
                 await persister.Save(saga, null, session, savingContextBag);
                 await session.CompleteAsync();
             }
@@ -44,7 +46,10 @@ namespace NServiceBus.Persistence.ComponentTests
                     var enlistedSession = await storageAdapter.TryAdapt(transportTransaction, enlistedContextBag);
 
                     var unenlistedRecord = await persister.Get<TestSagaData>(saga.Id, unenlistedSession, unenlistedContextBag);
+                    SetActiveSagaInstance(unenlistedContextBag, new TestSaga(), unenlistedRecord);
+
                     var enlistedRecord = await persister.Get<TestSagaData>("Id", saga.Id, enlistedSession, enlistedContextBag);
+                    SetActiveSagaInstance(enlistedContextBag, new TestSaga(), enlistedRecord);
 
                     await persister.Update(unenlistedRecord, unenlistedSession, unenlistedContextBag);
                     await persister.Update(enlistedRecord, enlistedSession, enlistedContextBag);

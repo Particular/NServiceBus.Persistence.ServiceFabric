@@ -93,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentTests\OutboxStorageTests.cs" />
+    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_no_defined_unique_property.cs" />
+    <Compile Include="ComponentTests\Sagas\SagaWithComplexType.cs" />
+    <Compile Include="ComponentTests\Sagas\SagaWithComplexTypeEntity.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_an_escalated_DTC_transaction.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_complex_types.cs" />
     <Compile Include="ComponentTests\Sagas\When_multiple_workers_retrieve_same_saga.cs" />

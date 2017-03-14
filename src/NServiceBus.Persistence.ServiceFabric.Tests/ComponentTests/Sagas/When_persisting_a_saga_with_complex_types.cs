@@ -11,7 +11,7 @@
         [Test]
         public async Task It_should_get_deep_copy()
         {
-            var sagaData = new SagaWithComplexType
+            var sagaData = new SagaWithComplexTypeEntity
             {
                 Id = Guid.NewGuid(),
                 Ints = new List<int> { 1, 2 }
@@ -21,6 +21,8 @@
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
+                SetActiveSagaInstance(savingContextBag, new SagaWithComplexType(), sagaData);
+
                 await persister.Save(sagaData, null, session, savingContextBag);
                 await session.CompleteAsync();
             }
@@ -28,16 +30,12 @@
             var readingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var retrieved = await persister.Get<SagaWithComplexType>(sagaData.Id, session, readingContextBag);
+                var retrieved = await persister.Get<SagaWithComplexTypeEntity>(sagaData.Id, session, readingContextBag);
+                SetActiveSagaInstance(readingContextBag, new SagaWithComplexType(), retrieved);
 
                 CollectionAssert.AreEqual(sagaData.Ints, retrieved.Ints);
                 Assert.False(ReferenceEquals(sagaData.Ints, retrieved.Ints));
             }
-        }
-
-        class SagaWithComplexType : ContainSagaData
-        {
-            public List<int> Ints { get; set; }
         }
     }
 }

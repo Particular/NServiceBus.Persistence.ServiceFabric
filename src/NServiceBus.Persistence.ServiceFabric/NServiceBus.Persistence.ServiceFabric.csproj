@@ -84,6 +84,9 @@
     <Compile Include="Config\ServiceFabricPersistenceConfig.cs" />
     <Compile Include="Gateway\ServiceFabricGatewayDeduplication.cs" />
     <Compile Include="Gateway\ServiceFabricGatewayPersistence.cs" />
+    <Compile Include="Outbox\CleanupStoredOutboxCommand.cs" />
+    <Compile Include="Outbox\OutboxStateManagerExtensions.cs" />
+    <Compile Include="Outbox\StoredOutboxMessage.cs" />
     <Compile Include="SagaPersister\CorrelationPropertyEntry.cs" />
     <Compile Include="SagaPersister\SagaEntry.cs" />
     <Compile Include="SagaPersister\SagaEntryExtensions.cs" />

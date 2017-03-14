@@ -18,8 +18,6 @@
 
     public partial class PersistenceTestsConfiguration
     {
-        IReliableStateManager stateManager;
-
         public PersistenceTestsConfiguration()
         {
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
@@ -36,6 +34,8 @@
             SubscriptionStorage = new ServiceFabricSubscriptionStorage();
         }
 
+        IReliableStateManager stateManager;
+
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }
         public ISubscriptionStorage SubscriptionStorage { get; }
@@ -46,7 +46,9 @@
 
         public async Task Configure()
         {
-            await stateManager.RegisterDictionaries().ConfigureAwait(false);
+            await stateManager.RegisterSagaStorage().ConfigureAwait(false);
+            await stateManager.RegisterOutboxStorage().ConfigureAwait(false);
+
             using (var transaction = stateManager.CreateTransaction())
             {
                 var sagas = await stateManager.Sagas(transaction).ConfigureAwait(false);

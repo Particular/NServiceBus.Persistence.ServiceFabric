@@ -3,7 +3,7 @@
   <Parameters>
     <Parameter Name="Tests_MinReplicaSetSize" DefaultValue="1" />
     <Parameter Name="Tests_PartitionCount" DefaultValue="1" />
-    <Parameter Name="Tests_TargetReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="Tests_TargetReplicaSetSize" DefaultValue="1" />
     <Parameter Name="Tests_AzureServiceBus.ConnectionString" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>

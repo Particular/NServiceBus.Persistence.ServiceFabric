@@ -4,19 +4,17 @@
     using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
 
-   // [SkipWeaving]
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {
-        // ReSharper disable once EmptyConstructor
+        internal IReliableStateManager StateManager { get; set; }
+        internal ITransaction Transaction { get; set; }
+
         public ServiceFabricOutboxTransaction(IReliableStateManager stateManager)
         {
             StateManager = stateManager;
             Transaction = stateManager.CreateTransaction();
         }
 
-        internal IReliableStateManager StateManager { get; set; }
-        internal ITransaction Transaction { get; set; }
-        
         public void Dispose()
         {
            Transaction.Dispose();

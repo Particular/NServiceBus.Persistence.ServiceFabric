@@ -34,7 +34,7 @@
 
             protected override Task OnStart(IMessageSession session)
             {
-                return stateManager.RegisterDictionaries();
+                return stateManager.RegisterSagaStorage();
             }
 
             protected override Task OnStop(IMessageSession session)

@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentTests\OutboxStorageTests.cs" />
+    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_the_same_unique_property_as_another_saga.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_the_same_unique_property_as_a_completed_saga.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_no_defined_unique_property.cs" />
     <Compile Include="ComponentTests\Sagas\SagaWithComplexType.cs" />

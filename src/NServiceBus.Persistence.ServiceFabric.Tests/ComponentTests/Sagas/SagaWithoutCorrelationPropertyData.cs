@@ -2,6 +2,8 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Extensibility;
+    using Sagas;
 
     class SagaWithoutCorrelationProperty : Saga<SagaWithoutCorrelationPropertyData>, 
         IAmStartedByMessages<SagaWithoutCorrelationPropertyStartingMessage>
@@ -13,7 +15,15 @@
 
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<SagaWithoutCorrelationPropertyData> mapper)
         {
-            mapper.ConfigureMapping<SagaWithoutCorrelationPropertyStartingMessage>(m => m.CorrelatedProperty).ToSaga(s => s.CorrelatedProperty);
+            // no mapping needed
+        }
+    }
+
+    public class CustomFinder : IFindSagas<SagaWithoutCorrelationPropertyData>.Using<SagaWithoutCorrelationPropertyStartingMessage>
+    {
+        public Task<SagaWithoutCorrelationPropertyData> FindBy(SagaWithoutCorrelationPropertyStartingMessage message, SynchronizedStorageSession storageSession, ReadOnlyContextBag context)
+        {
+            return Task.FromResult(default(SagaWithoutCorrelationPropertyData));
         }
     }
 

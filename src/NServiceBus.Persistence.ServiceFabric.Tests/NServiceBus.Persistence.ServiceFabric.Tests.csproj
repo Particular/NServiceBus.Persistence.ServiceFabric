@@ -105,7 +105,6 @@
     <Compile Include="ComponentTests\SubscriptionStorageTests.cs" />
     <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
     <Compile Include="ComponentTests\Sagas\AnotherSagaWithCorrelatedPropertyData.cs" />
-    <Compile Include="ComponentTests\Sagas\SagaMetadataHelper.cs" />
     <Compile Include="ComponentTests\Sagas\SagaPersisterTests.cs" />
     <Compile Include="ComponentTests\Sagas\SagaWithoutCorrelationPropertyData.cs" />
     <Compile Include="ComponentTests\Sagas\SagaWithCorrelationPropertyData.cs" />

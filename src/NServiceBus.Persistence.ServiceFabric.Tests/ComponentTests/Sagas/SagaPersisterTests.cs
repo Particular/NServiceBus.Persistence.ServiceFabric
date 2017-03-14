@@ -27,10 +27,21 @@
             where TSaga : Saga<TSagaData>
             where TSagaData : IContainSagaData, new()
         {
-            var sagaInstance = new ActiveSagaInstance(saga, SagaMetadata.Create(typeof(TSaga), availableTypes, new Conventions()), () => DateTime.UtcNow);
+            var sagaMetadata = SagaMetadata.Create(typeof(TSaga), availableTypes, new Conventions());
+            var sagaInstance = new ActiveSagaInstance(saga, sagaMetadata, () => DateTime.UtcNow);
             sagaInstance.AttachNewEntity(sagaData);
             savingContextBag.Set(sagaInstance);
-            return SagaMetadataHelper.GetMetadata<TSaga>(sagaData);
+
+            SagaMetadata.CorrelationPropertyMetadata correlatedProp;
+            if (!sagaMetadata.TryGetCorrelationProperty(out correlatedProp))
+            {
+                return SagaCorrelationProperty.None;
+            }
+            var prop = sagaData.GetType().GetProperty(correlatedProp.Name);
+
+            var value = prop.GetValue(sagaData);
+
+            return new SagaCorrelationProperty(correlatedProp.Name, value);
         }
     }
 }

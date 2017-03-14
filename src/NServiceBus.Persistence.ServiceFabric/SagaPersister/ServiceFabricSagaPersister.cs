@@ -4,6 +4,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Extensibility;
+    using Microsoft.ServiceFabric.Data;
     using Newtonsoft.Json;
     using Sagas;
 
@@ -38,9 +39,15 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             where TSagaData : IContainSagaData
         {
             var storageSession = (StorageSession) session;
-            var tx = storageSession.Transaction;
+            using (var tx = storageSession.StateManager.CreateTransaction())
+            {
+                return await InternalGet<TSagaData>(sagaId, context, storageSession.StateManager, tx).ConfigureAwait(false);
+            }
+        }
 
-            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
+        async Task<TSagaData> InternalGet<TSagaData>(Guid sagaId, ContextBag context, IReliableStateManager stateManager, ITransaction tx) where TSagaData : IContainSagaData
+        {
+            var sagasDictionary = await stateManager.Sagas(tx).ConfigureAwait(false);
             var conditionalValue = await sagasDictionary.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
@@ -53,8 +60,6 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
         public async Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
         {
             var storageSession = (StorageSession) session;
-            var tx = storageSession.Transaction;
-
             var serializedPropertyValue = JsonConvert.SerializeObject(propertyValue);
             var key = new CorrelationPropertyEntry
             {
@@ -63,11 +68,15 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 Value = serializedPropertyValue,
                 Type = propertyValue.GetType().FullName
             };
-            var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
-            var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key).ConfigureAwait(false);
-            if (conditionalValue.HasValue)
+
+            using (var tx = storageSession.StateManager.CreateTransaction())
             {
-                return await Get<TSagaData>(conditionalValue.Value, session, context).ConfigureAwait(false);
+                var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
+                var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key).ConfigureAwait(false);
+                if (conditionalValue.HasValue)
+                {
+                    return await InternalGet<TSagaData>(conditionalValue.Value, context, storageSession.StateManager, tx).ConfigureAwait(false);
+                }
             }
             return default(TSagaData);
         }

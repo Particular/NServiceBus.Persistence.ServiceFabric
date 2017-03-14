@@ -27,7 +27,7 @@
             SagaStorage = new ServiceFabricSagaPersister();
             OutboxStorage = new ServiceFabricOutboxStorage(statefulService.StateManager);
 
-            var timeouts = new ServiceFabricTimeoutPersister(()=>DateTime.Now);
+            var timeouts = new ServiceFabricTimeoutPersister(()=>DateTime.UtcNow);
             TimeoutStorage = timeouts;
             TimeoutQuery = timeouts;
 

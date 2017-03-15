@@ -14,12 +14,12 @@ namespace NServiceBus.Persistence.ComponentTests
             var saga1 = new SagaWithoutCorrelationPropertyData
             {
                 Id = saga1Id,
-                CorrelatedProperty = saga1Id.ToString()
+                FoundByFinderProperty = saga1Id.ToString()
             };
             var saga2 = new AnotherSagaWithoutCorrelationPropertyData
             {
                 Id = Guid.NewGuid(),
-                CorrelatedProperty = saga1Id.ToString()
+                FoundByFinderProperty = saga1Id.ToString()
             };
 
             var persister = configuration.SagaStorage;
@@ -33,6 +33,16 @@ namespace NServiceBus.Persistence.ComponentTests
                 await persister.Save(saga2, correlationPropertySaga2, session, savingContextBag);
 
                 await session.CompleteAsync();
+            }
+
+            var readContextBag = configuration.GetContextBagForSagaStorage();
+            using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
+            {
+                var saga1Result = await persister.Get<SagaWithoutCorrelationPropertyData>(saga1.Id, readSession, readContextBag);
+                var saga2Result = await persister.Get<AnotherSagaWithoutCorrelationPropertyData>(saga2.Id, readSession, readContextBag);
+
+                Assert.AreEqual(saga1.FoundByFinderProperty, saga1Result.FoundByFinderProperty);
+                Assert.AreEqual(saga2.FoundByFinderProperty, saga2Result.FoundByFinderProperty);
             }
         }
     }

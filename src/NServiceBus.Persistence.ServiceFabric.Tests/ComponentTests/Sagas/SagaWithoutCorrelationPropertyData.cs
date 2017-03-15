@@ -29,11 +29,11 @@
 
     public class SagaWithoutCorrelationPropertyData : ContainSagaData
     {
-        public string CorrelatedProperty { get; set; }
+        public string FoundByFinderProperty { get; set; }
     }
 
     public class SagaWithoutCorrelationPropertyStartingMessage : IMessage
     {
-        public string CorrelatedProperty { get; set; }
+        public string FoundByFinderProperty { get; set; }
     }
 }

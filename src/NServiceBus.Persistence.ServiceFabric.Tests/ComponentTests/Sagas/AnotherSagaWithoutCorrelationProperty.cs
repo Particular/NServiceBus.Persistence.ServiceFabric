@@ -29,11 +29,11 @@ namespace NServiceBus.Persistence.ComponentTests
 
     public class AnotherSagaWithoutCorrelationPropertyData : ContainSagaData
     {
-        public string CorrelatedProperty { get; set; }
+        public string FoundByFinderProperty { get; set; }
     }
 
     public class AnotherSagaWithoutCorrelationPropertyStartingMessage : IMessage
     {
-        public string CorrelatedProperty { get; set; }
+        public string FoundByFinderProperty { get; set; }
     }
 }

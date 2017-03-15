@@ -14,12 +14,12 @@
 //            var saga1 = new SagaWithCorrelationPropertyData()
 //            {
 //                Id = Guid.NewGuid(),
-//                CorrelatedProperty = "whatever1"
+//                FoundByFinderProperty = "whatever1"
 //            };
 //            var saga2 = new SagaWithCorrelationPropertyData
 //            {
 //                Id = Guid.NewGuid(),
-//                CorrelatedProperty = "whatever"
+//                FoundByFinderProperty = "whatever"
 //            };
 //
 //            var persister = configuration.SagaStorage;

@@ -21,7 +21,7 @@
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var savingSession = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var sagaData = new SagaWithoutCorrelationPropertyData { Id = sagaId, CorrelatedProperty = sagaId.ToString() };
+                var sagaData = new SagaWithoutCorrelationPropertyData { Id = sagaId, FoundByFinderProperty = sagaId.ToString() };
                 var correlationPropertyNone = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), sagaData, typeof(CustomFinder));
 
                 await persister.Save(sagaData, correlationPropertyNone, savingSession, savingContextBag);
@@ -41,7 +41,7 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { CorrelatedProperty = sagaId.ToString() }, typeof(CustomFinder));
+                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { FoundByFinderProperty = sagaId.ToString() }, typeof(CustomFinder));
 
                 var result = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaId, readSession, readContextBag);
                 Assert.That(result, Is.Null);

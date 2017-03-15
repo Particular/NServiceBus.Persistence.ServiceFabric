@@ -14,7 +14,7 @@
             var sagaData = new SagaWithoutCorrelationPropertyData
             {
                 Id = sagaId,
-                CorrelatedProperty = sagaId.ToString()
+                FoundByFinderProperty = sagaId.ToString()
             };
 
             var persister = configuration.SagaStorage;
@@ -30,10 +30,10 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { CorrelatedProperty = sagaId.ToString() }, typeof(CustomFinder));
+                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { FoundByFinderProperty = sagaId.ToString() }, typeof(CustomFinder));
 
                 var result = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, readSession, readContextBag);
-                Assert.AreEqual(sagaData.CorrelatedProperty, result.CorrelatedProperty);
+                Assert.AreEqual(sagaData.FoundByFinderProperty, result.FoundByFinderProperty);
             }
         }
     }

@@ -22,17 +22,17 @@
             };
 
             var persister = configuration.SagaStorage;
+
             var winningContextBag = configuration.GetContextBagForSagaStorage();
             var winningSession = await configuration.SynchronizedStorage.OpenSession(winningContextBag);
-            var losingContextBag = configuration.GetContextBagForSagaStorage();
-            var losingSession = await configuration.SynchronizedStorage.OpenSession(losingContextBag);
-
             var correlationPropertySaga1 = SetActiveSagaInstance(winningContextBag, new SagaWithCorrelationProperty(), saga1);
             await persister.Save(saga1, correlationPropertySaga1, winningSession, winningContextBag);
+            await winningSession.CompleteAsync();
+
+            var losingContextBag = configuration.GetContextBagForSagaStorage();
+            var losingSession = await configuration.SynchronizedStorage.OpenSession(losingContextBag);
             var correlationPropertySaga2 = SetActiveSagaInstance(losingContextBag, new SagaWithCorrelationProperty(), saga2);
             await persister.Save(saga2, correlationPropertySaga2, losingSession, losingContextBag);
-
-            await winningSession.CompleteAsync();
 
             Assert.That(async () => await losingSession.CompleteAsync(), Throws.InstanceOf<InvalidOperationException>());
         }

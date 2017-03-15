@@ -10,15 +10,16 @@
         [Test]
         public async Task It_should_persist_successfully()
         {
+            var saga1Id = Guid.NewGuid();
             var saga1 = new SagaWithCorrelationPropertyData
             {
-                Id = Guid.NewGuid(),
-                CorrelatedProperty = "whatever"
+                Id = saga1Id,
+                CorrelatedProperty = saga1Id.ToString()
             };
             var saga2 = new AnotherSagaWithCorrelatedPropertyData
             {
                 Id = Guid.NewGuid(),
-                CorrelatedProperty = "whatever"
+                CorrelatedProperty = saga1Id.ToString()
             };
 
             var persister = configuration.SagaStorage;

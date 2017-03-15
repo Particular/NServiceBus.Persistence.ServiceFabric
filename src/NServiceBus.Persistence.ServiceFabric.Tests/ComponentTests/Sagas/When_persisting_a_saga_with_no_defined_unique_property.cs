@@ -10,10 +10,11 @@
         [Test]
         public async Task It_should_persist_successfully()
         {
+            var sagaId = Guid.NewGuid();
             var sagaData = new SagaWithoutCorrelationPropertyData
             {
-                Id = Guid.NewGuid(),
-                CorrelatedProperty = "whatever"
+                Id = sagaId,
+                CorrelatedProperty = sagaId.ToString()
             };
 
             var persister = configuration.SagaStorage;
@@ -29,7 +30,7 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { CorrelatedProperty = "whatever" }, typeof(CustomFinder));
+                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { CorrelatedProperty = sagaId.ToString() }, typeof(CustomFinder));
 
                 var result = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, readSession, readContextBag);
                 Assert.AreEqual(sagaData.CorrelatedProperty, result.CorrelatedProperty);

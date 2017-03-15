@@ -10,11 +10,11 @@
         [Test]
         public async Task It_should_successfully_update_the_saga()
         {
-            var id = Guid.NewGuid();
+            var sagaId = Guid.NewGuid();
             var sagaData = new SagaWithoutCorrelationPropertyData
             {
-                Id = id,
-                CorrelatedProperty = "whatever"
+                Id = sagaId,
+                CorrelatedProperty = sagaId.ToString()
             };
 
             var persister = configuration.SagaStorage;
@@ -29,11 +29,12 @@
             }
 
             // second session
+            var updateValue = Guid.NewGuid().ToString();
             savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var saga = await persister.Get<SagaWithoutCorrelationPropertyData>(id, session, savingContextBag);
-                saga.CorrelatedProperty = "asdfasdf";
+                var saga = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaId, session, savingContextBag);
+                saga.CorrelatedProperty = updateValue;
                 SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga, typeof(CustomFinder));
 
                 await persister.Update(saga, session, savingContextBag);
@@ -48,7 +49,7 @@
             }
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.CorrelatedProperty, Is.EqualTo("asdfasdf"));
+            Assert.That(result.CorrelatedProperty, Is.EqualTo(updateValue));
         }
     }
 }

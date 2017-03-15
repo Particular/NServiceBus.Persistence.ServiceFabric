@@ -17,7 +17,7 @@
             var insertContextBag = configuration.GetContextBagForSagaStorage();
             using (var savingSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                var saga = new SagaWithCorrelationPropertyData { Id = sagaId, CorrelatedProperty = "whatever" };
+                var saga = new SagaWithCorrelationPropertyData { Id = sagaId, CorrelatedProperty = sagaId.ToString() };
                 var correlationProperty = SetActiveSagaInstance(insertContextBag, new SagaWithCorrelationProperty(), saga);
 
                 await persister.Save(saga, correlationProperty, savingSession, insertContextBag);
@@ -28,7 +28,7 @@
             SagaWithCorrelationPropertyData sagaData;
             using (var completeSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                sagaData = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), "whatever", completeSession, intentionallySharedContext);
+                sagaData = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), sagaId.ToString(), completeSession, intentionallySharedContext);
                 SetActiveSagaInstance(intentionallySharedContext, new SagaWithCorrelationProperty(), sagaData);
 
                 await persister.Complete(sagaData, completeSession, intentionallySharedContext );
@@ -39,9 +39,9 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithCorrelationProperty(), new SagaWithCorrelationPropertyData { CorrelatedProperty = "whatever" });
+                SetActiveSagaInstance(readContextBag, new SagaWithCorrelationProperty(), new SagaWithCorrelationPropertyData { CorrelatedProperty = sagaId.ToString() });
 
-                completedSaga = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), "whatever", readSession, readContextBag);
+                completedSaga = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), sagaId.ToString(), readSession, readContextBag);
             }
 
             Assert.NotNull(sagaData);

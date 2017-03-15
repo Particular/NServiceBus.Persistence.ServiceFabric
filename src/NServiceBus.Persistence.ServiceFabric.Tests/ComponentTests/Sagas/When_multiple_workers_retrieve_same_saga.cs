@@ -10,7 +10,8 @@
         [Test]
         public async Task Persister_returns_different_instance_of_saga_data()
         {
-            var saga = new TestSagaData { Id = Guid.NewGuid() };
+            var sagaId = Guid.NewGuid();
+            var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();

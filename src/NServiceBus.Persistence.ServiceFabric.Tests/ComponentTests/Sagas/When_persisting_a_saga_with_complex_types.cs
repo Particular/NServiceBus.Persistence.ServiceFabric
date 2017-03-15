@@ -11,11 +11,12 @@
         [Test]
         public async Task It_should_get_deep_copy()
         {
+            var sagaId = Guid.NewGuid();
             var sagaData = new SagaWithComplexTypeEntity
             {
-                Id = Guid.NewGuid(),
+                Id = sagaId,
                 Ints = new List<int> { 1, 2 },
-                CorrelationProperty = "whatever"
+                CorrelationProperty = sagaId.ToString()
             };
 
             var persister = configuration.SagaStorage;

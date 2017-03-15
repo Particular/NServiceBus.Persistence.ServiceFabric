@@ -14,10 +14,8 @@ namespace NServiceBus.Persistence.ComponentTests
         {
             configuration.RequiresDtcSupport();
 
-            var saga = new TestSagaData
-            {
-                Id = Guid.NewGuid()
-            };
+            var sagaId = Guid.NewGuid();
+            var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
 
             var persister = configuration.SagaStorage;
             var savingContextBag = configuration.GetContextBagForSagaStorage();

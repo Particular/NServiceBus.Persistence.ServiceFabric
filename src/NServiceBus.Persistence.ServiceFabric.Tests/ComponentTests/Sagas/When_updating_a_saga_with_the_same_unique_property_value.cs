@@ -5,7 +5,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    class When_updating_a_saga_with_the_same_unique_property_value : SagaPersisterTests
+    public class When_updating_a_saga_with_the_same_unique_property_value : SagaPersisterTests
     {
         [Test]
         public async Task It_should_persist_successfully()

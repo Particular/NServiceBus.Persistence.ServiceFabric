@@ -5,7 +5,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    class When_saga_not_found_return_default : SagaPersisterTests
+    public class When_saga_not_found_return_default : SagaPersisterTests
     {
         [Test]
         public async Task Should_return_default_when_using_finding_saga_with_property()

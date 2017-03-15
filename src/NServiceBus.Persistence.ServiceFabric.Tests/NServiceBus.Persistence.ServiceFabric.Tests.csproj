@@ -93,7 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentTests\OutboxStorageTests.cs" />
-    <Compile Include="ComponentTests\Sagas\LetsSeeTest.cs" />
     <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_the_same_unique_property_as_another_saga.cs" />
     <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_no_defined_unique_property.cs" />
     <Compile Include="ComponentTests\Sagas\When_saga_not_found_return_default.cs" />
@@ -119,6 +118,7 @@
     <Compile Include="ComponentTests\Sagas\When_completing_a_saga_loaded_by_id.cs" />
     <Compile Include="ComponentTests\Sagas\When_completing_a_saga_with_correlation_property.cs" />
     <Compile Include="ComponentTests\TimeoutStorageTests.cs" />
+    <Compile Include="LetsSeeTest.cs" />
     <Compile Include="PersistenceTestsConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynchronizedStorage\StorageSessionTests.cs" />

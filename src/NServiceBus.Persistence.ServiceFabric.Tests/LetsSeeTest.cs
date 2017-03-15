@@ -1,4 +1,4 @@
-﻿namespace NServiceBus.Persistence.ComponentTests
+﻿namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
     using System;
     using System.Threading.Tasks;

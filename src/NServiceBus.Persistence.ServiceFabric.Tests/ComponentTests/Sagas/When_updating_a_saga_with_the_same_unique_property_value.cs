@@ -27,11 +27,11 @@
             }
 
             var updatingContext = configuration.GetContextBagForSagaStorage();
-            using (var updateSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
+            using (var updateSession = await configuration.SynchronizedStorage.OpenSession(updatingContext))
             {
                 saga1 = await persister.Get<SagaWithCorrelationPropertyData>(saga1.Id, updateSession, updatingContext);
 
-                SetActiveSagaInstance(insertContextBag, new SagaWithCorrelationProperty(), saga1);
+                SetActiveSagaInstance(updatingContext, new SagaWithCorrelationProperty(), saga1);
 
                 await persister.Update(saga1, updateSession, updatingContext);
                 await updateSession.CompleteAsync();

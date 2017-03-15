@@ -5,21 +5,24 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
     using System.Threading.Tasks;
     using Extensibility;
     using Microsoft.ServiceFabric.Data;
+    using Microsoft.ServiceFabric.Data.Collections;
     using Newtonsoft.Json;
     using Sagas;
 
     class ServiceFabricSagaPersister : ISagaPersister
     {
+        public IReliableDictionary<Guid, SagaEntry> Sagas { get; set; }
+
+        public IReliableDictionary<CorrelationPropertyEntry, Guid> Correlations { get; set; }
+
         public async Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
             var storageSession = (StorageSession)session;
             var tx = storageSession.Transaction;
 
-            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
-
             var entry = GetEntry(context, sagaData.Id);
 
-            var conditionalValue = await sagasDictionary.TryRemoveAsync(tx, sagaData.Id).ConfigureAwait(false);
+            var conditionalValue = await Sagas.TryRemoveAsync(tx, sagaData.Id).ConfigureAwait(false);
             if (conditionalValue.HasValue && conditionalValue.Value.Data != entry.Data)
             {
                 throw new Exception("Saga can't be completed as it was updated by another process.");
@@ -29,9 +32,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             // clean the index
             if (Equals(entry.CorrelationProperty, NoCorrelationId) == false)
             {
-                var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
-
-                await byCorrelationId.TryRemoveAsync(tx, entry.CorrelationProperty).ConfigureAwait(false);
+                await Correlations.TryRemoveAsync(tx, entry.CorrelationProperty).ConfigureAwait(false);
             }
         }
 
@@ -47,8 +48,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
         async Task<TSagaData> InternalGet<TSagaData>(Guid sagaId, ContextBag context, IReliableStateManager stateManager, ITransaction tx) where TSagaData : IContainSagaData
         {
-            var sagasDictionary = await stateManager.Sagas(tx).ConfigureAwait(false);
-            var conditionalValue = await sagasDictionary.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
+            var conditionalValue = await Sagas.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
                 SetEntry(context, sagaId, conditionalValue.Value);
@@ -71,8 +71,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
             using (var tx = storageSession.StateManager.CreateTransaction())
             {
-                var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
-                var conditionalValue = await byCorrelationId.TryGetValueAsync(tx, key).ConfigureAwait(false);
+                var conditionalValue = await Correlations.TryGetValueAsync(tx, key).ConfigureAwait(false);
                 if (conditionalValue.HasValue)
                 {
                     return await InternalGet<TSagaData>(conditionalValue.Value, context, storageSession.StateManager, tx).ConfigureAwait(false);
@@ -98,9 +97,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                     Type = correlationProperty.Value.GetType().FullName
                 };
 
-                var byCorrelationId = await storageSession.StateManager.Correlations(tx).ConfigureAwait(false);
-
-                if (!await byCorrelationId.TryAddAsync(tx, correlationId, sagaData.Id).ConfigureAwait(false))
+                if (!await Correlations.TryAddAsync(tx, correlationId, sagaData.Id).ConfigureAwait(false))
                 {
                     throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists");
                 }
@@ -111,8 +108,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 CorrelationProperty = correlationId,
                 Data = sagaData.FromSagaData(),
             };
-            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
-            if (!await sagasDictionary.TryAddAsync(tx, sagaData.Id, entry).ConfigureAwait(false))
+            if (!await Sagas.TryAddAsync(tx, sagaData.Id, entry).ConfigureAwait(false))
             {
                 throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
             }
@@ -123,8 +119,6 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             var storageSession = (StorageSession)session;
             var tx = storageSession.Transaction;
 
-            var sagasDictionary = await storageSession.StateManager.Sagas(tx).ConfigureAwait(false);
-
             var loadedEntry = GetEntry(context, sagaData.Id);
 
             var newEntry = new SagaEntry
@@ -133,7 +127,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
                 Data = sagaData.FromSagaData(),
             };
 
-            if (!await sagasDictionary.TryUpdateAsync(tx, sagaData.Id, newEntry, loadedEntry).ConfigureAwait(false))
+            if (!await Sagas.TryUpdateAsync(tx, sagaData.Id, newEntry, loadedEntry).ConfigureAwait(false))
             {
                 throw new Exception($"{nameof(ServiceFabricSagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
             }

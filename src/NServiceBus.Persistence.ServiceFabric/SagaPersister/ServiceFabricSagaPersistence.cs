@@ -20,21 +20,28 @@
         /// </summary>
         protected override void Setup(FeatureConfigurationContext context)
         {
-            context.RegisterStartupTask(new RegisterDictionaries(context.Settings.StateManager()));
+            var persister = new ServiceFabricSagaPersister();
 
-            context.Container.ConfigureComponent<ServiceFabricSagaPersister>(DependencyLifecycle.SingleInstance);
+            context.RegisterStartupTask(b => new RegisterDictionaries(context.Settings.StateManager(), persister));
+
+            context.Container.RegisterSingleton(persister);
         }
 
         internal class RegisterDictionaries : FeatureStartupTask
         {
-            public RegisterDictionaries(IReliableStateManager stateManager)
+            public RegisterDictionaries(IReliableStateManager stateManager, ServiceFabricSagaPersister persister)
             {
+                this.persister = persister;
                 this.stateManager = stateManager;
             }
 
-            protected override Task OnStart(IMessageSession session)
+            protected override async Task OnStart(IMessageSession session)
             {
-                return stateManager.RegisterSagaStorage();
+                var sagas = await stateManager.Sagas().ConfigureAwait(false);
+                persister.Sagas = sagas;
+
+                var correlations = await stateManager.Correlations().ConfigureAwait(false);
+                persister.Correlations = correlations;
             }
 
             protected override Task OnStop(IMessageSession session)
@@ -43,6 +50,7 @@
             }
 
             IReliableStateManager stateManager;
+            ServiceFabricSagaPersister persister;
         }
     }
 }

@@ -7,20 +7,28 @@
 
     static class SagaStateManagerExtensions
     {
-        public static async Task RegisterSagaStorage(this IReliableStateManager stateManager)
+        public static async Task RegisterSagaStorage(this IReliableStateManager stateManager, ServiceFabricSagaPersister persister)
         {
-            using (var tx = stateManager.CreateTransaction())
-            {
-                await stateManager.Sagas(tx).ConfigureAwait(false);
-                await stateManager.Correlations(tx).ConfigureAwait(false);
+            var sagas = await stateManager.Sagas().ConfigureAwait(false);
+            persister.Sagas = sagas;
 
-                await tx.CommitAsync().ConfigureAwait(false);
-            }
+            var correlations = await stateManager.Correlations().ConfigureAwait(false);
+            persister.Correlations = correlations;
+        }
+
+        public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this IReliableStateManager stateManager)
+        {
+            return stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>("sagas");
         }
 
         public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this IReliableStateManager stateManager, ITransaction transaction)
         {
             return stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(transaction, "sagas");
+        }
+
+        public static Task<IReliableDictionary<CorrelationPropertyEntry, Guid>> Correlations(this IReliableStateManager stateManager)
+        {
+            return stateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>("bycorrelationid");
         }
 
         public static Task<IReliableDictionary<CorrelationPropertyEntry, Guid>> Correlations(this IReliableStateManager stateManager, ITransaction transaction)

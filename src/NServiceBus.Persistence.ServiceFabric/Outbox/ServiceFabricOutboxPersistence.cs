@@ -6,7 +6,6 @@
     using Features;
     using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
-    using SagaPersister;
 
     /// <summary>
     /// Used to configure in memory outbox persistence.
@@ -74,7 +73,7 @@
            
         }
 
-        internal class RegisterStores : FeatureStartupTask
+        class RegisterStores : FeatureStartupTask
         {
             public RegisterStores(IReliableStateManager stateManager)
             {
@@ -83,7 +82,7 @@
 
             protected override Task OnStart(IMessageSession session)
             {
-                return stateManager.RegisterSagaStorage();
+                return stateManager.RegisterOutboxStorage();
             }
 
             protected override Task OnStop(IMessageSession session)

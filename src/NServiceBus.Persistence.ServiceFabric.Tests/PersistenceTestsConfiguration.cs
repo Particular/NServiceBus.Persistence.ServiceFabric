@@ -49,9 +49,10 @@
 
         public async Task Configure()
         {
-            await stateManager.RegisterSagaStorage().ConfigureAwait(false);
+            await stateManager.RegisterSagaStorage((ServiceFabricSagaPersister)SagaStorage).ConfigureAwait(false);
             await stateManager.RegisterOutboxStorage().ConfigureAwait(false);
 
+            // Do we still need this?
             using (var transaction = stateManager.CreateTransaction())
             {
                 var sagas = await stateManager.Sagas(transaction).ConfigureAwait(false);

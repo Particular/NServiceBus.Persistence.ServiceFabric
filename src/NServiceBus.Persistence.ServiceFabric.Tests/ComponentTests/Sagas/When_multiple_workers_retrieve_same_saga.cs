@@ -72,6 +72,7 @@
             var returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
             var returnedSaga2 = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
 
+            returnedSaga1.DateTimeProperty = DateTime.Now;
             await persister.Update(returnedSaga1, winningSaveSession, winningContext);
             await persister.Update(returnedSaga2, losingSaveSession, losingContext);
 
@@ -105,6 +106,7 @@
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
             var staleRecord = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
 
+            record.DateTimeProperty = DateTime.Now;
             await persister.Update(record, winningSaveSession, winningContext);
             await persister.Update(staleRecord, losingSaveSession, losingContext);
 
@@ -146,6 +148,7 @@
             var losingContext = configuration.GetContextBagForSagaStorage();
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
 
+            returnedSaga1.DateTimeProperty = DateTime.Now;
             await persister.Update(returnedSaga1, winningSaveSession, readContextBag);
             await winningSaveSession.CompleteAsync();
             Assert.That(async () => await persister.Update(returnedSaga1, losingSaveSession, readContextBag), Throws.InstanceOf<Exception>().And.Message.EndWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
@@ -183,6 +186,7 @@
             losingContext = configuration.GetContextBagForSagaStorage();
             losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
 
+            returnedSaga1.DateTimeProperty = DateTime.Now;
             await persister.Update(returnedSaga1, winningSaveSession, winningContext);
             await persister.Update(returnedSaga2, losingSaveSession, losingContext);
 
@@ -197,6 +201,7 @@
             winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
             var returnedSaga4 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
 
+            returnedSaga4.DateTimeProperty = DateTime.Now;
             await persister.Update(returnedSaga4, winningSaveSession, winningContext);
             await persister.Update(returnedSaga3, losingSaveSession, losingContext);
 

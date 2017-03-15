@@ -34,7 +34,7 @@
             var correlationPropertySaga2 = SetActiveSagaInstance(losingContextBag, new SagaWithCorrelationProperty(), saga2);
             await persister.Save(saga2, correlationPropertySaga2, losingSession, losingContextBag);
 
-            Assert.That(async () => await losingSession.CompleteAsync(), Throws.InstanceOf<InvalidOperationException>());
+            Assert.That(async () => await losingSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith("The saga with the correlation id 'Name: CorrelatedProperty Value: whatever' already exists."));
         }
     }
 }

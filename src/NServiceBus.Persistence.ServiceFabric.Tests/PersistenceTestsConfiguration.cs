@@ -36,7 +36,7 @@
         }
 
         IReliableStateManager stateManager;
-        
+
         public bool SupportsDtc { get; } = false;
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }
@@ -51,18 +51,6 @@
         {
             await stateManager.RegisterSagaStorage((ServiceFabricSagaPersister)SagaStorage).ConfigureAwait(false);
             await stateManager.RegisterOutboxStorage().ConfigureAwait(false);
-
-            // Do we still need this?
-            using (var transaction = stateManager.CreateTransaction())
-            {
-                var sagas = await stateManager.Sagas(transaction).ConfigureAwait(false);
-                var correlations = await stateManager.Correlations(transaction).ConfigureAwait(false);
-                var junkKey = Guid.NewGuid();// needs to be a const
-                await sagas.GetOrAddAsync(transaction, junkKey, guid => new SagaEntry()).ConfigureAwait(false);
-                var junkCorrelationPropertyKey = new CorrelationPropertyEntry();
-                await correlations.GetOrAddAsync(transaction, junkCorrelationPropertyKey, key => junkKey).ConfigureAwait(false);
-                await transaction.CommitAsync().ConfigureAwait(false);
-            }
         }
 
         public Task Cleanup()

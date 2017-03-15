@@ -98,7 +98,6 @@
     <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_no_defined_unique_properties.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread.cs" />
     <Compile Include="ComponentTests\Sagas\When_retrieving_the_same_saga_twice.cs" />
-    <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_the_same_unique_property_as_another_saga.cs" />
     <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_no_defined_unique_property.cs" />
     <Compile Include="ComponentTests\Sagas\When_saga_not_found_return_default.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_unique_properties.cs" />

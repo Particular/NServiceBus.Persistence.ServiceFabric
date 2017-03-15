@@ -26,11 +26,11 @@ namespace NServiceBus.Persistence.ComponentTests
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var correlationPropertySaga1 = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga1, typeof(CustomFinder));
-                await persister.Save(saga1, correlationPropertySaga1, session, savingContextBag);
+                var correlationPropertyNoneSaga1 = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga1, typeof(CustomFinder));
+                await persister.Save(saga1, correlationPropertyNoneSaga1, session, savingContextBag);
 
-                var correlationPropertySaga2 = SetActiveSagaInstance(savingContextBag, new AnotherSagaWithoutCorrelationProperty(), saga2, typeof(AnotherCustomFinder));
-                await persister.Save(saga2, correlationPropertySaga2, session, savingContextBag);
+                var correlationPropertyNoneSaga2 = SetActiveSagaInstance(savingContextBag, new AnotherSagaWithoutCorrelationProperty(), saga2, typeof(AnotherCustomFinder));
+                await persister.Save(saga2, correlationPropertyNoneSaga2, session, savingContextBag);
 
                 await session.CompleteAsync();
             }

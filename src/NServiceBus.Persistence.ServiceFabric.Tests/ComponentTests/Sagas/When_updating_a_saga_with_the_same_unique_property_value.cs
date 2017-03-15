@@ -30,7 +30,7 @@
             var updatingContext = configuration.GetContextBagForSagaStorage();
             using (var updateSession = await configuration.SynchronizedStorage.OpenSession(updatingContext))
             {
-                saga1 = await persister.Get<SagaWithCorrelationPropertyData>(saga1.Id, updateSession, updatingContext);
+                saga1 = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), sagaId.ToString(), updateSession, updatingContext);
 
                 SetActiveSagaInstance(updatingContext, new SagaWithCorrelationProperty(), saga1);
 

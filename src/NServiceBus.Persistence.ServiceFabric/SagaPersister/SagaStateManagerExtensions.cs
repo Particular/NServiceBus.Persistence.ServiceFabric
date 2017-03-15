@@ -7,7 +7,7 @@
 
     static class SagaStateManagerExtensions
     {
-        public static async Task RegisterSagaStorage(this IReliableStateManager stateManager, ServiceFabricSagaPersister persister)
+        public static async Task RegisterSagaStorage(this IReliableStateManager stateManager, SagaPersister persister)
         {
             var sagas = await stateManager.Sagas().ConfigureAwait(false);
             persister.Sagas = sagas;

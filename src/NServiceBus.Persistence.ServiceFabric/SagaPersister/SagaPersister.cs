@@ -9,7 +9,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
     using Newtonsoft.Json;
     using Sagas;
 
-    class ServiceFabricSagaPersister : ISagaPersister
+    class SagaPersister : ISagaPersister
     {
         public IReliableDictionary<Guid, SagaEntry> Sagas { get; set; }
 
@@ -131,7 +131,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             {
                 if (!await Sagas.TryUpdateAsync(tx, sagaData.Id, newEntry, loadedEntry).ConfigureAwait(false))
                 {
-                    throw new Exception($"{nameof(ServiceFabricSagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
+                    throw new Exception($"{nameof(SagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
                 }
             });
         }

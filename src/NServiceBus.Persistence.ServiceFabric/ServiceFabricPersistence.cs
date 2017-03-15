@@ -15,7 +15,7 @@
     {
         internal ServiceFabricPersistence()
         {
-            Supports<StorageType.Sagas>(s => SettingsExtensions.EnableFeatureByDefault<ServiceFabricSagaPersistence>(s));
+            Supports<StorageType.Sagas>(s => SettingsExtensions.EnableFeatureByDefault<SagaPersistenceFeature>(s));
             Supports<StorageType.Timeouts>(s => SettingsExtensions.EnableFeatureByDefault<ServiceFabricTimeoutPersistence>(s));
             Supports<StorageType.Subscriptions>(s => SettingsExtensions.EnableFeatureByDefault<ServiceFabricSubscriptionPersistence>(s));
             Supports<StorageType.Outbox>(s => SettingsExtensions.EnableFeatureByDefault<ServiceFabricOutboxPersistence>(s));

@@ -25,7 +25,7 @@
 
             SynchronizedStorage = new SynchronizedStorage(stateManager);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
-            SagaStorage = new ServiceFabricSagaPersister();
+            SagaStorage = new SagaPersister();
             OutboxStorage = new ServiceFabricOutboxStorage(statefulService.StateManager);
 
             var timeouts = new ServiceFabricTimeoutPersister(()=>DateTime.UtcNow);
@@ -49,7 +49,7 @@
 
         public async Task Configure()
         {
-            await stateManager.RegisterSagaStorage((ServiceFabricSagaPersister)SagaStorage).ConfigureAwait(false);
+            await stateManager.RegisterSagaStorage((SagaPersister)SagaStorage).ConfigureAwait(false);
             await stateManager.RegisterOutboxStorage().ConfigureAwait(false);
         }
 

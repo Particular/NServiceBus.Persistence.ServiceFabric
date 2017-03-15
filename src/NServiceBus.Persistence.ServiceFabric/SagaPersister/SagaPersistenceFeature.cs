@@ -4,12 +4,9 @@
     using Features;
     using Microsoft.ServiceFabric.Data;
 
-    /// <summary>
-    /// Used to configure in memory saga persistence.
-    /// </summary>
-    public class ServiceFabricSagaPersistence : Feature
+    class SagaPersistenceFeature : Feature
     {
-        internal ServiceFabricSagaPersistence()
+        internal SagaPersistenceFeature()
         {
             DependsOn<Sagas>();
             Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
@@ -20,7 +17,7 @@
         /// </summary>
         protected override void Setup(FeatureConfigurationContext context)
         {
-            var persister = new ServiceFabricSagaPersister();
+            var persister = new SagaPersister();
 
             context.RegisterStartupTask(b => new RegisterDictionaries(context.Settings.StateManager(), persister));
 
@@ -29,7 +26,7 @@
 
         internal class RegisterDictionaries : FeatureStartupTask
         {
-            public RegisterDictionaries(IReliableStateManager stateManager, ServiceFabricSagaPersister persister)
+            public RegisterDictionaries(IReliableStateManager stateManager, SagaPersister persister)
             {
                 this.persister = persister;
                 this.stateManager = stateManager;
@@ -50,7 +47,7 @@
             }
 
             IReliableStateManager stateManager;
-            ServiceFabricSagaPersister persister;
+            SagaPersister persister;
         }
     }
 }

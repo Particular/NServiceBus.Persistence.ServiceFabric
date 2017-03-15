@@ -51,7 +51,7 @@
             {
                 _tokenSource = new CancellationTokenSource();
 
-                _cleanupTask = Task.Factory.StartNew(() => Cleanup(_tokenSource.Token).GetAwaiter().GetResult() , TaskCreationOptions.LongRunning);
+                _cleanupTask = Task.Run(() => Cleanup(_tokenSource.Token));
 
                 return TaskEx.CompletedTask;
             }

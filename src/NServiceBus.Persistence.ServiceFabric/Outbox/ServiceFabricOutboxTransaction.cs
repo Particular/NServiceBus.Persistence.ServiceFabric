@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
-    using NServiceBus.Outbox;
+    using Outbox;
 
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {

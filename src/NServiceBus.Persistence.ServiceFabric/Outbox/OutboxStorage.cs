@@ -7,7 +7,7 @@
     using Extensibility;
     using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
-    using NServiceBus.Outbox;
+    using Outbox;
 
     class OutboxStorage : IOutboxStorage
     {

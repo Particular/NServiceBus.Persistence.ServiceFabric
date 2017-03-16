@@ -6,13 +6,13 @@
     using Features;
     using Logging;
     using Microsoft.ServiceFabric.Data;
-    using NServiceBus.Outbox;
+    using Outbox;
 
     class OutboxPersistenceFeature : Feature
     {
         internal OutboxPersistenceFeature()
         {
-            DependsOn<Features.Outbox>();
+            DependsOn<Outbox>();
             Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
         }
 

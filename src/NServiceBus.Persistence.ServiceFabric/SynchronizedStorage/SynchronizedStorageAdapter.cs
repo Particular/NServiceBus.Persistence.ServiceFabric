@@ -4,8 +4,8 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Threading.Tasks;
     using Extensibility;
     using Microsoft.ServiceFabric.Data;
-    using NServiceBus.Outbox;
-   using Transport;
+    using Outbox;
+    using Transport;
 
     class SynchronizedStorageAdapter : ISynchronizedStorageAdapter
     {

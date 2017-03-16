@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using NUnit.Framework;
     using Outbox;
-    using ServiceFabric.Outbox;
 
     [TestFixture]
     class OutboxStorageTests
@@ -65,7 +64,7 @@
                 await transaction.Commit();
             }
 
-            await CleanOlderThan(storage, DateTimeOffset.UtcNow);
+            await configuration.CleanupMessagesOlderThan(DateTimeOffset.UtcNow);
 
             var message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.NotNull(message);
@@ -94,12 +93,12 @@
 
             await storage.SetAsDispatched(messageId, configuration.GetContextBagForOutbox());
 
-            await CleanOlderThan(storage, beforeStore);
+            await configuration.CleanupMessagesOlderThan(beforeStore);
             
             var message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.NotNull(message);
 
-            await CleanOlderThan(storage, afterStore);
+            await configuration.CleanupMessagesOlderThan(afterStore);
 
             message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.Null(message);
@@ -145,10 +144,5 @@
             Assert.NotNull(message);
         }
 
-
-        Task CleanOlderThan(IOutboxStorage storage, DateTimeOffset beforeStore)
-        {
-            return ((ServiceFabricOutboxStorage) storage).CleanupMessagesOlderThan(beforeStore);
-        }
     }
 }

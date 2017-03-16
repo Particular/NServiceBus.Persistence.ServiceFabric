@@ -38,6 +38,9 @@
         IReliableStateManager stateManager;
 
         public bool SupportsDtc { get; } = false;
+        public bool SupportsOutbox { get; } = true;
+        public bool SupportsFinders { get; } = true;
+
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }
         public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; }
@@ -56,6 +59,11 @@
         public Task Cleanup()
         {
             return Task.FromResult(0);
+        }
+
+        public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
+        {
+            return ((ServiceFabricOutboxStorage) OutboxStorage).CleanupMessagesOlderThan(beforeStore);
         }
     }
 }

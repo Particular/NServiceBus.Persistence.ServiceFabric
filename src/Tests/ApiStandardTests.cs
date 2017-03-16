@@ -12,7 +12,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class StandardsTests
+    public class ApiStandardTests
     {
         [Test]
         public void VerifyFeatureNaming()

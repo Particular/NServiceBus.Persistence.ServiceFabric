@@ -21,7 +21,7 @@
             var outboxStorage = new OutboxStorage(context.Settings.StateManager());
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
-            var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromDays(1);
+            var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromHours(1);
 
             var frequencyToRunDeduplicationDataCleanup = context.Settings.GetOrDefault<TimeSpan?>(FrequencyToRunDeduplicationDataCleanup) ?? TimeSpan.FromSeconds(30);
 

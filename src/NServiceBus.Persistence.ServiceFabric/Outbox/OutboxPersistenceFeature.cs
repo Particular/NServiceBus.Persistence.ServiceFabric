@@ -21,9 +21,9 @@
             var outboxStorage = new OutboxStorage(context.Settings.StateManager());
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
-            var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromDays(7);
+            var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromDays(1);
 
-            var frequencyToRunDeduplicationDataCleanup = context.Settings.GetOrDefault<TimeSpan?>(FrequencyToRunDeduplicationDataCleanup) ?? TimeSpan.FromMinutes(1);
+            var frequencyToRunDeduplicationDataCleanup = context.Settings.GetOrDefault<TimeSpan?>(FrequencyToRunDeduplicationDataCleanup) ?? TimeSpan.FromSeconds(30);
 
             context.RegisterStartupTask(new RegisterStores(context.Settings.StateManager(), outboxStorage));
             context.RegisterStartupTask(new OutboxCleaner(outboxStorage, timeToKeepDeduplicationData, frequencyToRunDeduplicationDataCleanup));
@@ -70,12 +70,13 @@
                 {
                     try
                     {
-                        var nextClean = DateTime.UtcNow.Add(frequencyToRunDeduplicationDataCleanup);
+                        var now = DateTime.UtcNow;
+                        var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
 
-                        var olderThan = DateTime.UtcNow - timeToKeepDeduplicationData;
+                        var olderThan = now - timeToKeepDeduplicationData;
                         await storage.CleanupMessagesOlderThan(olderThan, token).ConfigureAwait(false);
 
-                        var delay = nextClean - DateTime.UtcNow;
+                        var delay = nextClean - now;
                         if (delay > TimeSpan.Zero)
                         {
                             await Task.Delay(delay, token).ConfigureAwait(false);
@@ -84,6 +85,10 @@
                     catch (OperationCanceledException)
                     {
                         // graceful shutdown
+                    }
+                    catch (TimeoutException)
+                    {
+                        // happens on dead locks
                     }
                     catch (Exception ex)
                     {

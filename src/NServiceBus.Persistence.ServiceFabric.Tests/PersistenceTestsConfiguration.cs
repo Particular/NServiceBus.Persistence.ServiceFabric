@@ -10,8 +10,6 @@
     using ServiceFabric;
     using ServiceFabric.Outbox;
     using ServiceFabric.SagaPersister;
-    using ServiceFabric.SubscriptionStorage;
-    using ServiceFabric.TimeoutPersister;
     using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
     using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;
@@ -27,12 +25,6 @@
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
             SagaStorage = new SagaPersister();
             OutboxStorage = new ServiceFabricOutboxStorage(statefulService.StateManager);
-
-            var timeouts = new ServiceFabricTimeoutPersister(()=>DateTime.UtcNow);
-            TimeoutStorage = timeouts;
-            TimeoutQuery = timeouts;
-
-            SubscriptionStorage = new ServiceFabricSubscriptionStorage();
         }
 
         IReliableStateManager stateManager;
@@ -40,6 +32,8 @@
         public bool SupportsDtc { get; } = false;
         public bool SupportsOutbox { get; } = true;
         public bool SupportsFinders { get; } = true;
+        public bool SupportsSubscriptions { get; } = false;
+        public bool SupportsTimeouts { get; } = false;
 
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }

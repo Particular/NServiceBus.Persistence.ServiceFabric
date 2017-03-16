@@ -28,6 +28,8 @@
         [Test]
         public async Task Should_ignore_message_version_on_subscriptions()
         {
+            configuration.RequiresSubscriptionSupport();
+
             var storage = configuration.SubscriptionStorage;
 
             await storage.Subscribe(new Subscriber("subscriberA@server1", "subscriberA"), new MessageType("SomeMessage", "1.0.0"), configuration.GetContextBagForSubscriptions());

@@ -36,6 +36,8 @@
         [Test]
         public async Task When_multiple_NextTimeToRunQuery_is_min_date()
         {
+            configuration.RequiresTimeoutSupport();
+
             var now = DateTime.UtcNow;
             var persister = configuration.TimeoutStorage;
             await persister.Add(new TimeoutData
@@ -56,6 +58,8 @@
         [Test]
         public async Task When_multiple_future_are_returned()
         {
+            configuration.RequiresTimeoutSupport();
+
             var persister = configuration.TimeoutStorage;
             await persister.Add(new TimeoutData
             {
@@ -78,6 +82,8 @@
         [Test]
         public async Task TryRemove_when_existing_is_removed_should_return_true()
         {
+            configuration.RequiresTimeoutSupport();
+
             var persister = configuration.TimeoutStorage;
             var inputTimeout = new TimeoutData();
             await persister.Add(inputTimeout, configuration.GetContextBagForTimeoutPersister());
@@ -90,6 +96,8 @@
         [Test]
         public async Task TryRemove_when_non_existing_is_removed_should_return_false()
         {
+            configuration.RequiresTimeoutSupport();
+
             var persister = configuration.TimeoutStorage;
             var inputTimeout = new TimeoutData();
             await persister.Add(inputTimeout, configuration.GetContextBagForTimeoutPersister());
@@ -102,6 +110,8 @@
         [Test]
         public async Task Peek_when_timeout_exists_should_return_timeout()
         {
+            configuration.RequiresTimeoutSupport();
+
             var persister = configuration.TimeoutStorage;
             var inputTimeout = new TimeoutData();
             await persister.Add(inputTimeout, configuration.GetContextBagForTimeoutPersister());
@@ -114,6 +124,8 @@
         [Test]
         public async Task Peek_when_timeout_does_not_exist_should_return_null()
         {
+            configuration.RequiresTimeoutSupport();
+
             var persister = configuration.TimeoutStorage;
             var inputTimeout = new TimeoutData();
             await persister.Add(inputTimeout, configuration.GetContextBagForTimeoutPersister());
@@ -126,6 +138,8 @@
         [Test]
         public async Task When_existing_is_removed_by_saga_id()
         {
+            configuration.RequiresTimeoutSupport();
+
             var persister = configuration.TimeoutStorage;
             var newGuid = Guid.NewGuid();
             var inputTimeout = new TimeoutData
@@ -143,6 +157,8 @@
         [Test]
         public async Task When_all_in_past_NextTimeToRunQuery_is_1_minute()
         {
+            configuration.RequiresTimeoutSupport();
+
             var now = DateTime.UtcNow;
             var persister = configuration.TimeoutStorage;
             await persister.Add(new TimeoutData

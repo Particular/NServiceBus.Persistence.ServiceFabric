@@ -39,7 +39,5 @@
             await persister.Update(staleRecord, losingSaveSession, losingContext);
             Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
         }
-
-
     }
 }

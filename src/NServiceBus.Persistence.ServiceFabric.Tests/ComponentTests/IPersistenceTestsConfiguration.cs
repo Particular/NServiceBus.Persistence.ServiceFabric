@@ -16,6 +16,10 @@
 
         bool SupportsFinders { get; }
 
+        bool SupportsSubscriptions { get; }
+
+        bool SupportsTimeouts { get; }
+
         ISagaPersister SagaStorage { get; }
 
         ISynchronizedStorage SynchronizedStorage { get; }

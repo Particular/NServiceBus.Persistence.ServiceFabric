@@ -13,7 +13,7 @@
     {
         [Test]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public void ApproveNServiceBus()
+        public void ApprovePersistence()
         {
             var publicApi = Filter(ApiGenerator.GeneratePublicApi(typeof(ServiceFabricPersistence).Assembly));
             Approvals.Verify(publicApi);

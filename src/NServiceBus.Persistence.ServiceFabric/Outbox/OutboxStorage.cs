@@ -70,6 +70,8 @@
 
         internal async Task CleanupMessagesOlderThan(DateTimeOffset date, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             using (var tx = reliableStateManager.CreateTransaction())
             {
                 var message = await Cleanup.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);

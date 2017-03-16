@@ -1,8 +1,9 @@
-namespace NServiceBus.Persistence.ServiceFabric.Outbox
+namespace NServiceBus
 {
     using System;
     using Configuration.AdvanceExtensibility;
-    using NServiceBus.Outbox;
+    using Outbox;
+    using Persistence.ServiceFabric.Outbox;
 
     /// <summary>
     /// Contains InMemoryOutbox related settings extensions.
@@ -10,19 +11,34 @@ namespace NServiceBus.Persistence.ServiceFabric.Outbox
     public static class ServiceFabricOutboxSettingsExtensions
     {
         /// <summary>
-        /// Specifies how long the outbox should keep message data in storage to be able to deduplicate.
+        /// Sets the time to keep the deduplication data to the specified time span.
         /// </summary>
-        /// <param name="settings">The outbox settings.</param>
-        /// <param name="time">
-        /// Defines the timespan which indicates how long the outbox deduplication entries should be kept.
-        /// i.e. if <code>TimeSpan.FromDays(1)</code> is used the deduplication entries are kept for no longer than one day.
-        /// It is not possible to use a negative or zero TimeSpan value.
-        /// </param>
-        public static OutboxSettings TimeToKeepDeduplicationData(this OutboxSettings settings, TimeSpan time)
+        /// <param name="configuration">The configuration being extended</param>
+        /// <param name="timeToKeepDeduplicationData">The time to keep the deduplication data.
+        /// The cleanup process removes entries older than the specified time to keep deduplication data, therefore the time span cannot be negative</param>
+        /// <returns>The configuration</returns>
+        public static OutboxSettings SetTimeToKeepDeduplicationData(this OutboxSettings configuration, TimeSpan timeToKeepDeduplicationData)
         {
-            Guard.AgainstNegativeAndZero(nameof(time), time);
-            settings.GetSettings().Set(OutboxPersistenceFeature.TimeToKeepDeduplicationEntries, time);
-            return settings;
+            var now = DateTime.UtcNow;
+            if (now - timeToKeepDeduplicationData >= now)
+            {
+                throw new ArgumentException("Specify a non-negative TimeSpan. The cleanup process removes entries older than the specified time to keep deduplication data, therefore the time span cannot be negative.", nameof(timeToKeepDeduplicationData));
+            }
+
+            configuration.GetSettings().Set(OutboxPersistenceFeature.TimeToKeepDeduplicationEntries, timeToKeepDeduplicationData);
+            return configuration;
+        }
+
+        /// <summary>
+        /// Sets the frequency to run the deduplication data cleanup task.
+        /// </summary>
+        /// <param name="configuration">The configuration being extended</param>
+        /// <param name="frequencyToRunDeduplicationDataCleanup">The frequency to run the deduplication data cleanup task. By specifying a negative time span (-1) the cleanup task will never run.</param>
+        /// <returns>The configuration</returns>
+        public static OutboxSettings SetFrequencyToRunDeduplicationDataCleanup(this OutboxSettings configuration, TimeSpan frequencyToRunDeduplicationDataCleanup)
+        {
+            configuration.GetSettings().Set(OutboxPersistenceFeature.FrequencyToRunDeduplicationDataCleanup, frequencyToRunDeduplicationDataCleanup);
+            return configuration;
         }
     }
 }

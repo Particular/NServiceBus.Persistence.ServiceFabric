@@ -21,25 +21,30 @@
             var outboxStorage = new OutboxStorage(context.Settings.StateManager());
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
-            var timeSpan = context.Settings.Get<TimeSpan>(TimeToKeepDeduplicationEntries);
+            var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromDays(7);
+
+            var frequencyToRunDeduplicationDataCleanup = context.Settings.GetOrDefault<TimeSpan?>(FrequencyToRunDeduplicationDataCleanup) ?? TimeSpan.FromMinutes(1);
 
             context.RegisterStartupTask(new RegisterStores(context.Settings.StateManager(), outboxStorage));
-            context.RegisterStartupTask(new OutboxCleaner(outboxStorage, timeSpan));
+            context.RegisterStartupTask(new OutboxCleaner(outboxStorage, timeToKeepDeduplicationData, frequencyToRunDeduplicationDataCleanup));
         }
 
         internal const string TimeToKeepDeduplicationEntries = "ServiceFabric.Persistence.Outbox.TimeToKeepDeduplicationEntries";
+        internal const string FrequencyToRunDeduplicationDataCleanup = "ServiceFabric.Persistence.Outbox.FrequencyToRunDeduplicationDataCleanup";
 
         class OutboxCleaner : FeatureStartupTask
         {
             readonly OutboxStorage storage;
             readonly TimeSpan timeToKeepDeduplicationData;
+            readonly TimeSpan frequencyToRunDeduplicationDataCleanup;
             CancellationTokenSource _tokenSource;
             Task _cleanupTask;
 
             static ILog Logger = LogManager.GetLogger<OutboxCleaner>();
 
-            public OutboxCleaner(OutboxStorage storage, TimeSpan timeToKeepDeduplicationData)
+            public OutboxCleaner(OutboxStorage storage, TimeSpan timeToKeepDeduplicationData, TimeSpan frequencyToRunDeduplicationDataCleanup)
             {
+                this.frequencyToRunDeduplicationDataCleanup = frequencyToRunDeduplicationDataCleanup;
                 this.timeToKeepDeduplicationData = timeToKeepDeduplicationData;
                 this.storage = storage;
             }
@@ -65,8 +70,16 @@
                 {
                     try
                     {
-                        var dateTimeOffset = DateTimeOffset.UtcNow - timeToKeepDeduplicationData;
-                        await storage.CleanupMessagesOlderThan(dateTimeOffset, token).ConfigureAwait(false);
+                        var nextClean = DateTime.UtcNow.Add(frequencyToRunDeduplicationDataCleanup);
+
+                        var olderThan = DateTime.UtcNow - timeToKeepDeduplicationData;
+                        await storage.CleanupMessagesOlderThan(olderThan, token).ConfigureAwait(false);
+
+                        var delay = nextClean - DateTime.UtcNow;
+                        if (delay > TimeSpan.Zero)
+                        {
+                            await Task.Delay(delay, token).ConfigureAwait(false);
+                        }
                     }
                     catch (OperationCanceledException)
                     {

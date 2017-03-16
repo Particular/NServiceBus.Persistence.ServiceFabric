@@ -27,6 +27,8 @@
         [Test]
         public async Task When_empty_NextTimeToRunQuery_is_1_minute()
         {
+            configuration.RequiresTimeoutSupport();
+
             var now = DateTime.UtcNow;
             var persister = configuration.TimeoutQuery;
             var result = await persister.GetNextChunk(now);

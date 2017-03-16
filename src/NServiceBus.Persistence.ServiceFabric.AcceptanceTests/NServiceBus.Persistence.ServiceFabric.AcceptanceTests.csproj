@@ -181,7 +181,6 @@
     <Compile Include="ConfigureScenariosForAzureServiceBusTransport.cs" />
     <Compile Include="ConfigureScenariosForServiceFabricPersistence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Successful.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

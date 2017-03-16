@@ -10,6 +10,8 @@
         [Test]
         public async Task It_should_persist_successfully()
         {
+            configuration.RequiresFindersSupport();
+
             var sagaId = Guid.NewGuid();
             var sagaData = new SagaWithoutCorrelationPropertyData
             {

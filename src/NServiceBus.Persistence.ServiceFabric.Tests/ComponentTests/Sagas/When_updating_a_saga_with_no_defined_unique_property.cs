@@ -10,6 +10,8 @@
         [Test]
         public async Task It_should_successfully_update_the_saga()
         {
+            configuration.RequiresFindersSupport();
+
             var sagaId = Guid.NewGuid();
             var sagaData = new SagaWithoutCorrelationPropertyData
             {

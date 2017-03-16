@@ -15,6 +15,8 @@
         [Test]
         public async Task It_should_successfully_remove_the_saga()
         {
+            configuration.RequiresFindersSupport();
+
             var sagaId = Guid.NewGuid();
 
             var persister = configuration.SagaStorage;

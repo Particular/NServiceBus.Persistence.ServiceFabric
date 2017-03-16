@@ -10,6 +10,8 @@ namespace NServiceBus.Persistence.ComponentTests
         [Test]
         public async Task It_should_persist_successfully()
         {
+            configuration.RequiresFindersSupport();
+
             var saga1Id = Guid.NewGuid();
             var saga1 = new SagaWithoutCorrelationPropertyData
             {

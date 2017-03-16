@@ -27,6 +27,8 @@
         [Test]
         public async Task Should_clear_operations_on_dispatched_messages()
         {
+            configuration.RequiresOutboxSupport();
+
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
@@ -50,6 +52,8 @@
         [Test]
         public async Task Should_not_remove_non_dispatched_messages()
         {
+            configuration.RequiresOutboxSupport();
+
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
@@ -73,6 +77,8 @@
         [Test]
         public async Task Should_clear_dispatched_messages_after_given_expiry()
         {
+            configuration.RequiresOutboxSupport();
+
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
@@ -107,6 +113,8 @@
         [Test]
         public async Task Should_not_store_when_transaction_not_commited()
         {
+            configuration.RequiresOutboxSupport();
+
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
@@ -127,6 +135,8 @@
         [Test]
         public async Task Should_store_when_transaction_commited()
         {
+            configuration.RequiresOutboxSupport();
+
             var storage = configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 

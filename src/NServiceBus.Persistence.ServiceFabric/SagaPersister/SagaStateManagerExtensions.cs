@@ -1,4 +1,4 @@
-﻿namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
+﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
     using System.Threading.Tasks;

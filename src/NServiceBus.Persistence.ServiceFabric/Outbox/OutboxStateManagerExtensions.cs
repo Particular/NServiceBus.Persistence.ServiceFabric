@@ -1,4 +1,4 @@
-namespace NServiceBus.Persistence.ServiceFabric.Outbox
+namespace NServiceBus.Persistence.ServiceFabric
 {
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;

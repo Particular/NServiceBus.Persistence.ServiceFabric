@@ -9,8 +9,6 @@
     using Outbox;
     using Sagas;
     using ServiceFabric;
-    using ServiceFabric.Outbox;
-    using ServiceFabric.SagaPersister;
     using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
     using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;

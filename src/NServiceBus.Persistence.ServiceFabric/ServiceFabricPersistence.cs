@@ -1,8 +1,6 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
-    using Outbox;
     using Persistence;
-    using SagaPersister;
     using SettingsExtensions = Features.SettingsExtensions;
 
     /// <summary>

@@ -3,7 +3,7 @@ namespace NServiceBus
     using System;
     using Configuration.AdvanceExtensibility;
     using Outbox;
-    using Persistence.ServiceFabric.Outbox;
+    using Persistence.ServiceFabric;
 
     /// <summary>
     /// Contains InMemoryOutbox related settings extensions.

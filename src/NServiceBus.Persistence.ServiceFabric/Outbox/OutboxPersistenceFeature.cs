@@ -1,4 +1,4 @@
-﻿namespace NServiceBus.Persistence.ServiceFabric.Outbox
+﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
     using System.Threading;
@@ -12,7 +12,7 @@
     {
         internal OutboxPersistenceFeature()
         {
-            DependsOn<Outbox>();
+            DependsOn<Features.Outbox>();
             Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
         }
 

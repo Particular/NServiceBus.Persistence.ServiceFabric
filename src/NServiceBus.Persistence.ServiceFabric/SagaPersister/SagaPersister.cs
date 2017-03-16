@@ -44,40 +44,34 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             var storageSession = (StorageSession) session;
             using (var tx = storageSession.StateManager.CreateTransaction())
             {
-                return await InternalGet<TSagaData>(sagaId, context, storageSession.StateManager, tx).ConfigureAwait(false);
+                return await InternalGet<TSagaData>(sagaId, context, tx).ConfigureAwait(false);
             }
-        }
-
-        async Task<TSagaData> InternalGet<TSagaData>(Guid sagaId, ContextBag context, IReliableStateManager stateManager, ITransaction tx) where TSagaData : IContainSagaData
-        {
-            var conditionalValue = await Sagas.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
-            if (conditionalValue.HasValue)
-            {
-                SetEntry(context, sagaId, conditionalValue.Value);
-                return conditionalValue.Value.ToSagaData<TSagaData>();
-            }
-            return default(TSagaData);
         }
 
         public async Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
         {
             var storageSession = (StorageSession) session;
             var serializedPropertyValue = JsonConvert.SerializeObject(propertyValue);
-            var key = new CorrelationPropertyEntry
-            {
-                SagaDataType = typeof(TSagaData).FullName,
-                Name = propertyName,
-                Value = serializedPropertyValue,
-                Type = propertyValue.GetType().FullName
-            };
+            var key = new CorrelationPropertyEntry(typeof(TSagaData).FullName, propertyName, serializedPropertyValue, propertyValue.GetType().FullName);
 
             using (var tx = storageSession.StateManager.CreateTransaction())
             {
                 var conditionalValue = await Correlations.TryGetValueAsync(tx, key).ConfigureAwait(false);
                 if (conditionalValue.HasValue)
                 {
-                    return await InternalGet<TSagaData>(conditionalValue.Value, context, storageSession.StateManager, tx).ConfigureAwait(false);
+                    return await InternalGet<TSagaData>(conditionalValue.Value, context, tx).ConfigureAwait(false);
                 }
+            }
+            return default(TSagaData);
+        }
+
+        async Task<TSagaData> InternalGet<TSagaData>(Guid sagaId, ContextBag context, ITransaction tx) where TSagaData : IContainSagaData
+        {
+            var conditionalValue = await Sagas.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
+            if (conditionalValue.HasValue)
+            {
+                SetEntry(context, sagaId, conditionalValue.Value);
+                return conditionalValue.Value.ToSagaData<TSagaData>();
             }
             return default(TSagaData);
         }
@@ -90,16 +84,10 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
             if (correlationProperty != SagaCorrelationProperty.None)
             {
                 var serializedPropertyValue = JsonConvert.SerializeObject(correlationProperty.Value);
-                correlationId = new CorrelationPropertyEntry
-                {
-                    SagaDataType = sagaData.GetType().FullName,
-                    Name = correlationProperty.Name,
-                    Value = serializedPropertyValue,
-                    Type = correlationProperty.Value.GetType().FullName
-                };
+                correlationId = new CorrelationPropertyEntry(sagaData.GetType().FullName, correlationProperty.Name, serializedPropertyValue, correlationProperty.Value.GetType().FullName);
             }
 
-            var entry = new SagaEntry { CorrelationProperty = correlationId, Data = sagaData.FromSagaData() };
+            var entry = new SagaEntry(correlationId, sagaData.FromSagaData());
 
             return storageSession.Add(async tx =>
             {
@@ -121,11 +109,7 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 
-            var newEntry = new SagaEntry
-            {
-                CorrelationProperty = loadedEntry.CopyCorrelationProperty(),
-                Data = sagaData.FromSagaData(),
-            };
+            var newEntry = new SagaEntry(loadedEntry.CopyCorrelationProperty(), sagaData.FromSagaData());
 
             return storageSession.Add(async tx =>
             {
@@ -164,12 +148,6 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
 
         const string ContextKey = "NServiceBus.Persistence.ServiceFabric.Sagas";
 
-        static readonly CorrelationPropertyEntry NoCorrelationId = new CorrelationPropertyEntry
-        {
-            SagaDataType = typeof(object).FullName,
-            Name = null,
-            Value = null,
-            Type = typeof(object).FullName
-        };
+        static readonly CorrelationPropertyEntry NoCorrelationId = new CorrelationPropertyEntry(typeof(object).FullName, "_NoCorrelationId_", "_Value_", typeof(object).FullName);
     }
 }

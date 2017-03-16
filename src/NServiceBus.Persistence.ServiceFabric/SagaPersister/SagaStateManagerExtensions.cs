@@ -21,19 +21,9 @@
             return stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>("sagas");
         }
 
-        public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this IReliableStateManager stateManager, ITransaction transaction)
-        {
-            return stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(transaction, "sagas");
-        }
-
         public static Task<IReliableDictionary<CorrelationPropertyEntry, Guid>> Correlations(this IReliableStateManager stateManager)
         {
             return stateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>("bycorrelationid");
-        }
-
-        public static Task<IReliableDictionary<CorrelationPropertyEntry, Guid>> Correlations(this IReliableStateManager stateManager, ITransaction transaction)
-        {
-            return stateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>(transaction, "bycorrelationid");
         }
     }
 }

@@ -17,13 +17,9 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
         public static CorrelationPropertyEntry CopyCorrelationProperty(this SagaEntry entry)
         {
             var correlationProperty = entry.CorrelationProperty;
-            return new CorrelationPropertyEntry
+            return new CorrelationPropertyEntry(correlationProperty.SagaDataType, correlationProperty.Name, correlationProperty.Value, correlationProperty.Type)
             {
                 ExtensionData = correlationProperty.ExtensionData,
-                Name = correlationProperty.Name,
-                SagaDataType = correlationProperty.SagaDataType,
-                Value = correlationProperty.Value,
-                Type = correlationProperty.Type
             };
         }
     }

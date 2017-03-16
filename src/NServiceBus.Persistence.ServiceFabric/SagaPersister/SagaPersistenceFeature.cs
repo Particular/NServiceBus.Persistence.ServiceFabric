@@ -12,9 +12,6 @@
             Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
         }
 
-        /// <summary>
-        /// See <see cref="Feature.Setup" />.
-        /// </summary>
         protected override void Setup(FeatureConfigurationContext context)
         {
             var persister = new SagaPersister();
@@ -24,7 +21,7 @@
             context.Container.RegisterSingleton(persister);
         }
 
-        internal class RegisterDictionaries : FeatureStartupTask
+        class RegisterDictionaries : FeatureStartupTask
         {
             public RegisterDictionaries(IReliableStateManager stateManager, SagaPersister persister)
             {
@@ -32,13 +29,9 @@
                 this.stateManager = stateManager;
             }
 
-            protected override async Task OnStart(IMessageSession session)
+            protected override Task OnStart(IMessageSession session)
             {
-                var sagas = await stateManager.Sagas().ConfigureAwait(false);
-                persister.Sagas = sagas;
-
-                var correlations = await stateManager.Correlations().ConfigureAwait(false);
-                persister.Correlations = correlations;
+                return stateManager.RegisterSagaStorage(persister);
             }
 
             protected override Task OnStop(IMessageSession session)

@@ -4,19 +4,27 @@ namespace NServiceBus.Persistence.ServiceFabric.SagaPersister
     using System.Runtime.Serialization;
 
     [DataContract(Namespace = "NServiceBus.Persistence.ServiceFabric", Name = "CorrelationPropertyEntry")]
-    internal sealed class CorrelationPropertyEntry : IExtensibleDataObject, IComparable<CorrelationPropertyEntry>, IEquatable<CorrelationPropertyEntry>
+    sealed class CorrelationPropertyEntry : IExtensibleDataObject, IComparable<CorrelationPropertyEntry>, IEquatable<CorrelationPropertyEntry>
     {
+        public CorrelationPropertyEntry(string sagaDataType, string name, string value, string type)
+        {
+            SagaDataType = sagaDataType;
+            Name = name;
+            Value = value;
+            Type = type;
+        }
+
         [DataMember(Name = "SagaDataType", Order = 0)]
-        public string SagaDataType { get; set; }
+        public string SagaDataType { get; private set; }
 
         [DataMember(Name = "Name", Order = 1)]
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         [DataMember(Name = "Value", Order = 2)]
-        public string Value { get; set; }
+        public string Value { get; private set; }
 
         [DataMember(Name = "Type", Order = 3)]
-        public string Type { get; set; }
+        public string Type { get; private set; }
 
         public ExtensionDataObject ExtensionData { get; set; }
 

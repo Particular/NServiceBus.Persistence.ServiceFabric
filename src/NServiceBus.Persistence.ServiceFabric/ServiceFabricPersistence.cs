@@ -13,7 +13,7 @@
         internal ServiceFabricPersistence()
         {
             Supports<StorageType.Sagas>(s => SettingsExtensions.EnableFeatureByDefault<SagaPersistenceFeature>(s));
-            Supports<StorageType.Outbox>(s => SettingsExtensions.EnableFeatureByDefault<ServiceFabricOutboxPersistence>(s));
+            Supports<StorageType.Outbox>(s => SettingsExtensions.EnableFeatureByDefault<OutboxPersistenceFeature>(s));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace NServiceBus.Persistence.ServiceFabric.Outbox
         public static OutboxSettings TimeToKeepDeduplicationData(this OutboxSettings settings, TimeSpan time)
         {
             Guard.AgainstNegativeAndZero(nameof(time), time);
-            settings.GetSettings().Set(ServiceFabricOutboxPersistence.TimeToKeepDeduplicationEntries, time);
+            settings.GetSettings().Set(OutboxPersistenceFeature.TimeToKeepDeduplicationEntries, time);
             return settings;
         }
     }

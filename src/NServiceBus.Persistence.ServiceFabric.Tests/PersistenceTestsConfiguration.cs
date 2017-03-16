@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ComponentTests
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Gateway.Deduplication;
     using Microsoft.ServiceFabric.Data;
@@ -24,7 +25,7 @@
             SynchronizedStorage = new SynchronizedStorage(stateManager);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
             SagaStorage = new SagaPersister();
-            OutboxStorage = new ServiceFabricOutboxStorage(statefulService.StateManager);
+            OutboxStorage = new OutboxStorage(statefulService.StateManager);
         }
 
         IReliableStateManager stateManager;
@@ -57,7 +58,7 @@
 
         public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
         {
-            return ((ServiceFabricOutboxStorage) OutboxStorage).CleanupMessagesOlderThan(beforeStore);
+            return ((OutboxStorage) OutboxStorage).CleanupMessagesOlderThan(beforeStore, CancellationToken.None);
         }
     }
 }

@@ -122,7 +122,6 @@
     <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_a_duplicate_message_arrives.cs" />
     <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_a_message_is_audited.cs" />
     <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_blowing_up_just_after_dispatch.cs" />
-    <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_clearing_saga_timeouts.cs" />
     <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_dispatching_forwarded_messages.cs" />
     <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_receiving_a_message.cs" />
     <Compile Include="App_Packages\NSB.AcceptanceTests.6.1.3\Reliability\Outbox\When_sending_from_a_non_dtc_endpoint.cs" />
@@ -183,8 +182,6 @@
     <Compile Include="ConfigureScenariosForServiceFabricPersistence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Successful.cs" />
-    <Compile Include="TestAccessingReliableStateManager.cs" />
-    <Compile Include="TestAccessingStatefulContext.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

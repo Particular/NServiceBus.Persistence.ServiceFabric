@@ -6,7 +6,7 @@
     using SettingsExtensions = Features.SettingsExtensions;
 
     /// <summary>
-    /// Used to enable InMemory persistence.
+    /// Used to enable Service Fabric persistence.
     /// </summary>
     public class ServiceFabricPersistence : PersistenceDefinition
     {

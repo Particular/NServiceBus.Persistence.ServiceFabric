@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Features;
     using Microsoft.ServiceFabric.Data;
+    using Sagas;
 
     class SagaPersistenceFeature : Feature
     {
@@ -18,7 +19,7 @@
 
             context.RegisterStartupTask(b => new RegisterDictionaries(context.Settings.StateManager(), persister));
 
-            context.Container.RegisterSingleton(persister);
+            context.Container.RegisterSingleton<ISagaPersister>(persister);
         }
 
         class RegisterDictionaries : FeatureStartupTask

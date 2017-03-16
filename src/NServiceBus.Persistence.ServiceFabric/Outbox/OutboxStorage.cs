@@ -1,7 +1,6 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Extensibility;
@@ -25,14 +24,25 @@
 
         public async Task<OutboxMessage> Get(string messageId, ContextBag context)
         {
-            OutboxMessage result = null;
+            OutboxMessage result;
             using (var tx = reliableStateManager.CreateTransaction())
             {
                 var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
-                if (conditionalValue.HasValue)
+                if (!conditionalValue.HasValue)
                 {
-                    result = new OutboxMessage(messageId, conditionalValue.Value.TransportOperations.Select(o => new TransportOperation(o.MessageId, o.Options, o.Body, o.Headers)).ToArray());
+                    return null;
                 }
+
+                var storedOutboxMessage = conditionalValue.Value;
+                var transportOperations = new TransportOperation[storedOutboxMessage.TransportOperations.Length];
+
+                for (var i = 0; i < storedOutboxMessage.TransportOperations.Length; i++)
+                {
+                    var o = storedOutboxMessage.TransportOperations[i];
+                    transportOperations[i] = new TransportOperation(o.MessageId, o.Options, o.Body, o.Headers);
+                }
+
+                result = new OutboxMessage(messageId, transportOperations);
             }
             return result;
         }
@@ -45,7 +55,15 @@
         public async Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
         {
             var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction;
-            if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, message.TransportOperations.Select(t => new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers)).ToArray())).ConfigureAwait(false))
+
+            var operations = new StoredTransportOperation[message.TransportOperations.Length];
+            for (var i = 0; i < message.TransportOperations.Length; i++)
+            {
+                var t = message.TransportOperations[i];
+                operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers);
+            }
+
+            if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations)).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
             }
@@ -72,31 +90,29 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            ConditionalValue<CleanupStoredOutboxCommand> message;
-
-            do
+            using (var tx = reliableStateManager.CreateTransaction())
             {
-                using (var tx = reliableStateManager.CreateTransaction())
+                var iterator = await Cleanup.CreateEnumerableAsync(tx);
+                var enumerator = iterator.GetAsyncEnumerator();
+
+                var currentIndex = 0;
+                var somethingToCommit = false;
+                while (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(false) && currentIndex <= 100)
                 {
-                    message = await Cleanup.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
-                    if (!message.HasValue)
+                    var cleanupCommand = enumerator.Current;
+                    if (cleanupCommand.StoredAt <= date)
                     {
-                        continue;
+                        await Outbox.TryRemoveAsync(tx, cleanupCommand.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                        somethingToCommit = true;
                     }
-
-                    if (message.Value.StoredAt <= date)
-                    {
-                        await Outbox.TryRemoveAsync(tx, message.Value.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await Cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(message.Value.MessageId, message.Value.StoredAt), defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
-                    }
-
-                    await tx.CommitAsync().ConfigureAwait(false);
+                    currentIndex++;
                 }
 
-            } while (message.HasValue && !cancellationToken.IsCancellationRequested);
+                if (somethingToCommit)
+                {
+                    await tx.CommitAsync().ConfigureAwait(false);
+                }
+            }
         }
     }
 }

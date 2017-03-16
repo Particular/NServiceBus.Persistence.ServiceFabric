@@ -48,7 +48,7 @@
         public async Task Configure()
         {
             await stateManager.RegisterSagaStorage((SagaPersister)SagaStorage).ConfigureAwait(false);
-            await stateManager.RegisterOutboxStorage().ConfigureAwait(false);
+            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage).ConfigureAwait(false);
         }
 
         public Task Cleanup()

@@ -23,7 +23,7 @@
 
             var timeSpan = context.Settings.Get<TimeSpan>(TimeToKeepDeduplicationEntries);
 
-            context.RegisterStartupTask(new RegisterStores(context.Settings.StateManager()));
+            context.RegisterStartupTask(new RegisterStores(context.Settings.StateManager(), outboxStorage));
             context.RegisterStartupTask(new OutboxCleaner(outboxStorage, timeSpan));
         }
 
@@ -82,14 +82,15 @@
 
         class RegisterStores : FeatureStartupTask
         {
-            public RegisterStores(IReliableStateManager stateManager)
+            public RegisterStores(IReliableStateManager stateManager, OutboxStorage storage)
             {
+                outboxStorage = storage;
                 this.stateManager = stateManager;
             }
 
             protected override Task OnStart(IMessageSession session)
             {
-                return stateManager.RegisterOutboxStorage();
+                return stateManager.RegisterOutboxStorage(outboxStorage);
             }
 
             protected override Task OnStop(IMessageSession session)
@@ -98,6 +99,7 @@
             }
 
             IReliableStateManager stateManager;
+            OutboxStorage outboxStorage;
         }
     }
 }

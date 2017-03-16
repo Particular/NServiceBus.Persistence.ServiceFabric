@@ -6,25 +6,23 @@ namespace NServiceBus.Persistence.ServiceFabric.Outbox
 
     static class OutboxStateManagerExtensions
     {
-        public static async Task RegisterOutboxStorage(this IReliableStateManager stateManager)
+        public static async Task RegisterOutboxStorage(this IReliableStateManager stateManager, OutboxStorage storage)
         {
-            using (var tx = stateManager.CreateTransaction())
-            {
-                await stateManager.Outbox(tx).ConfigureAwait(false);
-                await stateManager.OutboxCleanup(tx).ConfigureAwait(false);
+            var outbox = await stateManager.Outbox().ConfigureAwait(false);
+            storage.Outbox = outbox;
 
-                await tx.CommitAsync().ConfigureAwait(false);
-            }
+            var cleanup = await stateManager.OutboxCleanup().ConfigureAwait(false);
+            storage.Cleanup = cleanup;
         }
 
-        public static Task<IReliableDictionary<string, StoredOutboxMessage>> Outbox(this IReliableStateManager stateManager, ITransaction transaction)
+        public static Task<IReliableDictionary<string, StoredOutboxMessage>> Outbox(this IReliableStateManager stateManager)
         {
-            return stateManager.GetOrAddAsync<IReliableDictionary<string, StoredOutboxMessage>>(transaction, "outbox");
+            return stateManager.GetOrAddAsync<IReliableDictionary<string, StoredOutboxMessage>>("outbox");
         }
 
-        public static Task<IReliableQueue<CleanupStoredOutboxCommand>> OutboxCleanup(this IReliableStateManager stateManager, ITransaction transaction)
+        public static Task<IReliableQueue<CleanupStoredOutboxCommand>> OutboxCleanup(this IReliableStateManager stateManager)
         {
-            return stateManager.GetOrAddAsync<IReliableQueue<CleanupStoredOutboxCommand>>(transaction, "outboxCleanup");
+            return stateManager.GetOrAddAsync<IReliableQueue<CleanupStoredOutboxCommand>>("outboxCleanup");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace NServiceBus.Persistence.ComponentTests
+﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+namespace NServiceBus.Persistence.ComponentTests
 {
     using System;
     using Extensibility;

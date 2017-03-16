@@ -5,7 +5,7 @@
     using System.Runtime.Serialization;
 
     [DataContract(Namespace = "NServiceBus.Persistence.ServiceFabric", Name = "StoredOutboxMessage")]
-    class StoredOutboxMessage
+    sealed class StoredOutboxMessage : IExtensibleDataObject
     {
         public StoredOutboxMessage(string messageId, StoredTransportOperation[] transportOperations)
         {
@@ -16,81 +16,74 @@
 
         StoredOutboxMessage(string messageId, DateTimeOffset storedAt, bool dispatched)
         {
-            TransportOperations = new StoredTransportOperation[0];
+            TransportOperations = EmptyTransportOperations;
             Id = messageId;
             StoredAt = storedAt;
             Dispatched = dispatched;
         }
 
         [DataMember(Name = "Id", Order = 0)]
-        public string Id { get; set; }
+        public string Id { get; private set; }
 
         [DataMember(Name = "Dispatched", Order = 1)]
-        public bool Dispatched { get; set; }
+        public bool Dispatched { get; private set; }
 
         [DataMember(Name = "StoredAt", Order = 2)]
-        public DateTimeOffset StoredAt { get; set; }
+        public DateTimeOffset StoredAt { get; private set; }
 
         [DataMember(Name = "TransportOperations", Order = 3)]
-        public StoredTransportOperation[] TransportOperations { get; set; }
+        public StoredTransportOperation[] TransportOperations { get; private set; }
+
+        public ExtensionDataObject ExtensionData { get; set; }
 
         public StoredOutboxMessage CloneAndMarkAsDispatched()
         {
             return new StoredOutboxMessage(Id, StoredAt, true);
         }
 
-        protected bool Equals(StoredOutboxMessage other)
+        bool Equals(StoredOutboxMessage other)
         {
-            return string.Equals(Id, other.Id) && Dispatched.Equals(other.Dispatched);
+            return string.Equals(Id, other.Id);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-            return Equals((StoredOutboxMessage)obj);
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj is StoredOutboxMessage && Equals((StoredOutboxMessage) obj);
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((Id?.GetHashCode() ?? 0) * 397) ^ Dispatched.GetHashCode();
-            }
+            return Id.GetHashCode();
         }
+
+        static StoredTransportOperation[] EmptyTransportOperations = new StoredTransportOperation[0];
     }
 
     [DataContract(Namespace = "NServiceBus.Persistence.ServiceFabric", Name = "StoredOutboxMessage")]
-    class StoredTransportOperation
+    class StoredTransportOperation : IExtensibleDataObject
     {
         [DataMember(Name = "MessageId", Order = 0)]
-        public string MessageId { get; set; }
+        public string MessageId { get; private set; }
 
         [DataMember(Name = "Options", Order = 1)]
-        public Dictionary<string, string> Options { get; set; }
+        public Dictionary<string, string> Options { get; private set; }
 
         [DataMember(Name = "Body", Order = 2)]
-        public byte[] Body { get; set; }
+        public byte[] Body { get; private set; }
 
         [DataMember(Name = "Headers", Order = 3)]
-        public Dictionary<string, string> Headers { get; set; }
-          
+        public Dictionary<string, string> Headers { get; private set; }
+
+        public ExtensionDataObject ExtensionData { get; set; }
+
         public StoredTransportOperation(string messageId, Dictionary<string, string> options, byte[] body, Dictionary<string, string> headers)
         {
-            this.MessageId = messageId;
-            this.Options = options;
-            this.Body = body;
-            this.Headers = headers;
+            MessageId = messageId;
+            Options = options;
+            Body = body;
+            Headers = headers;
         }
     }
 }

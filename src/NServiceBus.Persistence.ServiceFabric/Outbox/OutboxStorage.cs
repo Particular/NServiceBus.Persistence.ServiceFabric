@@ -72,11 +72,18 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var tx = reliableStateManager.CreateTransaction())
+            ConditionalValue<CleanupStoredOutboxCommand> message;
+
+            do
             {
-                var message = await Cleanup.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
-                if (message.HasValue)
+                using (var tx = reliableStateManager.CreateTransaction())
                 {
+                    message = await Cleanup.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                    if (!message.HasValue)
+                    {
+                        continue;
+                    }
+
                     if (message.Value.StoredAt <= date)
                     {
                         await Outbox.TryRemoveAsync(tx, message.Value.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
@@ -88,7 +95,8 @@
 
                     await tx.CommitAsync().ConfigureAwait(false);
                 }
-            }
+
+            } while (message.HasValue && !cancellationToken.IsCancellationRequested);
         }
     }
 }

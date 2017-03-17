@@ -77,10 +77,10 @@
                 if (conditionalValue.HasValue)
                 {
                     var dispatched = conditionalValue.Value.CloneAndMarkAsDispatched();
+
                     await Outbox.SetAsync(tx, messageId, dispatched).ConfigureAwait(false);
 
-                    var cleanup = await reliableStateManager.OutboxCleanup().ConfigureAwait(false);
-                    await cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(messageId, conditionalValue.Value.StoredAt)).ConfigureAwait(false);
+                    await Cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(messageId, conditionalValue.Value.StoredAt)).ConfigureAwait(false);
                 }
                 await tx.CommitAsync().ConfigureAwait(false);
             }

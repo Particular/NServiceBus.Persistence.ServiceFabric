@@ -8,21 +8,9 @@ namespace NServiceBus.Persistence.ServiceFabric
     {
         public static async Task RegisterOutboxStorage(this IReliableStateManager stateManager, OutboxStorage storage)
         {
-            var outbox = await stateManager.Outbox().ConfigureAwait(false);
-            storage.Outbox = outbox;
+            storage.Outbox = await stateManager.GetOrAddAsync<IReliableDictionary<string, StoredOutboxMessage>>("outbox").ConfigureAwait(false);
 
-            var cleanup = await stateManager.OutboxCleanup().ConfigureAwait(false);
-            storage.Cleanup = cleanup;
-        }
-
-        public static Task<IReliableDictionary<string, StoredOutboxMessage>> Outbox(this IReliableStateManager stateManager)
-        {
-            return stateManager.GetOrAddAsync<IReliableDictionary<string, StoredOutboxMessage>>("outbox");
-        }
-
-        public static Task<IReliableQueue<CleanupStoredOutboxCommand>> OutboxCleanup(this IReliableStateManager stateManager)
-        {
-            return stateManager.GetOrAddAsync<IReliableQueue<CleanupStoredOutboxCommand>>("outboxCleanup");
+            storage.Cleanup = await stateManager.GetOrAddAsync<IReliableQueue<CleanupStoredOutboxCommand>>("outboxCleanup").ConfigureAwait(false);
         }
     }
 }

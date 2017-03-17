@@ -19,8 +19,7 @@ namespace NServiceBus
         /// <returns>The configuration</returns>
         public static OutboxSettings SetTimeToKeepDeduplicationData(this OutboxSettings configuration, TimeSpan timeToKeepDeduplicationData)
         {
-            var now = DateTime.UtcNow;
-            if (now - timeToKeepDeduplicationData >= now)
+            if (timeToKeepDeduplicationData < TimeSpan.Zero)
             {
                 throw new ArgumentException("Specify a non-negative TimeSpan. The cleanup process removes entries older than the specified time to keep deduplication data, therefore the time span cannot be negative.", nameof(timeToKeepDeduplicationData));
             }

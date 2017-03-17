@@ -90,7 +90,6 @@
     <Compile Include="SagaPersister\SagaEntryExtensions.cs" />
     <Compile Include="SagaPersister\SagaStateManagerExtensions.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
-    <Compile Include="Outbox\Guard.cs" />
     <Compile Include="Outbox\OutboxPersistenceFeature.cs" />
     <Compile Include="Outbox\ServiceFabricOutboxSettingsExtensions.cs" />
     <Compile Include="Outbox\OutboxStorage.cs" />

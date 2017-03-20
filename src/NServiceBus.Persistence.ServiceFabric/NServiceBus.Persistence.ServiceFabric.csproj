@@ -57,9 +57,8 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NServiceBus.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.6.1.2\lib\net452\NServiceBus.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NServiceBus.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c">
+      <HintPath>..\packages\NServiceBus.6.2.0-alpha0292\lib\net452\NServiceBus.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -85,9 +84,9 @@
     <Compile Include="Outbox\CleanupStoredOutboxCommand.cs" />
     <Compile Include="Outbox\OutboxStateManagerExtensions.cs" />
     <Compile Include="Outbox\StoredOutboxMessage.cs" />
-    <Compile Include="SagaPersister\CorrelationPropertyEntry.cs" />
     <Compile Include="SagaPersister\SagaEntry.cs" />
     <Compile Include="SagaPersister\SagaEntryExtensions.cs" />
+    <Compile Include="SagaPersister\SagaIdGenerator.cs" />
     <Compile Include="SagaPersister\SagaStateManagerExtensions.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
     <Compile Include="Outbox\OutboxPersistenceFeature.cs" />

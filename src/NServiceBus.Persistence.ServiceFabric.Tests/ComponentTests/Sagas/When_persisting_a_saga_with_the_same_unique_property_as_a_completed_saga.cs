@@ -13,17 +13,9 @@
         {
             var persister = configuration.SagaStorage;
 
-            var saga1Id = Guid.NewGuid();
-            var saga1 = new SagaWithCorrelationPropertyData
-            {
-                Id = saga1Id,
-                CorrelatedProperty = saga1Id.ToString()
-            };
-            var saga2 = new SagaWithCorrelationPropertyData
-            {
-                Id = Guid.NewGuid(),
-                CorrelatedProperty = saga1Id.ToString()
-            };
+            var correlationPropertyData = Guid.NewGuid().ToString();
+            var saga1 = new SagaWithCorrelationPropertyData { CorrelatedProperty = correlationPropertyData };
+            var saga2 = new SagaWithCorrelationPropertyData { CorrelatedProperty = correlationPropertyData };
 
             await SaveSaga(persister, saga1);
             await CompleteSaga(persister, saga1.Id);

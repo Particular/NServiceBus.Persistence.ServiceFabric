@@ -13,14 +13,5 @@ namespace NServiceBus.Persistence.ServiceFabric
         {
             return JsonConvert.SerializeObject(data);
         }
-
-        public static CorrelationPropertyEntry CopyCorrelationProperty(this SagaEntry entry)
-        {
-            var correlationProperty = entry.CorrelationProperty;
-            return new CorrelationPropertyEntry(correlationProperty.SagaDataType, correlationProperty.Name, correlationProperty.Value, correlationProperty.Type)
-            {
-                ExtensionData = correlationProperty.ExtensionData,
-            };
-        }
     }
 }

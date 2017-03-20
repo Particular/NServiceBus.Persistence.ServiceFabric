@@ -10,8 +10,8 @@
         [Test]
         public async Task Should_fail()
         {
-            var sagaId = Guid.NewGuid();
-            var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
+            var correlationPropertyData = Guid.NewGuid().ToString();
+            var saga = new TestSagaData { SomeId = correlationPropertyData };
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();
@@ -29,7 +29,7 @@
 
             var losingContext = configuration.GetContextBagForSagaStorage();
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-            var staleRecord = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingContext);
+            var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
 
             record.DateTimeProperty = DateTime.Now;
             await persister.Update(record, winningSaveSession, winningContext);

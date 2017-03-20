@@ -10,16 +10,19 @@ namespace NServiceBus.Persistence.ComponentTests
         [Test]
         public async Task Save_fails_when_data_changes_between_read_and_update_on_same_thread()
         {
-            var sagaId = Guid.NewGuid();
-            var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
+            var correlationPropertyData = Guid.NewGuid().ToString();
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();
+
+            Guid generatedSagaId;
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
+                var sagaData = new TestSagaData { SomeId = correlationPropertyData };
+                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), sagaData);
+                generatedSagaId = sagaData.Id;
 
-                await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
+                await persister.Save(sagaData, correlationProperty, insertSession, insertContextBag);
                 await insertSession.CompleteAsync();
             }
 
@@ -30,7 +33,7 @@ namespace NServiceBus.Persistence.ComponentTests
             {
                 var winningContext = configuration.GetContextBagForSagaStorage();
                 var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
-                var record = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
+                var record = await persister.Get<TestSagaData>(generatedSagaId, winningSaveSession, winningContext);
 
                 startSecondTaskSync.SetResult(true);
                 await firstTaskCanCompleteSync.Task;
@@ -48,14 +51,14 @@ namespace NServiceBus.Persistence.ComponentTests
 
                 var losingSaveContext = configuration.GetContextBagForSagaStorage();
                 var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingSaveContext);
-                var staleRecord = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession, losingSaveContext);
+                var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingSaveContext);
 
                 firstTaskCanCompleteSync.SetResult(true);
                 await firstTask;
 
                 staleRecord.DateTimeProperty = DateTime.Now.AddHours(1);
                 await persister.Update(staleRecord, losingSaveSession, losingSaveContext);
-                Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
+                Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{generatedSagaId}] already saved."));
             });
 
             await secondTask;

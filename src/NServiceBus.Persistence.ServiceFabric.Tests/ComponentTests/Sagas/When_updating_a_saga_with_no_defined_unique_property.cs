@@ -12,11 +12,10 @@
         {
             configuration.RequiresFindersSupport();
 
-            var sagaId = Guid.NewGuid();
+            var propertyData = Guid.NewGuid().ToString();
             var sagaData = new SagaWithoutCorrelationPropertyData
             {
-                Id = sagaId,
-                FoundByFinderProperty = sagaId.ToString()
+                FoundByFinderProperty = propertyData
             };
 
             var persister = configuration.SagaStorage;
@@ -35,7 +34,7 @@
             savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var saga = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaId, session, savingContextBag);
+                var saga = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, session, savingContextBag);
                 saga.FoundByFinderProperty = updateValue;
                 SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga, typeof(CustomFinder));
 

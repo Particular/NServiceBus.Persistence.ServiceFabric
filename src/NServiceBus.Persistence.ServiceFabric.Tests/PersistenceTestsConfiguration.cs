@@ -33,6 +33,7 @@
         public bool SupportsFinders { get; } = true;
         public bool SupportsSubscriptions { get; } = false;
         public bool SupportsTimeouts { get; } = false;
+        public ISagaIdGenerator SagaIdGenerator { get; } = new SagaIdGenerator();
 
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }

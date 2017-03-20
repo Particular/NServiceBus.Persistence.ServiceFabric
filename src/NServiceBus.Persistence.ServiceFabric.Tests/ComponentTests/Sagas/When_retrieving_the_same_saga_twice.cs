@@ -10,8 +10,8 @@ namespace NServiceBus.Persistence.ComponentTests
         [Test]
         public async Task Get_returns_different_instance_of_saga_data()
         {
-            var sagaId = Guid.NewGuid();
-            var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
+            var correlationPropertyData = Guid.NewGuid().ToString();
+            var saga = new TestSagaData { SomeId = correlationPropertyData };
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();

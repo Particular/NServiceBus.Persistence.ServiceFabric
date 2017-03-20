@@ -12,16 +12,14 @@ namespace NServiceBus.Persistence.ComponentTests
         {
             configuration.RequiresFindersSupport();
 
-            var saga1Id = Guid.NewGuid();
+            var propertyData = Guid.NewGuid().ToString();
             var saga1 = new SagaWithoutCorrelationPropertyData
             {
-                Id = saga1Id,
-                FoundByFinderProperty = saga1Id.ToString()
+                FoundByFinderProperty = propertyData
             };
             var saga2 = new AnotherSagaWithoutCorrelationPropertyData
             {
-                Id = Guid.NewGuid(),
-                FoundByFinderProperty = saga1Id.ToString()
+                FoundByFinderProperty = propertyData
             };
 
             var persister = configuration.SagaStorage;

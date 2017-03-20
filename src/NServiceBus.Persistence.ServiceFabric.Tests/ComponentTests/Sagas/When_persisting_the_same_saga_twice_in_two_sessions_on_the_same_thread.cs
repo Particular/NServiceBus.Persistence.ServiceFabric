@@ -10,8 +10,8 @@ namespace NServiceBus.Persistence.ComponentTests
         [Test]
         public async Task Save_throws_concurrency_violation()
         {
-            var sagaId = Guid.NewGuid();
-            var saga = new TestSagaData { Id = sagaId , SomeId = sagaId.ToString()};
+            var correlationPropertyData = Guid.NewGuid().ToString();
+            var saga = new TestSagaData { SomeId = correlationPropertyData};
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();
@@ -52,8 +52,8 @@ namespace NServiceBus.Persistence.ComponentTests
         [Test]
         public async Task Save_process_is_repeatable()
         {
-            var sagaId = Guid.NewGuid();
-            var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
+            var correlationPropertyData = Guid.NewGuid().ToString();
+            var saga = new TestSagaData { SomeId = correlationPropertyData };
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();
@@ -71,7 +71,7 @@ namespace NServiceBus.Persistence.ComponentTests
 
             var losingContext1 = configuration.GetContextBagForSagaStorage();
             var losingSaveSession1 = await configuration.SynchronizedStorage.OpenSession(losingContext1);
-            var staleRecord1 = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession1, losingContext1);
+            var staleRecord1 = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession1, losingContext1);
 
             record1.DateTimeProperty = DateTime.Now;
             await persister.Update(record1, winningSaveSession1, winningContext1);
@@ -88,7 +88,7 @@ namespace NServiceBus.Persistence.ComponentTests
 
             var losingContext2 = configuration.GetContextBagForSagaStorage();
             var losingSaveSession2 = await configuration.SynchronizedStorage.OpenSession(losingContext2);
-            var staleRecord2 = await persister.Get<TestSagaData>("SomeId", sagaId.ToString(), losingSaveSession2, losingContext2);
+            var staleRecord2 = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession2, losingContext2);
 
             record2.DateTimeProperty = DateTime.Now;
             await persister.Update(record2, winningSaveSession2, winningContext2);

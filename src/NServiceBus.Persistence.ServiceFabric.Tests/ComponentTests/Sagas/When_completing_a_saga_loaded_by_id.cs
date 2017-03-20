@@ -10,15 +10,17 @@
         [Test]
         public async Task Should_delete_the_saga()
         {
-            var sagaId = Guid.NewGuid();
+            var correlationPropertyData = Guid.NewGuid().ToString();
 
             var persister = configuration.SagaStorage;
             var insertContextBag = configuration.GetContextBagForSagaStorage();
 
+            Guid generatedSagaId;
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                var saga = new TestSagaData { Id = sagaId, SomeId = sagaId.ToString() };
+                var saga = new TestSagaData { SomeId = correlationPropertyData };
                 var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
+                generatedSagaId = saga.Id;
 
                 await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
                 await insertSession.CompleteAsync();
@@ -28,7 +30,7 @@
             TestSagaData sagaData;
             using (var completeSession = await configuration.SynchronizedStorage.OpenSession(intentionallySharedContext))
             {
-                sagaData = await persister.Get<TestSagaData>(sagaId, completeSession, intentionallySharedContext);
+                sagaData = await persister.Get<TestSagaData>(generatedSagaId, completeSession, intentionallySharedContext);
                 SetActiveSagaInstance(intentionallySharedContext, new TestSaga(), sagaData);
 
                 await persister.Complete(sagaData, completeSession, intentionallySharedContext );
@@ -41,7 +43,7 @@
             {
                 SetActiveSagaInstance(readContextBag, new TestSaga(), new TestSagaData());
 
-                completedSaga = await persister.Get<TestSagaData>(sagaId, readSession, readContextBag);
+                completedSaga = await persister.Get<TestSagaData>(generatedSagaId, readSession, readContextBag);
             }
 
             Assert.NotNull(sagaData);

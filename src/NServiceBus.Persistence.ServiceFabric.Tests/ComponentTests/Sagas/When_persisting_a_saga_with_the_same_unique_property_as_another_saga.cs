@@ -10,16 +10,14 @@
         [Test]
         public async Task It_should_enforce_uniqueness()
         {
-            var saga1Id = Guid.NewGuid();
+            var correlationPropertyData = Guid.NewGuid().ToString();
             var saga1 = new SagaWithCorrelationPropertyData
             {
-                Id = saga1Id,
-                CorrelatedProperty = saga1Id.ToString()
+                CorrelatedProperty = correlationPropertyData
             };
             var saga2 = new SagaWithCorrelationPropertyData
             {
-                Id = Guid.NewGuid(),
-                CorrelatedProperty = saga1Id.ToString()
+                CorrelatedProperty = correlationPropertyData
             };
 
             var persister = configuration.SagaStorage;
@@ -35,7 +33,7 @@
             var correlationPropertySaga2 = SetActiveSagaInstance(losingContextBag, new SagaWithCorrelationProperty(), saga2);
             await persister.Save(saga2, correlationPropertySaga2, losingSession, losingContextBag);
 
-            Assert.That(async () => await losingSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"The saga with the correlation id 'Name: {nameof(SagaWithCorrelationPropertyData.CorrelatedProperty)} Value: {saga1Id}' already exists."));
+            Assert.That(async () => await losingSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"The saga with the correlation id 'Name: {nameof(SagaWithCorrelationPropertyData.CorrelatedProperty)} Value: {correlationPropertyData}' already exists."));
         }
     }
 }

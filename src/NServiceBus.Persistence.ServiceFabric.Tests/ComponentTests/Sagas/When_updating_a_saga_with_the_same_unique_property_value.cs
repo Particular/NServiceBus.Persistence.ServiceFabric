@@ -10,11 +10,10 @@
         [Test]
         public async Task It_should_persist_successfully()
         {
-            var sagaId = Guid.NewGuid();
+            var correlationPropertyData = Guid.NewGuid().ToString();
             var saga1 = new SagaWithCorrelationPropertyData
             {
-                Id = sagaId,
-                CorrelatedProperty = sagaId.ToString()
+                CorrelatedProperty = correlationPropertyData
             };
 
             var persister = configuration.SagaStorage;
@@ -30,7 +29,7 @@
             var updatingContext = configuration.GetContextBagForSagaStorage();
             using (var updateSession = await configuration.SynchronizedStorage.OpenSession(updatingContext))
             {
-                saga1 = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), sagaId.ToString(), updateSession, updatingContext);
+                saga1 = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), correlationPropertyData, updateSession, updatingContext);
 
                 SetActiveSagaInstance(updatingContext, new SagaWithCorrelationProperty(), saga1);
 

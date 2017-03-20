@@ -30,10 +30,7 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData
-                {
-                    FoundByFinderProperty = propertyData
-                }, typeof(CustomFinder));
+                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData { FoundByFinderProperty = propertyData }, typeof(CustomFinder));
 
                 var result = await persister.Get<SagaWithoutCorrelationPropertyData>(generateSagaId, readSession, readContextBag);
                 Assert.AreEqual(sagaData.FoundByFinderProperty, result.FoundByFinderProperty);

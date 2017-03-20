@@ -16,12 +16,18 @@
 
         protected override void Setup(FeatureConfigurationContext context)
         {
-            var persister = new SagaPersister();
+            var settings = context.Settings;
+            var jsonSerializerSettings = SagaSettings.GetJsonSerializerSettings(settings);
+            var readerCreator = SagaSettings.GetReaderCreator(settings);
+            var writerCreator = SagaSettings.GetWriterCreator(settings);
+            var infoCache = new SagaInfoCache(jsonSerializerSettings, readerCreator, writerCreator);
+            var persister = new SagaPersister(infoCache);
 
             context.RegisterStartupTask(b => new RegisterDictionaries(context.Settings.StateManager(), persister));
 
             context.Container.RegisterSingleton<ISagaPersister>(persister);
         }
+
 
         class RegisterDictionaries : FeatureStartupTask
         {

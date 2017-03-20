@@ -27,7 +27,7 @@ namespace NServiceBus.Persistence.ComponentTests
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), new TestSagaData());
+                SetActiveSagaInstance(readContextBag, new TestSaga(), saga);
 
                 returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, readSession, readContextBag);
 
@@ -38,7 +38,7 @@ namespace NServiceBus.Persistence.ComponentTests
             readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), new TestSagaData());
+                SetActiveSagaInstance(readContextBag, new TestSaga(), saga);
 
                 returnedSaga2 = await persister.Get<TestSagaData>("Id", saga.Id, readSession, readContextBag);
 

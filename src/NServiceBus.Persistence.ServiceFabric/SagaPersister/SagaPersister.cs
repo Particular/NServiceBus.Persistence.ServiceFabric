@@ -9,11 +9,22 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class SagaPersister : ISagaPersister
     {
+        SagaInfoCache sagaInfoCache;
+
+        public SagaPersister() : this(new SagaInfoCache())
+        {
+        }
+
+        public SagaPersister(SagaInfoCache sagaInfoCache)
+        {
+            this.sagaInfoCache = sagaInfoCache;
+        }
+
         public IReliableDictionary<Guid, SagaEntry> Sagas { get; set; }
 
         public Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (StorageSession)session;
+            var storageSession = (StorageSession) session;
 
             var entry = GetEntry(context, sagaData.Id);
 
@@ -37,7 +48,9 @@ namespace NServiceBus.Persistence.ServiceFabric
                 if (conditionalValue.HasValue)
                 {
                     SetEntry(context, sagaId, conditionalValue.Value);
-                    return conditionalValue.Value.ToSagaData<TSagaData>();
+
+                    var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData), context.GetSagaType());
+                    return sagaInfo.FromEntry<TSagaData>(conditionalValue.Value);
                 }
                 return default(TSagaData);
             }
@@ -52,9 +65,9 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (StorageSession)session;
-
-            var entry = new SagaEntry(sagaData.FromSagaData());
+            var storageSession = (StorageSession) session;
+            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType(), context.GetSagaType());
+            var entry = sagaInfo.ToSagaEntry(sagaData);
 
             return storageSession.Add(async tx =>
             {
@@ -71,11 +84,13 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public Task Update(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (StorageSession)session;
+            var storageSession = (StorageSession) session;
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 
-            var newEntry = new SagaEntry(sagaData.FromSagaData());
+            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType(), context.GetSagaType());
+
+            var newEntry = sagaInfo.ToSagaEntry(sagaData);
 
             return storageSession.Add(async tx =>
             {

@@ -34,10 +34,11 @@
             savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
+                SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData(), typeof(CustomFinder));
                 var saga = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, session, savingContextBag);
-                saga.FoundByFinderProperty = updateValue;
                 SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga, typeof(CustomFinder));
 
+                saga.FoundByFinderProperty = updateValue;
                 await persister.Update(saga, session, savingContextBag);
                 await session.CompleteAsync();
             }
@@ -46,6 +47,7 @@
             SagaWithoutCorrelationPropertyData result;
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
+                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData(), typeof(CustomFinder));
                 result = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, readSession, readContextBag);
             }
 

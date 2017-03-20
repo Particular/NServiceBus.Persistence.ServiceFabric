@@ -45,9 +45,11 @@ namespace NServiceBus.Persistence.ComponentTests
                     var enlistedContextBag = configuration.GetContextBagForSagaStorage();
                     var enlistedSession = await storageAdapter.TryAdapt(transportTransaction, enlistedContextBag);
 
+                    SetActiveSagaInstance(unenlistedContextBag, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertData });
                     var unenlistedRecord = await persister.Get<TestSagaData>(generatedSagaId, unenlistedSession, unenlistedContextBag);
                     SetActiveSagaInstance(unenlistedContextBag, new TestSaga(), unenlistedRecord);
 
+                    SetActiveSagaInstance(enlistedContextBag, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertData });
                     var enlistedRecord = await persister.Get<TestSagaData>("Id", generatedSagaId, enlistedSession, enlistedContextBag);
                     SetActiveSagaInstance(enlistedContextBag, new TestSaga(), enlistedRecord);
 

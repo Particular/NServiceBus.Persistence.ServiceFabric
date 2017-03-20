@@ -95,6 +95,8 @@
     <Compile Include="ComponentTests\OutboxStorageTests.cs" />
     <Compile Include="ComponentTests\RequiresExtensionsForPersistenceTestsConfiguration.cs" />
     <Compile Include="ComponentTests\Sagas\AnotherSagaWithoutCorrelationProperty.cs" />
+    <Compile Include="ComponentTests\Sagas\CombGuid.cs" />
+    <Compile Include="ComponentTests\Sagas\DefaultSagaIdGenerator.cs" />
     <Compile Include="ComponentTests\Sagas\When_multiple_workers_retrieve_same_saga_on_different_threads.cs" />
     <Compile Include="ComponentTests\Sagas\When_worker_tries_to_complete_saga_update_by_another.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_no_defined_unique_properties.cs" />

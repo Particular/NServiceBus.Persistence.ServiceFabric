@@ -10,6 +10,7 @@
         internal SagaPersistenceFeature()
         {
             DependsOn<Sagas>();
+            Defaults(s => s.Set<ISagaIdGenerator>(new SagaIdGenerator()));
             Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
         }
 

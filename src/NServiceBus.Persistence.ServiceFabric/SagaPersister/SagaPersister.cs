@@ -4,16 +4,12 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Extensibility;
-    using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
-    using Newtonsoft.Json;
     using Sagas;
 
     class SagaPersister : ISagaPersister
     {
         public IReliableDictionary<Guid, SagaEntry> Sagas { get; set; }
-
-        public IReliableDictionary<CorrelationPropertyEntry, Guid> Correlations { get; set; }
 
         public Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
@@ -28,13 +24,6 @@ namespace NServiceBus.Persistence.ServiceFabric
                 {
                     throw new Exception("Saga can't be completed as it was updated by another process.");
                 }
-
-                // saga removed
-                // clean the index
-                if (Equals(entry.CorrelationProperty, NoCorrelationId) == false)
-                {
-                    await Correlations.TryRemoveAsync(tx, entry.CorrelationProperty).ConfigureAwait(false);
-                }
             });
         }
 
@@ -44,60 +33,38 @@ namespace NServiceBus.Persistence.ServiceFabric
             var storageSession = (StorageSession) session;
             using (var tx = storageSession.StateManager.CreateTransaction())
             {
-                return await InternalGet<TSagaData>(sagaId, context, tx).ConfigureAwait(false);
-            }
-        }
-
-        public async Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
-        {
-            var storageSession = (StorageSession) session;
-            var serializedPropertyValue = JsonConvert.SerializeObject(propertyValue);
-            var key = new CorrelationPropertyEntry(typeof(TSagaData).FullName, propertyName, serializedPropertyValue, propertyValue.GetType().FullName);
-
-            using (var tx = storageSession.StateManager.CreateTransaction())
-            {
-                var conditionalValue = await Correlations.TryGetValueAsync(tx, key).ConfigureAwait(false);
+                var conditionalValue = await Sagas.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
                 if (conditionalValue.HasValue)
                 {
-                    return await InternalGet<TSagaData>(conditionalValue.Value, context, tx).ConfigureAwait(false);
+                    SetEntry(context, sagaId, conditionalValue.Value);
+                    return conditionalValue.Value.ToSagaData<TSagaData>();
                 }
+                return default(TSagaData);
             }
-            return default(TSagaData);
         }
 
-        async Task<TSagaData> InternalGet<TSagaData>(Guid sagaId, ContextBag context, ITransaction tx) where TSagaData : IContainSagaData
+        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
         {
-            var conditionalValue = await Sagas.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
-            if (conditionalValue.HasValue)
-            {
-                SetEntry(context, sagaId, conditionalValue.Value);
-                return conditionalValue.Value.ToSagaData<TSagaData>();
-            }
-            return default(TSagaData);
+            var sagaId = SagaIdGenerator.Generate(typeof(TSagaData), propertyName, propertyValue);
+
+            return Get<TSagaData>(sagaId, session, context);
         }
 
         public Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
         {
             var storageSession = (StorageSession)session;
 
-            var correlationId = NoCorrelationId;
-            if (correlationProperty != SagaCorrelationProperty.None)
-            {
-                var serializedPropertyValue = JsonConvert.SerializeObject(correlationProperty.Value);
-                correlationId = new CorrelationPropertyEntry(sagaData.GetType().FullName, correlationProperty.Name, serializedPropertyValue, correlationProperty.Value.GetType().FullName);
-            }
-
-            var entry = new SagaEntry(correlationId, sagaData.FromSagaData());
+            var entry = new SagaEntry(sagaData.FromSagaData());
 
             return storageSession.Add(async tx =>
             {
-                if (correlationProperty != SagaCorrelationProperty.None && !await Correlations.TryAddAsync(tx, correlationId, sagaData.Id).ConfigureAwait(false))
-                {
-                    throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists.");
-                }
-
                 if (!await Sagas.TryAddAsync(tx, sagaData.Id, entry).ConfigureAwait(false))
                 {
+                    if (correlationProperty != SagaCorrelationProperty.None)
+                    {
+                        throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists.");
+                    }
+
                     throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
                 }
             });
@@ -109,7 +76,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 
-            var newEntry = new SagaEntry(loadedEntry.CopyCorrelationProperty(), sagaData.FromSagaData());
+            var newEntry = new SagaEntry(sagaData.FromSagaData());
 
             return storageSession.Add(async tx =>
             {
@@ -147,7 +114,5 @@ namespace NServiceBus.Persistence.ServiceFabric
         }
 
         const string ContextKey = "NServiceBus.Persistence.ServiceFabric.Sagas";
-
-        static readonly CorrelationPropertyEntry NoCorrelationId = new CorrelationPropertyEntry(typeof(object).FullName, "_NoCorrelationId_", "_Value_", typeof(object).FullName);
     }
 }

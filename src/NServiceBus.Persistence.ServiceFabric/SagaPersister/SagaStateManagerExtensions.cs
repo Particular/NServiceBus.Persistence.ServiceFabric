@@ -9,21 +9,12 @@
     {
         public static async Task RegisterSagaStorage(this IReliableStateManager stateManager, SagaPersister persister)
         {
-            var sagas = await stateManager.Sagas().ConfigureAwait(false);
-            persister.Sagas = sagas;
-
-            var correlations = await stateManager.Correlations().ConfigureAwait(false);
-            persister.Correlations = correlations;
+            persister.Sagas = await stateManager.Sagas().ConfigureAwait(false);
         }
 
         public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this IReliableStateManager stateManager)
         {
             return stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>("sagas");
-        }
-
-        public static Task<IReliableDictionary<CorrelationPropertyEntry, Guid>> Correlations(this IReliableStateManager stateManager)
-        {
-            return stateManager.GetOrAddAsync<IReliableDictionary<CorrelationPropertyEntry, Guid>>("bycorrelationid");
         }
     }
 }

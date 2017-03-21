@@ -12,6 +12,7 @@
         /// </summary>
         public static IServiceFabricStorageSession ServiceFabricSession(this SynchronizedStorageSession session)
         {
+            Guard.AgainstNull(nameof(session), session);
             return GetServiceFabricSession(session);
         }
 

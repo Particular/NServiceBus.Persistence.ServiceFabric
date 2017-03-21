@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\ServiceFabricPersistenceConfig.cs" />
+    <Compile Include="Guard.cs" />
     <Compile Include="Outbox\CleanupStoredOutboxCommand.cs" />
     <Compile Include="Outbox\OutboxStateManagerExtensions.cs" />
     <Compile Include="Outbox\StoredOutboxMessage.cs" />

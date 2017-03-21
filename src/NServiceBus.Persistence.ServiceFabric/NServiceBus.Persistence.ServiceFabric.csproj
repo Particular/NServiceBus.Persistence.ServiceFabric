@@ -86,9 +86,17 @@
     <Compile Include="Outbox\OutboxStateManagerExtensions.cs" />
     <Compile Include="Outbox\StoredOutboxMessage.cs" />
     <Compile Include="Outbox\StoredTransportOperation.cs" />
+    <Compile Include="SagaPersister\Config\SagaSettings_Reader.cs" />
+    <Compile Include="SagaPersister\Config\SagaSettings_ServiceFabricPersistenceConfig.cs" />
+    <Compile Include="SagaPersister\Config\SagaSettings.cs" />
+    <Compile Include="SagaPersister\Config\SagaSettings_JSonSerializerSettings.cs" />
+    <Compile Include="SagaPersister\Config\SagaSettings_Writer.cs" />
+    <Compile Include="SagaPersister\ContextBagExtensions.cs" />
+    <Compile Include="SagaPersister\RuntimeSagaInfo.cs" />
     <Compile Include="SagaPersister\SagaEntry.cs" />
     <Compile Include="SagaPersister\SagaEntryExtensions.cs" />
     <Compile Include="SagaPersister\SagaIdGenerator.cs" />
+    <Compile Include="SagaPersister\SagaInfoCache.cs" />
     <Compile Include="SagaPersister\SagaStateManagerExtensions.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
     <Compile Include="Outbox\OutboxPersistenceFeature.cs" />
@@ -100,6 +108,7 @@
     <Compile Include="SagaPersister\SagaPersistenceFeature.cs" />
     <Compile Include="SagaPersister\SagaPersister.cs" />
     <Compile Include="ServiceFabricPersistenceStorageSessionExtensions.cs" />
+    <Compile Include="StaticVersions.cs" />
     <Compile Include="SynchronizedStorage\IServiceFabricStorageSession.cs" />
     <Compile Include="SynchronizedStorage\SynchronizedStorage.cs" />
     <Compile Include="SynchronizedStorage\StorageSession.cs" />

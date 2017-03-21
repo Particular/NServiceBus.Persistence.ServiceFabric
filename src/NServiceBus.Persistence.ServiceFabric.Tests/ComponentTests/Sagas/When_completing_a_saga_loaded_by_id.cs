@@ -30,6 +30,7 @@
             TestSagaData sagaData;
             using (var completeSession = await configuration.SynchronizedStorage.OpenSession(intentionallySharedContext))
             {
+                SetActiveSagaInstance(intentionallySharedContext, new TestSaga(), new TestSagaData());
                 sagaData = await persister.Get<TestSagaData>(generatedSagaId, completeSession, intentionallySharedContext);
                 SetActiveSagaInstance(intentionallySharedContext, new TestSaga(), sagaData);
 

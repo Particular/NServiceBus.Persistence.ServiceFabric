@@ -9,7 +9,7 @@ namespace NServiceBus
     /// <summary>
     /// Configuration extensions for Service Fabric Persistence
     /// </summary>
-    public static class ServiceFabricPersistenceConfig
+    public static partial class ServiceFabricPersistenceConfig
     {
         /// <summary>
         /// Provides the state manager to the persistence.

@@ -14,6 +14,8 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
+                SetActiveSagaInstance(readContextBag, new SimpleSagaEntitySaga(), new SimpleSagaEntity{ OrderSource = Guid.NewGuid().ToString() });
+
                 var simpleSageEntity = await persister.Get<SimpleSagaEntity>("propertyNotFound", "someValue", session, readContextBag);
                 Assert.IsNull(simpleSageEntity);
             }
@@ -26,6 +28,8 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
+                SetActiveSagaInstance(readContextBag, new SimpleSagaEntitySaga(), new SimpleSagaEntity{ OrderSource = Guid.NewGuid().ToString() });
+
                 var simpleSageEntity = await persister.Get<SimpleSagaEntity>(Guid.Empty, session, readContextBag);
                 Assert.IsNull(simpleSageEntity);
             }

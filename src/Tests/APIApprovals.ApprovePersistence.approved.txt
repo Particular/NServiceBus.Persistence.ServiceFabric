@@ -9,6 +9,12 @@ namespace NServiceBus.Persistence.ServiceFabric
         Microsoft.ServiceFabric.Data.IReliableStateManager StateManager { get; }
         Microsoft.ServiceFabric.Data.ITransaction Transaction { get; }
     }
+    public class SagaSettings
+    {
+        public void JsonSettings(Newtonsoft.Json.JsonSerializerSettings jsonSerializerSettings) { }
+        public void ReaderCreator(System.Func<System.IO.TextReader, Newtonsoft.Json.JsonReader> readerCreator) { }
+        public void WriterCreator(System.Func<System.Text.StringBuilder, Newtonsoft.Json.JsonWriter> writerCreator) { }
+    }
     public class ServiceFabricPersistence : NServiceBus.Persistence.PersistenceDefinition { }
     public class static ServiceFabricPersistenceStorageSessionExtensions
     {
@@ -24,6 +30,7 @@ namespace NServiceBus
     }
     public class static ServiceFabricPersistenceConfig
     {
+        public static NServiceBus.Persistence.ServiceFabric.SagaSettings SagaSettings(this NServiceBus.PersistenceExtensions<NServiceBus.Persistence.ServiceFabric.ServiceFabricPersistence> configuration) { }
         public static void StateManager(this NServiceBus.PersistenceExtensions<NServiceBus.Persistence.ServiceFabric.ServiceFabricPersistence> configuration, Microsoft.ServiceFabric.Data.IReliableStateManager stateManager) { }
     }
 }

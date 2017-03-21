@@ -29,6 +29,7 @@
             var readingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
+                SetActiveSagaInstance(readingContextBag, new SagaWithComplexType(), sagaData);
                 var retrieved = await persister.Get<SagaWithComplexTypeEntity>(generatedSagaId, session, readingContextBag);
                 SetActiveSagaInstance(readingContextBag, new SagaWithComplexType(), retrieved);
 

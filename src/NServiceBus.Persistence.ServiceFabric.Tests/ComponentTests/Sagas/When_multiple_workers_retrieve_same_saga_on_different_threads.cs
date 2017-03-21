@@ -33,7 +33,9 @@ namespace NServiceBus.Persistence.ComponentTests
             {
                 var winningContext = configuration.GetContextBagForSagaStorage();
                 var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
+                SetActiveSagaInstance(winningContext, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
                 var record = await persister.Get<TestSagaData>(generatedSagaId, winningSaveSession, winningContext);
+                SetActiveSagaInstance(winningContext, new TestSaga(), record);
 
                 startSecondTaskSync.SetResult(true);
                 await firstTaskCanCompleteSync.Task;
@@ -51,7 +53,9 @@ namespace NServiceBus.Persistence.ComponentTests
 
                 var losingSaveContext = configuration.GetContextBagForSagaStorage();
                 var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingSaveContext);
+                SetActiveSagaInstance(losingSaveContext, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
                 var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingSaveContext);
+                SetActiveSagaInstance(losingSaveContext, new TestSaga(), staleRecord);
 
                 firstTaskCanCompleteSync.SetResult(true);
                 await firstTask;

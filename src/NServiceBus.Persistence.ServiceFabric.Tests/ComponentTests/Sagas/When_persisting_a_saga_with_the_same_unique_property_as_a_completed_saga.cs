@@ -18,13 +18,13 @@
             var saga2 = new SagaWithCorrelationPropertyData { CorrelatedProperty = correlationPropertyData };
 
             await SaveSaga(persister, saga1);
-            await CompleteSaga(persister, saga1.Id);
+            await CompleteSaga(persister, saga1);
 
             await SaveSaga(persister, saga2);
-            await CompleteSaga(persister, saga2.Id);
+            await CompleteSaga(persister, saga2);
 
             await SaveSaga(persister, saga1);
-            await CompleteSaga(persister, saga1.Id);
+            await CompleteSaga(persister, saga1);
         }
 
         async Task SaveSaga(ISagaPersister persister, SagaWithCorrelationPropertyData saga)
@@ -39,13 +39,16 @@
             }
         }
 
-        async Task CompleteSaga(ISagaPersister persister, Guid sagaId)
+        async Task CompleteSaga(ISagaPersister persister, SagaWithCorrelationPropertyData sagaData)
         {
             var completionContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(completionContextBag))
             {
-                var saga = await persister.Get<SagaWithCorrelationPropertyData>(sagaId, session, completionContextBag);
-                await persister.Complete(saga, session, completionContextBag);
+                SetActiveSagaInstance(completionContextBag, new SagaWithCorrelationProperty(), sagaData);
+                var retrieved = await persister.Get<SagaWithCorrelationPropertyData>(sagaData.Id, session, completionContextBag);
+                SetActiveSagaInstance(completionContextBag, new SagaWithCorrelationProperty(), retrieved);
+
+                await persister.Complete(retrieved, session, completionContextBag);
                 await session.CompleteAsync();
             }
         }

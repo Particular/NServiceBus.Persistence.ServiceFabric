@@ -28,6 +28,7 @@
             SagaWithCorrelationPropertyData sagaData;
             using (var completeSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
+                SetActiveSagaInstance(intentionallySharedContext, new SagaWithCorrelationProperty(), new SagaWithCorrelationPropertyData { CorrelatedProperty = correlationPropertyData });
                 sagaData = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), correlationPropertyData, completeSession, intentionallySharedContext);
                 SetActiveSagaInstance(intentionallySharedContext, new SagaWithCorrelationProperty(), sagaData);
 

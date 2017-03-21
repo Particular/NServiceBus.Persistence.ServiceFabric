@@ -37,8 +37,8 @@
             readonly OutboxStorage storage;
             readonly TimeSpan timeToKeepDeduplicationData;
             readonly TimeSpan frequencyToRunDeduplicationDataCleanup;
-            CancellationTokenSource _tokenSource;
-            Task _cleanupTask;
+            CancellationTokenSource tokenSource;
+            Task cleanupTask;
 
             static ILog Logger = LogManager.GetLogger<OutboxCleaner>();
 
@@ -51,17 +51,17 @@
 
             protected override Task OnStart(IMessageSession session)
             {
-                _tokenSource = new CancellationTokenSource();
+                tokenSource = new CancellationTokenSource();
 
-                _cleanupTask = Task.Run(() => Cleanup(_tokenSource.Token));
+                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token));
 
                 return TaskEx.CompletedTask;
             }
 
             protected override Task OnStop(IMessageSession session)
             {
-                _tokenSource.Cancel();
-                return _cleanupTask;
+                tokenSource.Cancel();
+                return cleanupTask;
             }
 
             async Task Cleanup(CancellationToken token)

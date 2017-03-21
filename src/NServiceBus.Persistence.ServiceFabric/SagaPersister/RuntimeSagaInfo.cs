@@ -41,7 +41,7 @@
             return new SagaEntry(builder.ToString(), CurrentVersion, StaticVersions.PersistenceVersion);
         }
 
-        public TSagaData FromEntry<TSagaData>(SagaEntry entry)
+        public TSagaData FromSagaEntry<TSagaData>(SagaEntry entry)
             where TSagaData : IContainSagaData
         {
             using(var reader = new StringReader(entry.Data))

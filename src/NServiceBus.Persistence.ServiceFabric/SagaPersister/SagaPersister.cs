@@ -50,7 +50,7 @@ namespace NServiceBus.Persistence.ServiceFabric
                     SetEntry(context, sagaId, conditionalValue.Value);
 
                     var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData), context.GetSagaType());
-                    return sagaInfo.FromEntry<TSagaData>(conditionalValue.Value);
+                    return sagaInfo.FromSagaEntry<TSagaData>(conditionalValue.Value);
                 }
                 return default(TSagaData);
             }

@@ -22,7 +22,14 @@
 
             SynchronizedStorage = new SynchronizedStorage(stateManager);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
-            SagaStorage = new SagaPersister();
+
+            var sagaInfoCache = new SagaInfoCache();
+            SagaStorage = new SagaPersister(sagaInfoCache);
+
+            var sagaIdGenerator = new SagaIdGenerator();
+            sagaIdGenerator.Initialize(sagaInfoCache);
+            SagaIdGenerator = sagaIdGenerator;
+
             OutboxStorage = new OutboxStorage(statefulService.StateManager);
         }
 
@@ -33,7 +40,7 @@
         public bool SupportsFinders { get; } = true;
         public bool SupportsSubscriptions { get; } = false;
         public bool SupportsTimeouts { get; } = false;
-        public ISagaIdGenerator SagaIdGenerator { get; } = new SagaIdGenerator();
+        public ISagaIdGenerator SagaIdGenerator { get; }
 
         public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }
@@ -46,7 +53,6 @@
 
         public async Task Configure()
         {
-            await stateManager.RegisterSagaStorage((SagaPersister)SagaStorage).ConfigureAwait(false);
             await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage).ConfigureAwait(false);
         }
 

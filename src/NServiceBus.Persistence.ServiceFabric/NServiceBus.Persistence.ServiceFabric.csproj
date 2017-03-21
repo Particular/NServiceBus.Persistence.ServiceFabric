@@ -96,7 +96,7 @@
     <Compile Include="SagaPersister\SagaEntryExtensions.cs" />
     <Compile Include="SagaPersister\SagaIdGenerator.cs" />
     <Compile Include="SagaPersister\SagaInfoCache.cs" />
-    <Compile Include="SagaPersister\SagaStateManagerExtensions.cs" />
+    <Compile Include="SagaPersister\ServiceFabricSagaAttribute.cs" />
     <Compile Include="ServiceFabricPersistence.cs" />
     <Compile Include="Outbox\OutboxPersistenceFeature.cs" />
     <Compile Include="Outbox\ServiceFabricOutboxSettingsExtensions.cs" />

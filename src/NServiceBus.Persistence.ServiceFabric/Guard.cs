@@ -1,29 +1,31 @@
-﻿using System;
-
-static class Guard
+﻿namespace NServiceBus.Persistence.ServiceFabric
 {
-    public static void AgainstNull(string argumentName, object value)
+    using System;
+
+    static class Guard
     {
-        if (value == null)
+        public static void AgainstNull(string argumentName, object value)
         {
-            throw new ArgumentNullException(argumentName);
+            if (value == null)
+            {
+                throw new ArgumentNullException(argumentName);
+            }
+        }
+
+        public static void AgainstNegativeAndZero(string argumentName, TimeSpan value)
+        {
+            if (value <= TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(argumentName);
+            }
+        }
+
+        public static void AgainstZero(string argumentName, TimeSpan value)
+        {
+            if (value == TimeSpan.Zero)
+            {
+                throw new ArgumentOutOfRangeException(argumentName);
+            }
         }
     }
-
-    public static void AgainstNegativeAndZero(string argumentName, TimeSpan value)
-    {
-        if (value <= TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(argumentName);
-        }
-    }
-
-    public static void AgainstZero(string argumentName, TimeSpan value)
-    {
-        if (value == TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(argumentName);
-        }
-    }
-
 }

@@ -19,8 +19,8 @@ namespace NServiceBus
 {
     public class static ServiceFabricOutboxSettingsExtensions
     {
-        public static NServiceBus.Outbox.OutboxSettings SetFrequencyToRunDeduplicationDataCleanup(this NServiceBus.Outbox.OutboxSettings configuration, System.TimeSpan frequencyToRunDeduplicationDataCleanup) { }
-        public static NServiceBus.Outbox.OutboxSettings SetTimeToKeepDeduplicationData(this NServiceBus.Outbox.OutboxSettings configuration, System.TimeSpan timeToKeepDeduplicationData) { }
+        public static void SetFrequencyToRunDeduplicationDataCleanup(this NServiceBus.Outbox.OutboxSettings configuration, System.TimeSpan frequencyToRunDeduplicationDataCleanup) { }
+        public static void SetTimeToKeepDeduplicationData(this NServiceBus.Outbox.OutboxSettings configuration, System.TimeSpan timeToKeepDeduplicationData) { }
     }
     public class static ServiceFabricPersistenceConfig
     {

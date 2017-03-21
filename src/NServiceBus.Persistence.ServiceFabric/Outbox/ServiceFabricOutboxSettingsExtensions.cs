@@ -16,8 +16,7 @@ namespace NServiceBus
         /// <param name="configuration">The configuration being extended</param>
         /// <param name="timeToKeepDeduplicationData">The time to keep the deduplication data.
         /// The cleanup process removes entries older than the specified time to keep deduplication data, therefore the time span cannot be negative</param>
-        /// <returns>The configuration</returns>
-        public static OutboxSettings SetTimeToKeepDeduplicationData(this OutboxSettings configuration, TimeSpan timeToKeepDeduplicationData)
+        public static void SetTimeToKeepDeduplicationData(this OutboxSettings configuration, TimeSpan timeToKeepDeduplicationData)
         {
             if (timeToKeepDeduplicationData < TimeSpan.Zero)
             {
@@ -25,7 +24,6 @@ namespace NServiceBus
             }
 
             configuration.GetSettings().Set(OutboxPersistenceFeature.TimeToKeepDeduplicationEntries, timeToKeepDeduplicationData);
-            return configuration;
         }
 
         /// <summary>
@@ -33,11 +31,9 @@ namespace NServiceBus
         /// </summary>
         /// <param name="configuration">The configuration being extended</param>
         /// <param name="frequencyToRunDeduplicationDataCleanup">The frequency to run the deduplication data cleanup task. By specifying a negative time span (-1) the cleanup task will never run.</param>
-        /// <returns>The configuration</returns>
-        public static OutboxSettings SetFrequencyToRunDeduplicationDataCleanup(this OutboxSettings configuration, TimeSpan frequencyToRunDeduplicationDataCleanup)
+        public static void SetFrequencyToRunDeduplicationDataCleanup(this OutboxSettings configuration, TimeSpan frequencyToRunDeduplicationDataCleanup)
         {
             configuration.GetSettings().Set(OutboxPersistenceFeature.FrequencyToRunDeduplicationDataCleanup, frequencyToRunDeduplicationDataCleanup);
-            return configuration;
         }
     }
 }

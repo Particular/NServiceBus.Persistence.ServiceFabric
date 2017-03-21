@@ -31,7 +31,7 @@
         {
             var serializedPropertyValue = JsonConvert.SerializeObject(correlationPropertyValue);
             // Needs to be discussed if FullName is a good idea
-            return DeterministicGuid($"{sagaInfo.SagaAttribute.EntityName}_{correlationPropertyName}_{serializedPropertyValue}");
+            return DeterministicGuid($"{sagaInfo.SagaAttribute.SagaDataName}_{correlationPropertyName}_{serializedPropertyValue}");
         }
 
         static Guid DeterministicGuid(string src)

@@ -53,7 +53,7 @@
                 EndpointSetup<DefaultServer>();
             }
 
-            [ServiceFabricSaga(CollectionName = CustomCollectionName, EntityName = CustomEntityName)]
+            [ServiceFabricSaga(CollectionName = CustomCollectionName, SagaDataName = CustomEntityName)]
             public class TestSaga : Saga<SagaData>, IAmStartedByMessages<StartSaga>
             {
                 public Context TestContext { get; set; }

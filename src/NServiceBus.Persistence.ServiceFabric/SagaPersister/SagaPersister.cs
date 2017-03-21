@@ -60,12 +60,11 @@ namespace NServiceBus.Persistence.ServiceFabric
             {
                 if (!await Sagas.TryAddAsync(tx, sagaData.Id, entry).ConfigureAwait(false))
                 {
-                    if (correlationProperty != SagaCorrelationProperty.None)
+                    if (correlationProperty == SagaCorrelationProperty.None)
                     {
-                        throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists.");
+                        throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
                     }
-
-                    throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
+                    throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists.");
                 }
             });
         }

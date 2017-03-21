@@ -178,6 +178,8 @@
     <Compile Include="ConfigureEndpointServiceFabricPersistence.cs" />
     <Compile Include="ConfigureScenariosForAzureServiceBusTransport.cs" />
     <Compile Include="ConfigureScenariosForServiceFabricPersistence.cs" />
+    <Compile Include="SagaDataStorage\When_storing_saga_with_default_collection_mapping.cs" />
+    <Compile Include="SagaDataStorage\When_storing_saga_with_custom_saga_attribute.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
@@ -196,5 +198,6 @@
       <Name>NServiceBus.Persistence.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

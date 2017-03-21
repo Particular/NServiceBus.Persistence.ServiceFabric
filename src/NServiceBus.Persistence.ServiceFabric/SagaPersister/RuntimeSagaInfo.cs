@@ -30,8 +30,9 @@
             this.readerCreator = readerCreator;
             this.writerCreator = writerCreator;
 
+            //TODO: make sure we support the setting only collectionName or sagaDataName
             this.SagaAttribute = sagaType.GetCustomAttribute<ServiceFabricSagaAttribute>(false) ??
-                new ServiceFabricSagaAttribute {CollectionName = sagaDataType.Name, EntityName = sagaDataType.Name};
+                new ServiceFabricSagaAttribute {CollectionName = sagaDataType.Name, SagaDataName = sagaDataType.Name};
 
             CurrentVersion = sagaDataType.Assembly.GetFileVersion();
         }

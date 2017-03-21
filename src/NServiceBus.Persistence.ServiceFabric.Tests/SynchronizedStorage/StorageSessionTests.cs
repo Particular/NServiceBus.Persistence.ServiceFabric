@@ -94,9 +94,9 @@
             session.Dispose();
         }
 
-        public void Need(IReliableStateManager dependency)
+        public void Need(IReliableStateManager stateManager)
         {
-            stateManager = dependency;
+            this.stateManager = stateManager;
         }
     }
 }

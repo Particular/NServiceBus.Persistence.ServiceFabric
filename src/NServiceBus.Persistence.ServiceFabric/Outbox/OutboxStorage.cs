@@ -92,7 +92,7 @@
 
             using (var tx = reliableStateManager.CreateTransaction())
             {
-                var iterator = await Cleanup.CreateEnumerableAsync(tx);
+                var iterator = await Cleanup.CreateEnumerableAsync(tx).ConfigureAwait(false);
                 var enumerator = iterator.GetAsyncEnumerator();
 
                 var currentIndex = 0;

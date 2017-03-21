@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Reflection;
     using System.Text;
     using Newtonsoft.Json;
 
@@ -12,6 +13,8 @@
         JsonSerializer jsonSerializer;
         Func<TextReader, JsonReader> readerCreator;
         Func<TextWriter, JsonWriter> writerCreator;
+
+        public ServiceFabricSagaAttribute SagaAttribute { get; private set; }
 
         readonly Version CurrentVersion;
 
@@ -26,6 +29,9 @@
             this.jsonSerializer = jsonSerializer;
             this.readerCreator = readerCreator;
             this.writerCreator = writerCreator;
+
+            this.SagaAttribute = sagaType.GetCustomAttribute<ServiceFabricSagaAttribute>(false) ??
+                new ServiceFabricSagaAttribute {CollectionName = sagaDataType.Name, EntityName = sagaDataType.Name};
 
             CurrentVersion = sagaDataType.Assembly.GetFileVersion();
         }

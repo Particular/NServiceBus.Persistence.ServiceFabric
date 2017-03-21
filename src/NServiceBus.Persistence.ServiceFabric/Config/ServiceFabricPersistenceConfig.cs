@@ -18,6 +18,8 @@ namespace NServiceBus
         /// <param name="stateManager">The state manager to be used.</param>
         public static void StateManager(this PersistenceExtensions<ServiceFabricPersistence> configuration, IReliableStateManager stateManager)
         {
+            Guard.AgainstNull(nameof(configuration), configuration);
+            Guard.AgainstNull(nameof(stateManager), stateManager);
             configuration.GetSettings().Set("ServiceFabricPersistence.StateManager", stateManager);
         }
 

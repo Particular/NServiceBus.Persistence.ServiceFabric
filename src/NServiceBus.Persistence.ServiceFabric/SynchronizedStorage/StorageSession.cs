@@ -7,18 +7,18 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class StorageSession : CompletableSynchronizedStorageSession, IServiceFabricStorageSession
     {
-        Lazy<ITransaction> _transaction;
+        Lazy<ITransaction> transaction;
 
         public StorageSession(IReliableStateManager stateManager, Lazy<ITransaction> transaction)
         {
             StateManager = stateManager;
-            _transaction = transaction;
+            this.transaction = transaction;
             actions = new List<Func<ITransaction, Task>>();
         }
 
         public IReliableStateManager StateManager { get; }
 
-        public ITransaction Transaction => _transaction.Value;
+        public ITransaction Transaction => transaction.Value;
 
         // this will lead to closure allocations
         List<Func<ITransaction, Task>> actions;
@@ -27,9 +27,9 @@ namespace NServiceBus.Persistence.ServiceFabric
         {
             actions.Clear();
 
-            if (_transaction.IsValueCreated)
+            if (transaction.IsValueCreated)
             {
-                _transaction.Value.Dispose();
+                transaction.Value.Dispose();
             }
         }
 
@@ -46,9 +46,9 @@ namespace NServiceBus.Persistence.ServiceFabric
                 await action(Transaction).ConfigureAwait(false);
             }
 
-            if (_transaction.IsValueCreated)
+            if (transaction.IsValueCreated)
             {
-                await _transaction.Value.CommitAsync().ConfigureAwait(false);
+                await transaction.Value.CommitAsync().ConfigureAwait(false);
             }
         }
     }

@@ -128,7 +128,6 @@
     <Compile Include="ComponentTests\TimeoutStorageTests.cs" />
     <Compile Include="LetsSeeTest.cs" />
     <Compile Include="PersistenceTestsConfiguration.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynchronizedStorage\StorageSessionTests.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Program.cs" />
@@ -136,7 +135,6 @@
   <ItemGroup>
     <None Include="PackageRoot\Config\Settings.xml" />
     <None Include="PackageRoot\ServiceManifest.xml" />
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -150,11 +148,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

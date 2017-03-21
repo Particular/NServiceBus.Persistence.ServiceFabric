@@ -10,16 +10,15 @@
     {
         // ReSharper disable once NotAccessedField.Local
         Type sagaDataType;
+
         JsonSerializer jsonSerializer;
         Func<TextReader, JsonReader> readerCreator;
         Func<TextWriter, JsonWriter> writerCreator;
 
-        public ServiceFabricSagaAttribute SagaAttribute { get; private set; }
-
+        public readonly ServiceFabricSagaAttribute SagaAttribute;
         readonly Version CurrentVersion;
 
         public RuntimeSagaInfo(Type sagaDataType,
-            // ReSharper disable once UnusedParameter.Local
             Type sagaType,
             JsonSerializer jsonSerializer,
             Func<TextReader, JsonReader> readerCreator,
@@ -30,9 +29,13 @@
             this.readerCreator = readerCreator;
             this.writerCreator = writerCreator;
 
-            //TODO: make sure we support the setting only collectionName or sagaDataName
-            this.SagaAttribute = sagaType.GetCustomAttribute<ServiceFabricSagaAttribute>(false) ??
-                new ServiceFabricSagaAttribute {CollectionName = sagaDataType.Name, SagaDataName = sagaDataType.Name};
+            var userProvidedAttribute = sagaType.GetCustomAttribute<ServiceFabricSagaAttribute>(false);
+
+            SagaAttribute = new ServiceFabricSagaAttribute
+            {
+                CollectionName = !string.IsNullOrEmpty(userProvidedAttribute?.CollectionName) ? userProvidedAttribute.CollectionName : sagaDataType.Name,
+                SagaDataName = !string.IsNullOrEmpty(userProvidedAttribute?.SagaDataName) ? userProvidedAttribute.SagaDataName : sagaDataType.Name
+            };
 
             CurrentVersion = sagaDataType.Assembly.GetFileVersion();
         }
@@ -51,7 +54,7 @@
         public TSagaData FromSagaEntry<TSagaData>(SagaEntry entry)
             where TSagaData : IContainSagaData
         {
-            using(var reader = new StringReader(entry.Data))
+            using (var reader = new StringReader(entry.Data))
             using (var jsonReader = readerCreator(reader))
             {
                 return jsonSerializer.Deserialize<TSagaData>(jsonReader);

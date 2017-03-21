@@ -5,7 +5,7 @@
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class ServiceFabricSagaAttribute : Attribute
     {
-        public string EntityName;
+        public string SagaDataName;
         public string CollectionName;
     }
 }

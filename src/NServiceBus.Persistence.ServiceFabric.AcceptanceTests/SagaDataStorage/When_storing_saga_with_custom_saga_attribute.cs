@@ -54,11 +54,11 @@
             }
 
             [ServiceFabricSaga(CollectionName = CustomCollectionName, SagaDataName = CustomEntityName)]
-            public class TestSaga : Saga<SagaData>, IAmStartedByMessages<StartSaga>
+            public class CustomizedCollectionSaga : Saga<CustomizedCollectionSaga.CustomizedCollectionSagaData>, IAmStartedByMessages<StartSaga>
             {
                 public Context TestContext { get; set; }
 
-                protected override void ConfigureHowToFindSaga(SagaPropertyMapper<SagaData> mapper)
+                protected override void ConfigureHowToFindSaga(SagaPropertyMapper<CustomizedCollectionSagaData> mapper)
                 {
                     mapper.ConfigureMapping<StartSaga>(m => m.SomeId).ToSaga(d => d.Id);
                 }
@@ -69,10 +69,10 @@
 
                     return Task.FromResult(0);
                 }
-            }
 
-            public class SagaData : ContainSagaData
-            {
+                public class CustomizedCollectionSagaData : ContainSagaData
+                {
+                }
             }
         }
 

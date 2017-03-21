@@ -23,7 +23,7 @@
                 .Done(c => c.SagaId.HasValue)
                 .Run(TimeSpan.FromSeconds(20));
 
-            var collection = await stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(typeof(SagaEndpoint.SagaData).Name);
+            var collection = await stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(typeof(SagaEndpoint.ConventionBasedSaga.ConventionBasedSagaData).Name);
 
             using (var tx = stateManager.CreateTransaction())
             {
@@ -50,11 +50,11 @@
                 EndpointSetup<DefaultServer>();
             }
 
-            public class TestSaga : Saga<SagaData>, IAmStartedByMessages<StartSaga>
+            public class ConventionBasedSaga : Saga<ConventionBasedSaga.ConventionBasedSagaData>, IAmStartedByMessages<StartSaga>
             {
                 public Context TestContext { get; set; }
 
-                protected override void ConfigureHowToFindSaga(SagaPropertyMapper<SagaData> mapper)
+                protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ConventionBasedSagaData> mapper)
                 {
                     mapper.ConfigureMapping<StartSaga>(m => m.SomeId).ToSaga(d => d.Id);
                 }
@@ -65,10 +65,10 @@
 
                     return Task.FromResult(0);
                 }
-            }
 
-            public class SagaData : ContainSagaData
-            {
+                public class ConventionBasedSagaData : ContainSagaData
+                {
+                }
             }
         }
 
@@ -77,6 +77,4 @@
             public Guid SomeId { get; set; }
         }
     }
-
-
 }

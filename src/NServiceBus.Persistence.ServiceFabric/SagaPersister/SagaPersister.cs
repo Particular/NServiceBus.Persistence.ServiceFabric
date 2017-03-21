@@ -4,7 +4,6 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Extensibility;
-    using Microsoft.ServiceFabric.Data.Collections;
     using Sagas;
 
     class SagaPersister : ISagaPersister
@@ -136,13 +135,5 @@ namespace NServiceBus.Persistence.ServiceFabric
         }
 
         const string ContextKey = "NServiceBus.Persistence.ServiceFabric.Sagas";
-    }
-
-    static class SynchronizedStorageSessionExtensions
-    {
-        public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this StorageSession session, string collectionName)
-        {
-            return session.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(collectionName);
-        }
     }
 }

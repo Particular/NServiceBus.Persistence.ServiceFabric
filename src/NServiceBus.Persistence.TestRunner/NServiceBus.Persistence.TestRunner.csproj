@@ -94,7 +94,6 @@
     <Compile Include="ITestRunner.cs" />
     <Compile Include="ResultListener.cs" />
     <Compile Include="NeedAttribute.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="StatefulServiceProviderListener.cs" />
     <Compile Include="AbstractTestRunner.cs" />
@@ -103,11 +102,4 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

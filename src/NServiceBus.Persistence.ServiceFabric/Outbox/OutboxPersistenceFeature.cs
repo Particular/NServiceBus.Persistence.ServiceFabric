@@ -34,9 +34,9 @@
 
         class OutboxCleaner : FeatureStartupTask
         {
-            readonly OutboxStorage storage;
-            readonly TimeSpan timeToKeepDeduplicationData;
-            readonly TimeSpan frequencyToRunDeduplicationDataCleanup;
+            OutboxStorage storage;
+            TimeSpan timeToKeepDeduplicationData;
+            TimeSpan frequencyToRunDeduplicationDataCleanup;
             CancellationTokenSource tokenSource;
             Task cleanupTask;
 

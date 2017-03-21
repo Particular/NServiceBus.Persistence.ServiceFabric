@@ -6,8 +6,8 @@
 
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {
-        internal IReliableStateManager StateManager { get; set; }
-        internal ITransaction Transaction { get; set; }
+        internal IReliableStateManager StateManager { get; }
+        internal ITransaction Transaction { get; }
 
         public ServiceFabricOutboxTransaction(IReliableStateManager stateManager)
         {

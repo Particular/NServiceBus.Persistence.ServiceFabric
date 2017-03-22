@@ -11,8 +11,8 @@
         /// <summary>
         /// The saga data name should primarily be used to preserve backwards compatibility. By default, the saga data type
         /// name is used to create a deterministic identifier to store the saga in the reliable collection. Renaming a saga data
-        /// class name will therefore change the saga data identifier. Setting the saga data name before renaming the
-        /// class will prevent identifier value from changing.
+        /// class name will therefore change the saga data identifier. By setting the saga data name to saga data type
+        /// name prior to before the renaming the identifier generation will remain stable.
         /// </summary>
         public string SagaDataName;
 

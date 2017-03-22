@@ -1,9 +1,7 @@
 namespace NServiceBus.Persistence.ServiceFabric
 {
-    using System;
     using System.Threading.Tasks;
     using Extensibility;
-    using Microsoft.ServiceFabric.Data;
     using Outbox;
     using Transport;
 
@@ -14,7 +12,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             var outboxTransaction = transaction as ServiceFabricOutboxTransaction;
             if (outboxTransaction != null)
             {
-                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.StateManager, new Lazy<ITransaction>(() => outboxTransaction.Transaction));
+                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.StateManager, outboxTransaction.Transaction);
                 return Task.FromResult(session);
             }
             return EmptyTask;

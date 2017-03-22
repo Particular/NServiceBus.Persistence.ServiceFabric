@@ -24,7 +24,7 @@
 
         public async Task<OutboxMessage> Get(string messageId, ContextBag context)
         {
-            OutboxMessage result;
+            StoredOutboxMessage storedOutboxMessage;
             using (var tx = reliableStateManager.CreateTransaction())
             {
                 var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
@@ -33,18 +33,16 @@
                     return null;
                 }
 
-                var storedOutboxMessage = conditionalValue.Value;
-                var transportOperations = new TransportOperation[storedOutboxMessage.TransportOperations.Length];
-
-                for (var i = 0; i < storedOutboxMessage.TransportOperations.Length; i++)
-                {
-                    var o = storedOutboxMessage.TransportOperations[i];
-                    transportOperations[i] = new TransportOperation(o.MessageId, o.Options, o.Body, o.Headers);
-                }
-
-                result = new OutboxMessage(messageId, transportOperations);
+                storedOutboxMessage = conditionalValue.Value;
             }
-            return result;
+
+            var transportOperations = new TransportOperation[storedOutboxMessage.TransportOperations.Length];
+            for (var i = 0; i < storedOutboxMessage.TransportOperations.Length; i++)
+            {
+                var o = storedOutboxMessage.TransportOperations[i];
+                transportOperations[i] = new TransportOperation(o.MessageId, o.Options, o.Body, o.Headers);
+            }
+            return new OutboxMessage(messageId, transportOperations);
         }
 
         public Task<OutboxTransaction> BeginTransaction(ContextBag context)
@@ -54,8 +52,6 @@
 
         public async Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
         {
-            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction;
-
             var operations = new StoredTransportOperation[message.TransportOperations.Length];
             for (var i = 0; i < message.TransportOperations.Length; i++)
             {
@@ -63,6 +59,7 @@
                 operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers);
             }
 
+            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction.Value;
             if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations)).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
@@ -76,11 +73,13 @@
                 var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
                 if (conditionalValue.HasValue)
                 {
-                    var dispatched = conditionalValue.Value.CloneAndMarkAsDispatched();
+                    var storedOutboxMessage = conditionalValue.Value;
+
+                    var dispatched = storedOutboxMessage.CloneAndMarkAsDispatched();
 
                     await Outbox.SetAsync(tx, messageId, dispatched).ConfigureAwait(false);
 
-                    await Cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(messageId, conditionalValue.Value.StoredAt)).ConfigureAwait(false);
+                    await Cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(messageId, storedOutboxMessage.StoredAt)).ConfigureAwait(false);
                 }
                 await tx.CommitAsync().ConfigureAwait(false);
             }

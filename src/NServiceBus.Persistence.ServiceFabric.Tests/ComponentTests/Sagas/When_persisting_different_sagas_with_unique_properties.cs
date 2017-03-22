@@ -24,10 +24,10 @@
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var correlationPropertySaga1 = SetActiveSagaInstance(savingContextBag, new SagaWithCorrelationProperty(), saga1);
+                var correlationPropertySaga1 = SetActiveSagaInstanceForSave(savingContextBag, new SagaWithCorrelationProperty(), saga1);
                 await persister.Save(saga1, correlationPropertySaga1, session, savingContextBag);
 
-                var correlationPropertySaga2 = SetActiveSagaInstance(savingContextBag, new AnotherSagaWithCorrelatedProperty(), saga2);
+                var correlationPropertySaga2 = SetActiveSagaInstanceForSave(savingContextBag, new AnotherSagaWithCorrelatedProperty(), saga2);
                 await persister.Save(saga2, correlationPropertySaga2, session, savingContextBag);
 
                 await session.CompleteAsync();
@@ -36,10 +36,10 @@
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithCorrelationProperty(), saga1);
+                SetActiveSagaInstanceForGet<SagaWithCorrelationProperty, SagaWithCorrelationPropertyData>(readContextBag, saga1);
                 var saga1Result = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), saga1.CorrelatedProperty, readSession, readContextBag);
 
-                SetActiveSagaInstance(readContextBag, new AnotherSagaWithCorrelatedProperty(), saga2);
+                SetActiveSagaInstanceForGet<AnotherSagaWithCorrelatedProperty, AnotherSagaWithCorrelatedPropertyData>(readContextBag, saga2);
                 var saga2Result = await persister.Get<AnotherSagaWithCorrelatedPropertyData>(nameof(AnotherSagaWithCorrelatedPropertyData.CorrelatedProperty), saga2.CorrelatedProperty, readSession, readContextBag);
 
                 Assert.AreEqual(saga1.CorrelatedProperty, saga1Result.CorrelatedProperty);

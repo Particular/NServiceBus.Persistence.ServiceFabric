@@ -18,7 +18,7 @@
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
                 var sagaData = new TestSagaData { SomeId = correlationPropertyData };
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), sagaData);
+                var correlationProperty = SetActiveSagaInstanceForSave(insertContextBag, new TestSaga(), sagaData);
                 generatedSagaId = sagaData.Id;
 
                 await persister.Save(sagaData, correlationProperty, insertSession, insertContextBag);
@@ -27,15 +27,15 @@
 
             var winningContext = configuration.GetContextBagForSagaStorage();
             var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
-            SetActiveSagaInstance(winningContext, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
             var record = await persister.Get<TestSagaData>(generatedSagaId, winningSaveSession, winningContext);
-            SetActiveSagaInstance(winningContext, new TestSaga(), record);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, record);
 
             var losingContext = configuration.GetContextBagForSagaStorage();
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-            SetActiveSagaInstance(losingContext, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
             var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
-            SetActiveSagaInstance(losingContext, new TestSaga(), staleRecord);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, staleRecord);
 
             record.DateTimeProperty = DateTime.Now;
             await persister.Update(record, winningSaveSession, winningContext);

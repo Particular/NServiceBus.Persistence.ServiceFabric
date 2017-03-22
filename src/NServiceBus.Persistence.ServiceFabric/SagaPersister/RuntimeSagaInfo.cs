@@ -33,8 +33,8 @@
 
             SagaAttribute = new ServiceFabricSagaAttribute
             {
-                CollectionName = !string.IsNullOrEmpty(userProvidedAttribute?.CollectionName) ? userProvidedAttribute.CollectionName : sagaDataType.Name,
-                SagaDataName = !string.IsNullOrEmpty(userProvidedAttribute?.SagaDataName) ? userProvidedAttribute.SagaDataName : sagaDataType.Name
+                CollectionName = userProvidedAttribute?.CollectionName ?? sagaDataType.Name,
+                SagaDataName = userProvidedAttribute?.SagaDataName ?? sagaDataType.Name
             };
 
             CurrentVersion = sagaDataType.Assembly.GetFileVersion();

@@ -19,7 +19,7 @@
         IReliableStateManager stateManager;
 
         [Test]
-        public async Task Should_use_fullname_as_collection_name()
+        public async Task Should_use_custom_collection_name()
         {
             var context = await Scenario.Define<Context>()
                 .WithEndpoint<SagaEndpoint>(b => b.When(session => session.SendLocal(new StartSaga { SomeId = Guid.NewGuid() })))

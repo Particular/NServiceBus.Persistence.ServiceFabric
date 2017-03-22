@@ -5,47 +5,20 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_completing_a_saga_loaded_by_id : SagaPersisterTests
+    public class When_completing_a_saga_loaded_by_id : SagaPersisterTests<TestSaga, TestSagaData>
     {
         [Test]
         public async Task Should_delete_the_saga()
         {
             var correlationPropertyData = Guid.NewGuid().ToString();
 
-            var persister = configuration.SagaStorage;
-            var insertContextBag = configuration.GetContextBagForSagaStorage();
+            var saga = new TestSagaData { SomeId = correlationPropertyData };
 
-            Guid generatedSagaId;
-            using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
-            {
-                var saga = new TestSagaData { SomeId = correlationPropertyData };
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
-                generatedSagaId = saga.Id;
+            await SaveSaga(saga);
 
-                await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
-                await insertSession.CompleteAsync();
-            }
+            var sagaData = await GetByIdAndComplete(saga.Id);
 
-            var intentionallySharedContext = configuration.GetContextBagForSagaStorage();
-            TestSagaData sagaData;
-            using (var completeSession = await configuration.SynchronizedStorage.OpenSession(intentionallySharedContext))
-            {
-                SetActiveSagaInstance(intentionallySharedContext, new TestSaga(), new TestSagaData());
-                sagaData = await persister.Get<TestSagaData>(generatedSagaId, completeSession, intentionallySharedContext);
-                SetActiveSagaInstance(intentionallySharedContext, new TestSaga(), sagaData);
-
-                await persister.Complete(sagaData, completeSession, intentionallySharedContext );
-                await completeSession.CompleteAsync();
-            }
-
-            TestSagaData completedSaga;
-            var readContextBag = configuration.GetContextBagForSagaStorage();
-            using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
-            {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), new TestSagaData());
-
-                completedSaga = await persister.Get<TestSagaData>(generatedSagaId, readSession, readContextBag);
-            }
+            var completedSaga = await GetById(saga.Id);
 
             Assert.NotNull(sagaData);
             Assert.Null(completedSaga);

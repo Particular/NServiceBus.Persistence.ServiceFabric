@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    class TestSaga : Saga<TestSagaData>, IAmStartedByMessages<StartMessage>
+    public class TestSaga : Saga<TestSagaData>, IAmStartedByMessages<StartMessage>
     {
         public Task Handle(StartMessage message, IMessageHandlerContext context)
         {
@@ -17,7 +17,7 @@
         }
     }
 
-    class StartMessage
+    public class StartMessage
     {
         public string SomeId { get; set; }
     }

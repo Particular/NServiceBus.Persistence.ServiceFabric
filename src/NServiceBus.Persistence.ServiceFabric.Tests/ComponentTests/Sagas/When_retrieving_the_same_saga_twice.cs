@@ -5,7 +5,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_retrieving_the_same_saga_twice : SagaPersisterTests
+    public class When_retrieving_the_same_saga_twice : SagaPersisterTests<TestSaga, TestSagaData>
     {
         [Test]
         public async Task Get_returns_different_instance_of_saga_data()
@@ -13,37 +13,10 @@ namespace NServiceBus.Persistence.ComponentTests
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData };
 
-            var persister = configuration.SagaStorage;
-            var insertContextBag = configuration.GetContextBagForSagaStorage();
-            using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
-            {
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
+            await SaveSaga(saga);
 
-                await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
-                await insertSession.CompleteAsync();
-            }
-
-            TestSagaData returnedSaga1;
-            var readContextBag = configuration.GetContextBagForSagaStorage();
-            using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
-            {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), saga);
-
-                returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, readSession, readContextBag);
-
-                await readSession.CompleteAsync();
-            }
-
-            TestSagaData returnedSaga2;
-            readContextBag = configuration.GetContextBagForSagaStorage();
-            using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
-            {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), saga);
-
-                returnedSaga2 = await persister.Get<TestSagaData>("Id", saga.Id, readSession, readContextBag);
-
-                await readSession.CompleteAsync();
-            }
+            var returnedSaga1 = await GetById(saga.Id);
+            var returnedSaga2 = await GetById(saga.Id);
 
             Assert.AreNotSame(returnedSaga2, returnedSaga1);
             Assert.AreNotSame(returnedSaga1, saga);

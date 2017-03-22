@@ -5,34 +5,20 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_saga_not_found_return_default : SagaPersisterTests
+    public class When_saga_not_found_return_default : SagaPersisterTests<SimpleSagaEntitySaga, SimpleSagaEntity>
     {
         [Test]
         public async Task Should_return_default_when_using_finding_saga_with_property()
         {
-            var persister = configuration.SagaStorage;
-            var readContextBag = configuration.GetContextBagForSagaStorage();
-            using (var session = await configuration.SynchronizedStorage.OpenSession(readContextBag))
-            {
-                SetActiveSagaInstance(readContextBag, new SimpleSagaEntitySaga(), new SimpleSagaEntity{ OrderSource = Guid.NewGuid().ToString() });
-
-                var simpleSageEntity = await persister.Get<SimpleSagaEntity>("propertyNotFound", "someValue", session, readContextBag);
-                Assert.IsNull(simpleSageEntity);
-            }
+            var result = await GetByCorrelationProperty("propertyNotFound", "someValue");
+            Assert.IsNull(result);
         }
 
         [Test]
         public async Task Should_return_default_when_using_finding_saga_with_id()
         {
-            var persister = configuration.SagaStorage;
-            var readContextBag = configuration.GetContextBagForSagaStorage();
-            using (var session = await configuration.SynchronizedStorage.OpenSession(readContextBag))
-            {
-                SetActiveSagaInstance(readContextBag, new SimpleSagaEntitySaga(), new SimpleSagaEntity{ OrderSource = Guid.NewGuid().ToString() });
-
-                var simpleSageEntity = await persister.Get<SimpleSagaEntity>(Guid.Empty, session, readContextBag);
-                Assert.IsNull(simpleSageEntity);
-            }
+            var result = await GetById(Guid.Empty);
+            Assert.IsNull(result);
         }
 
         public class AnotherSimpleSagaEntity : ContainSagaData

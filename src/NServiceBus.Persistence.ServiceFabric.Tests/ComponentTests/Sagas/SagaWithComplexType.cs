@@ -3,7 +3,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using System;
     using System.Threading.Tasks;
 
-    class SagaWithComplexType : Saga<SagaWithComplexTypeEntity>, IAmStartedByMessages<StartMessage>
+    public class SagaWithComplexType : Saga<SagaWithComplexTypeEntity>, IAmStartedByMessages<StartMessage>
     {
         public Task Handle(StartMessage message, IMessageHandlerContext context)
         {

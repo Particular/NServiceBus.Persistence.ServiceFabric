@@ -3,7 +3,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using System;
     using System.Threading.Tasks;
 
-    class SimpleSagaEntitySaga : Saga<SimpleSagaEntity>, IAmStartedByMessages<StartMessage>
+    public class SimpleSagaEntitySaga : Saga<SimpleSagaEntity>, IAmStartedByMessages<StartMessage>
     {
         public Task Handle(StartMessage message, IMessageHandlerContext context)
         {

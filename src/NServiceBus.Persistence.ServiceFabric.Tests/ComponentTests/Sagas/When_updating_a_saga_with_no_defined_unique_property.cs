@@ -5,7 +5,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_updating_a_saga_with_no_defined_unique_property : SagaPersisterTests
+    public class When_updating_a_saga_with_no_defined_unique_property : SagaPersisterTests<SagaWithoutCorrelationProperty, SagaWithoutCorrelationPropertyData>
     {
         [Test]
         public async Task It_should_successfully_update_the_saga()
@@ -18,39 +18,15 @@
                 FoundByFinderProperty = propertyData
             };
 
-            var persister = configuration.SagaStorage;
+            var finder = typeof(CustomFinder);
 
-            var savingContextBag = configuration.GetContextBagForSagaStorage();
-            using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
-            {
-                var correlationPropertyNone = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), sagaData, typeof(CustomFinder));
-
-                await persister.Save(sagaData, correlationPropertyNone, session, savingContextBag);
-                await session.CompleteAsync();
-            }
-
-            // second session
+            await SaveSaga(sagaData, finder);
+            
             var updateValue = Guid.NewGuid().ToString();
-            savingContextBag = configuration.GetContextBagForSagaStorage();
-            using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
-            {
-                SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData(), typeof(CustomFinder));
-                var saga = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, session, savingContextBag);
-                SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga, typeof(CustomFinder));
+            await GetByIdAndUpdate(sagaData.Id, saga => { saga.FoundByFinderProperty = updateValue; }, finder);
 
-                saga.FoundByFinderProperty = updateValue;
-                await persister.Update(saga, session, savingContextBag);
-                await session.CompleteAsync();
-            }
-
-            var readContextBag = configuration.GetContextBagForSagaStorage();
-            SagaWithoutCorrelationPropertyData result;
-            using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
-            {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), new SagaWithoutCorrelationPropertyData(), typeof(CustomFinder));
-                result = await persister.Get<SagaWithoutCorrelationPropertyData>(sagaData.Id, readSession, readContextBag);
-            }
-
+            var result = await GetById(sagaData.Id, finder);
+            
             Assert.That(result, Is.Not.Null);
             Assert.That(result.FoundByFinderProperty, Is.EqualTo(updateValue));
         }

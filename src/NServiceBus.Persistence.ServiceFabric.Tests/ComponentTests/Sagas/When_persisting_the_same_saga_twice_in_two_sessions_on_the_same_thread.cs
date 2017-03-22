@@ -5,7 +5,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread : SagaPersisterTests
+    public class When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread : SagaPersisterTests<TestSaga, TestSagaData>
     {
         [Test]
         public async Task Save_throws_concurrency_violation()
@@ -13,16 +13,9 @@ namespace NServiceBus.Persistence.ComponentTests
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData};
 
+            await SaveSaga(saga);
             var persister = configuration.SagaStorage;
-            var insertContextBag = configuration.GetContextBagForSagaStorage();
-            using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
-            {
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
-
-                await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
-                await insertSession.CompleteAsync();
-            }
-
+            
             TestSagaData returnedSaga1;
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))

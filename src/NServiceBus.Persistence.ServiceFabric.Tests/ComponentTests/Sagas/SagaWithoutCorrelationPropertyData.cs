@@ -30,6 +30,8 @@
     public class SagaWithoutCorrelationPropertyData : ContainSagaData
     {
         public string FoundByFinderProperty { get; set; }
+
+        public DateTime DateTimeProperty { get; set; }
     }
 
     public class SagaWithoutCorrelationPropertyStartingMessage : IMessage

@@ -18,7 +18,11 @@
 
             await SaveSaga(saga1);
 
-            await GetByCorrelationPropertyAndUpdate(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), correlationPropertyData, _ => { });
+            var updatedValue = DateTime.UtcNow;
+            var result = await GetByCorrelationPropertyAndUpdate(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), correlationPropertyData, saga => { saga.DateTimeProperty = updatedValue; });
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.DateTimeProperty, Is.EqualTo(updatedValue));
         }
     }
 }

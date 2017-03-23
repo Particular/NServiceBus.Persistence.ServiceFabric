@@ -18,6 +18,8 @@ namespace NServiceBus.Persistence.ComponentTests
     public class SagaWithCorrelationPropertyData : ContainSagaData
     {
         public string CorrelatedProperty { get; set; }
+
+        public DateTime DateTimeProperty { get; set; }
     }
 
     public class SagaCorrelationPropertyStartingMessage

@@ -5,7 +5,7 @@
     using Extensibility;
     using Sagas;
 
-    class SagaWithoutCorrelationProperty : Saga<SagaWithoutCorrelationPropertyData>, 
+    public class SagaWithoutCorrelationProperty : Saga<SagaWithoutCorrelationPropertyData>, 
         IAmStartedByMessages<SagaWithoutCorrelationPropertyStartingMessage>
     {
         public Task Handle(SagaWithoutCorrelationPropertyStartingMessage message, IMessageHandlerContext context)
@@ -30,6 +30,8 @@
     public class SagaWithoutCorrelationPropertyData : ContainSagaData
     {
         public string FoundByFinderProperty { get; set; }
+
+        public DateTime DateTimeProperty { get; set; }
     }
 
     public class SagaWithoutCorrelationPropertyStartingMessage : IMessage

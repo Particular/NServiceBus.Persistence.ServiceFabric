@@ -22,7 +22,7 @@ namespace NServiceBus.Persistence.ComponentTests
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
                 var sagaData = new TestSagaData { SomeId = correlationPropertData };
-                SetActiveSagaInstance(savingContextBag, new TestSaga(), sagaData);
+                SetActiveSagaInstanceForSave(savingContextBag, new TestSaga(), sagaData);
                 generatedSagaId = sagaData.Id;
 
                 await persister.Save(sagaData, null, session, savingContextBag);
@@ -45,13 +45,13 @@ namespace NServiceBus.Persistence.ComponentTests
                     var enlistedContextBag = configuration.GetContextBagForSagaStorage();
                     var enlistedSession = await storageAdapter.TryAdapt(transportTransaction, enlistedContextBag);
 
-                    SetActiveSagaInstance(unenlistedContextBag, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertData });
+                    SetActiveSagaInstanceForGet<TestSaga,TestSagaData>(unenlistedContextBag, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertData });
                     var unenlistedRecord = await persister.Get<TestSagaData>(generatedSagaId, unenlistedSession, unenlistedContextBag);
-                    SetActiveSagaInstance(unenlistedContextBag, new TestSaga(), unenlistedRecord);
+                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(unenlistedContextBag, unenlistedRecord);
 
-                    SetActiveSagaInstance(enlistedContextBag, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertData });
+                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(enlistedContextBag, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertData });
                     var enlistedRecord = await persister.Get<TestSagaData>("Id", generatedSagaId, enlistedSession, enlistedContextBag);
-                    SetActiveSagaInstance(enlistedContextBag, new TestSaga(), enlistedRecord);
+                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(enlistedContextBag, enlistedRecord);
 
                     await persister.Update(unenlistedRecord, unenlistedSession, unenlistedContextBag);
                     await persister.Update(enlistedRecord, enlistedSession, enlistedContextBag);

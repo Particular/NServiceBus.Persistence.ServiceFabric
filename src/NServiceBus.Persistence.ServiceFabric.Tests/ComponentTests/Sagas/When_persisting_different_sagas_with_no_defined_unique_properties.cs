@@ -26,10 +26,10 @@ namespace NServiceBus.Persistence.ComponentTests
             var savingContextBag = configuration.GetContextBagForSagaStorage();
             using (var session = await configuration.SynchronizedStorage.OpenSession(savingContextBag))
             {
-                var correlationPropertyNoneSaga1 = SetActiveSagaInstance(savingContextBag, new SagaWithoutCorrelationProperty(), saga1, typeof(CustomFinder));
+                var correlationPropertyNoneSaga1 = SetActiveSagaInstanceForSave(savingContextBag, new SagaWithoutCorrelationProperty(), saga1, typeof(CustomFinder));
                 await persister.Save(saga1, correlationPropertyNoneSaga1, session, savingContextBag);
 
-                var correlationPropertyNoneSaga2 = SetActiveSagaInstance(savingContextBag, new AnotherSagaWithoutCorrelationProperty(), saga2, typeof(AnotherCustomFinder));
+                var correlationPropertyNoneSaga2 = SetActiveSagaInstanceForSave(savingContextBag, new AnotherSagaWithoutCorrelationProperty(), saga2, typeof(AnotherCustomFinder));
                 await persister.Save(saga2, correlationPropertyNoneSaga2, session, savingContextBag);
 
                 await session.CompleteAsync();
@@ -38,10 +38,10 @@ namespace NServiceBus.Persistence.ComponentTests
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new SagaWithoutCorrelationProperty(), saga1, typeof(CustomFinder));
+                SetActiveSagaInstanceForGet<SagaWithoutCorrelationProperty, SagaWithoutCorrelationPropertyData>(readContextBag, saga1, typeof(CustomFinder));
                 var saga1Result = await persister.Get<SagaWithoutCorrelationPropertyData>(saga1.Id, readSession, readContextBag);
 
-                SetActiveSagaInstance(readContextBag, new AnotherSagaWithoutCorrelationProperty(), saga2, typeof(AnotherCustomFinder));
+                SetActiveSagaInstanceForGet<AnotherSagaWithoutCorrelationProperty, AnotherSagaWithoutCorrelationPropertyData>(readContextBag, saga2, typeof(AnotherCustomFinder));
                 var saga2Result = await persister.Get<AnotherSagaWithoutCorrelationPropertyData>(saga2.Id, readSession, readContextBag);
 
                 Assert.AreEqual(saga1.FoundByFinderProperty, saga1Result.FoundByFinderProperty);

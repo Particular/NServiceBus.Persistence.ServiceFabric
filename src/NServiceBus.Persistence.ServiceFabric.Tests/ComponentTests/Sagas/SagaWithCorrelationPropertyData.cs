@@ -3,7 +3,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using System;
     using System.Threading.Tasks;
 
-    class SagaWithCorrelationProperty : Saga<SagaWithCorrelationPropertyData>, IAmStartedByMessages<SagaCorrelationPropertyStartingMessage>
+    public class SagaWithCorrelationProperty : Saga<SagaWithCorrelationPropertyData>, IAmStartedByMessages<SagaCorrelationPropertyStartingMessage>
     {
         public Task Handle(SagaCorrelationPropertyStartingMessage message, IMessageHandlerContext context)
         {
@@ -18,9 +18,11 @@ namespace NServiceBus.Persistence.ComponentTests
     public class SagaWithCorrelationPropertyData : ContainSagaData
     {
         public string CorrelatedProperty { get; set; }
+
+        public DateTime DateTimeProperty { get; set; }
     }
 
-    class SagaCorrelationPropertyStartingMessage
+    public class SagaCorrelationPropertyStartingMessage
     {
         public string CorrelatedProperty { get; set; }
     }

@@ -5,7 +5,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_updating_a_saga_with_the_same_unique_property_value : SagaPersisterTests
+    public class When_updating_a_saga_with_the_same_unique_property_value : SagaPersisterTests<SagaWithCorrelationProperty, SagaWithCorrelationPropertyData>
     {
         [Test]
         public async Task It_should_persist_successfully()
@@ -16,26 +16,13 @@
                 CorrelatedProperty = correlationPropertyData
             };
 
-            var persister = configuration.SagaStorage;
-            var insertContextBag = configuration.GetContextBagForSagaStorage();
-            using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
-            {
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new SagaWithCorrelationProperty(), saga1);
+            await SaveSaga(saga1);
 
-                await persister.Save(saga1, correlationProperty, insertSession, insertContextBag);
-                await insertSession.CompleteAsync();
-            }
+            var updatedValue = DateTime.UtcNow;
+            var result = await GetByCorrelationPropertyAndUpdate(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), correlationPropertyData, saga => { saga.DateTimeProperty = updatedValue; });
 
-            var updatingContext = configuration.GetContextBagForSagaStorage();
-            using (var updateSession = await configuration.SynchronizedStorage.OpenSession(updatingContext))
-            {
-                SetActiveSagaInstance(updatingContext, new SagaWithCorrelationProperty(), saga1);
-                saga1 = await persister.Get<SagaWithCorrelationPropertyData>(nameof(SagaWithCorrelationPropertyData.CorrelatedProperty), correlationPropertyData, updateSession, updatingContext);
-                SetActiveSagaInstance(updatingContext, new SagaWithCorrelationProperty(), saga1);
-
-                await persister.Update(saga1, updateSession, updatingContext);
-                await updateSession.CompleteAsync();
-            }
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.DateTimeProperty, Is.EqualTo(updatedValue));
         }
     }
 }

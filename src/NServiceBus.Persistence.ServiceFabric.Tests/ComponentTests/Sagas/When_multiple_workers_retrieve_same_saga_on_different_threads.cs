@@ -19,7 +19,7 @@ namespace NServiceBus.Persistence.ComponentTests
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
                 var sagaData = new TestSagaData { SomeId = correlationPropertyData };
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), sagaData);
+                var correlationProperty = SetActiveSagaInstanceForSave(insertContextBag, new TestSaga(), sagaData);
                 generatedSagaId = sagaData.Id;
 
                 await persister.Save(sagaData, correlationProperty, insertSession, insertContextBag);
@@ -33,9 +33,9 @@ namespace NServiceBus.Persistence.ComponentTests
             {
                 var winningContext = configuration.GetContextBagForSagaStorage();
                 var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
-                SetActiveSagaInstance(winningContext, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
                 var record = await persister.Get<TestSagaData>(generatedSagaId, winningSaveSession, winningContext);
-                SetActiveSagaInstance(winningContext, new TestSaga(), record);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, record);
 
                 startSecondTaskSync.SetResult(true);
                 await firstTaskCanCompleteSync.Task;
@@ -53,9 +53,9 @@ namespace NServiceBus.Persistence.ComponentTests
 
                 var losingSaveContext = configuration.GetContextBagForSagaStorage();
                 var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingSaveContext);
-                SetActiveSagaInstance(losingSaveContext, new TestSaga(), new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingSaveContext, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
                 var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingSaveContext);
-                SetActiveSagaInstance(losingSaveContext, new TestSaga(), staleRecord);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingSaveContext, staleRecord);
 
                 firstTaskCanCompleteSync.SetResult(true);
                 await firstTask;

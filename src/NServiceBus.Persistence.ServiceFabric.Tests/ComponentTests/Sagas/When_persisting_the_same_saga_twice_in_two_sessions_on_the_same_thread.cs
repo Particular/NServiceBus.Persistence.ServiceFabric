@@ -5,7 +5,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread : SagaPersisterTests
+    public class When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread : SagaPersisterTests<TestSaga, TestSagaData>
     {
         [Test]
         public async Task Save_throws_concurrency_violation()
@@ -13,21 +13,14 @@ namespace NServiceBus.Persistence.ComponentTests
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData};
 
+            await SaveSaga(saga);
             var persister = configuration.SagaStorage;
-            var insertContextBag = configuration.GetContextBagForSagaStorage();
-            using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
-            {
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
-
-                await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
-                await insertSession.CompleteAsync();
-            }
-
+            
             TestSagaData returnedSaga1;
             var readContextBag = configuration.GetContextBagForSagaStorage();
             using (var readSession = await configuration.SynchronizedStorage.OpenSession(readContextBag))
             {
-                SetActiveSagaInstance(readContextBag, new TestSaga(), new TestSagaData());
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(readContextBag, new TestSagaData());
 
                 returnedSaga1 = await persister.Get<TestSagaData>(saga.Id, readSession, readContextBag);
 
@@ -38,14 +31,14 @@ namespace NServiceBus.Persistence.ComponentTests
             var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
 
             returnedSaga1.DateTimeProperty = DateTime.Now;
-            SetActiveSagaInstance(winningContext, new TestSaga(), returnedSaga1);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, returnedSaga1);
             await persister.Update(returnedSaga1, winningSaveSession, readContextBag);
             await winningSaveSession.CompleteAsync();
             winningSaveSession.Dispose();
 
             var losingContext = configuration.GetContextBagForSagaStorage();
             var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-            SetActiveSagaInstance(losingContext, new TestSaga(), returnedSaga1);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, returnedSaga1);
             await persister.Update(returnedSaga1, losingSaveSession, readContextBag);
 
             Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndWith($"concurrency violation: saga entity Id[{saga.Id}] already saved."));
@@ -61,7 +54,7 @@ namespace NServiceBus.Persistence.ComponentTests
             var insertContextBag = configuration.GetContextBagForSagaStorage();
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                var correlationProperty = SetActiveSagaInstance(insertContextBag, new TestSaga(), saga);
+                var correlationProperty = SetActiveSagaInstanceForSave(insertContextBag, new TestSaga(), saga);
 
                 await persister.Save(saga, correlationProperty, insertSession, insertContextBag);
                 await insertSession.CompleteAsync();
@@ -69,14 +62,14 @@ namespace NServiceBus.Persistence.ComponentTests
 
             var winningContext1 = configuration.GetContextBagForSagaStorage();
             var winningSaveSession1 = await configuration.SynchronizedStorage.OpenSession(winningContext1);
-            SetActiveSagaInstance(winningContext1, new TestSaga(), saga);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext1, saga);
             var record1 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession1, winningContext1);
 
             var losingContext1 = configuration.GetContextBagForSagaStorage();
             var losingSaveSession1 = await configuration.SynchronizedStorage.OpenSession(losingContext1);
-            SetActiveSagaInstance(losingContext1, new TestSaga(), saga);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext1, saga);
             var staleRecord1 = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession1, losingContext1);
-            SetActiveSagaInstance(losingContext1, new TestSaga(), staleRecord1);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext1, staleRecord1);
 
             record1.DateTimeProperty = DateTime.Now;
             await persister.Update(record1, winningSaveSession1, winningContext1);
@@ -89,15 +82,15 @@ namespace NServiceBus.Persistence.ComponentTests
 
             var winningContext2 = configuration.GetContextBagForSagaStorage();
             var winningSaveSession2 = await configuration.SynchronizedStorage.OpenSession(winningContext2);
-            SetActiveSagaInstance(winningContext2, new TestSaga(), saga);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext2, saga);
             var record2 = await persister.Get<TestSagaData>(saga.Id, winningSaveSession2, winningContext2);
-            SetActiveSagaInstance(winningContext2, new TestSaga(), record2);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext2, record2);
 
             var losingContext2 = configuration.GetContextBagForSagaStorage();
             var losingSaveSession2 = await configuration.SynchronizedStorage.OpenSession(losingContext2);
-            SetActiveSagaInstance(losingContext2, new TestSaga(), saga);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext2, saga);
             var staleRecord2 = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession2, losingContext2);
-            SetActiveSagaInstance(losingContext2, new TestSaga(), staleRecord2);
+            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext2, staleRecord2);
 
             record2.DateTimeProperty = DateTime.Now;
             await persister.Update(record2, winningSaveSession2, winningContext2);

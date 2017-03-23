@@ -144,6 +144,12 @@
                     await app.UnprovisionApplicationAsync(ApplicationTypeName, ApplicationTypeVersion.ToString()).ConfigureAwait(false);
                     app.RemoveApplicationPackage(imageStoreConnectionString, ImageStorePath.ToString());
                 }
+
+                var applicationTypes = await fabric.QueryManager.GetApplicationTypeListAsync(ApplicationTypeName);
+                if (applicationTypes.Any())
+                {
+                    await app.UnprovisionApplicationAsync(ApplicationTypeName, ApplicationTypeVersion.ToString()).ConfigureAwait(false);
+                }
             }
         }
 

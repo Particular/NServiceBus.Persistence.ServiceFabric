@@ -15,8 +15,8 @@
     <copyright>$copyright$</copyright>
     <tags>$tags$ servicefabric</tags>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Core" targetFramework="net461" />
+      <frameworkAssembly assemblyName="System" targetFramework="net452" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework="net452" />
     </frameworkAssemblies>
     <dependencies>
       <dependency id="NServiceBus" version="[6.2.0, 7.0.0)" />
@@ -25,6 +25,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\binaries\NServiceBus.Persistence.ServiceFabric.???" target="lib\net461" />
+    <file src="..\..\binaries\NServiceBus.Persistence.ServiceFabric.???" target="lib\net452" />
   </files>
 </package>

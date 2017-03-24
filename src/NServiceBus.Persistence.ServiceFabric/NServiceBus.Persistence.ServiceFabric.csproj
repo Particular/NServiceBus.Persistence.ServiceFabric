@@ -87,7 +87,6 @@
     <Compile Include="Sagas\Config\SagaSettings.cs" />
     <Compile Include="Sagas\Config\SagaSettings_JSonSerializerSettings.cs" />
     <Compile Include="Sagas\Config\SagaSettings_Writer.cs" />
-    <Compile Include="Sagas\ContextBagExtensions.cs" />
     <Compile Include="Sagas\RuntimeSagaInfo.cs" />
     <Compile Include="Sagas\SagaEntry.cs" />
     <Compile Include="Sagas\SagaEntryExtensions.cs" />

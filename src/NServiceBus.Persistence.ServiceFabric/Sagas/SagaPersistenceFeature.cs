@@ -24,6 +24,7 @@
             context.Container.RegisterSingleton<ISagaPersister>(persister);
 
             idGenerator.Initialize(infoCache);
+            infoCache.Initialize(settings.Get<SagaMetadataCollection>());
         }
 
         SagaIdGenerator idGenerator = new SagaIdGenerator();

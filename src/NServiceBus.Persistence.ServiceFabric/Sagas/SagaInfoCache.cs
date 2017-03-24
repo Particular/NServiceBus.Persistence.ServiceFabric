@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.IO;
     using Newtonsoft.Json;
+    using Sagas;
 
     class SagaInfoCache
     {
@@ -30,9 +31,22 @@
             });
         }
 
-        public RuntimeSagaInfo GetInfo(Type sagaDataType, Type sagaType)
+        public RuntimeSagaInfo GetInfo(Type sagaDataType)
         {
-            return serializerCache.GetOrAdd(sagaDataType, dataType => BuildSagaInfo(dataType, sagaType));
+            RuntimeSagaInfo sagaInfo;
+            if (!serializerCache.TryGetValue(sagaDataType, out sagaInfo))
+            {
+                throw new Exception($"Unable to retrieve sage information for {sagaDataType}.");
+            }
+            return sagaInfo;
+        }
+
+        public void Initialize(SagaMetadataCollection metadataCollection)
+        {
+            foreach (var metadata in metadataCollection)
+            {
+                serializerCache.TryAdd(metadata.SagaEntityType, BuildSagaInfo(metadata.SagaEntityType, metadata.SagaType));
+            }
         }
 
         RuntimeSagaInfo BuildSagaInfo(Type sagaDataType, Type sagaType)

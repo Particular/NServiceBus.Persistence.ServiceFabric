@@ -167,7 +167,7 @@
             where TSaga : Saga<TSagaData>
             where TSagaData : IContainSagaData, new()
         {
-            var sagaMetadata = SagaMetadata.Create(typeof(TSaga), availableTypes, new Conventions());
+            var sagaMetadata = configuration.SagaMetadataCollection.FindByEntity(typeof(TSagaData));
             var sagaInstance = new ActiveSagaInstance(saga, sagaMetadata, () => DateTime.UtcNow);
             var correlationProperty = SagaCorrelationProperty.None;
             SagaMetadata.CorrelationPropertyMetadata correlatedProp;
@@ -194,7 +194,7 @@
             where TSaga : Saga<TSagaData>, new ()
             where TSagaData : IContainSagaData, new()
         {
-            var sagaMetadata = SagaMetadata.Create(typeof(TSaga), availableTypes, new Conventions());
+            var sagaMetadata = configuration.SagaMetadataCollection.FindByEntity(typeof(TSagaData));
             var sagaInstance = new ActiveSagaInstance(new TSaga(), sagaMetadata, () => DateTime.UtcNow);
         
             sagaInstance.AttachNewEntity(sagaData);

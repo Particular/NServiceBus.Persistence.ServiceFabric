@@ -25,7 +25,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
             var entry = GetEntry(context, sagaData.Id);
 
-            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType(), context.GetSagaType());
+            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
             await storageSession.Add(async tx =>
@@ -44,7 +44,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         {
             var storageSession = (StorageSession) session;
 
-            var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData), context.GetSagaType());
+            var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
             using (var tx = storageSession.StateManager.CreateTransaction())
@@ -62,7 +62,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
         {
-            var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData), context.GetSagaType());
+            var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagaId = SagaIdGenerator.Generate(sagaInfo, propertyName, propertyValue);
 
             return Get<TSagaData>(sagaId, session, context);
@@ -71,7 +71,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
         {
             var storageSession = (StorageSession) session;
-            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType(), context.GetSagaType());
+            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
             var entry = sagaInfo.ToSagaEntry(sagaData);
@@ -96,7 +96,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 
-            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType(), context.GetSagaType());
+            var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
             var newEntry = sagaInfo.ToSagaEntry(sagaData);

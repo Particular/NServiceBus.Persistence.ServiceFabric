@@ -22,7 +22,7 @@
                 return Guid.NewGuid();
             }
 
-            var sagaInfo = sagaInfoCache.GetInfo(context.SagaMetadata.SagaEntityType, context.SagaMetadata.SagaType);
+            var sagaInfo = sagaInfoCache.GetInfo(context.SagaMetadata.SagaEntityType);
 
             return Generate(sagaInfo, context.CorrelationProperty.Name, context.CorrelationProperty.Value);
         }

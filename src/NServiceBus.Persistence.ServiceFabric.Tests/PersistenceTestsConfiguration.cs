@@ -24,6 +24,7 @@
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
 
             var sagaInfoCache = new SagaInfoCache();
+            sagaInfoCache.Initialize(SagaMetadataCollection);
             SagaStorage = new SagaPersister(sagaInfoCache);
 
             var sagaIdGenerator = new SagaIdGenerator();

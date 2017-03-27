@@ -1,7 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
-    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.IO;
     using Newtonsoft.Json;
     using Sagas;
@@ -11,7 +11,7 @@
         JsonSerializer jsonSerializer;
         Func<TextReader, JsonReader> readerCreator;
         Func<TextWriter, JsonWriter> writerCreator;
-        ConcurrentDictionary<Type, RuntimeSagaInfo> serializerCache = new ConcurrentDictionary<Type, RuntimeSagaInfo>();
+        Dictionary<Type, RuntimeSagaInfo> serializerCache = new Dictionary<Type, RuntimeSagaInfo>();
 
         public SagaInfoCache() : this(null, null, null)
         {
@@ -45,7 +45,7 @@
         {
             foreach (var metadata in metadataCollection)
             {
-                serializerCache.TryAdd(metadata.SagaEntityType, BuildSagaInfo(metadata.SagaEntityType, metadata.SagaType));
+                serializerCache[metadata.SagaEntityType] = BuildSagaInfo(metadata.SagaEntityType, metadata.SagaType);
             }
         }
 

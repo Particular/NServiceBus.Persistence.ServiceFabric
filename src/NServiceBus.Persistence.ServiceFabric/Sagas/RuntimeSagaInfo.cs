@@ -11,12 +11,13 @@
         // ReSharper disable once NotAccessedField.Local
         Type sagaDataType;
 
+        public readonly Type SagaType;
+
         JsonSerializer jsonSerializer;
         Func<TextReader, JsonReader> readerCreator;
         Func<TextWriter, JsonWriter> writerCreator;
-
         public readonly ServiceFabricSagaAttribute SagaAttribute;
-        readonly Version CurrentVersion;
+        Version CurrentVersion;
 
         public RuntimeSagaInfo(Type sagaDataType,
             Type sagaType,
@@ -25,6 +26,7 @@
             Func<TextWriter, JsonWriter> writerCreator)
         {
             this.sagaDataType = sagaDataType;
+            SagaType = sagaType;
             this.jsonSerializer = jsonSerializer;
             this.readerCreator = readerCreator;
             this.writerCreator = writerCreator;

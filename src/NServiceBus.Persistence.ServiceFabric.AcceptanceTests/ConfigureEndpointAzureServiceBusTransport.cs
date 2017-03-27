@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.AcceptanceTesting;
 using NServiceBus.AcceptanceTesting.Support;
+using NServiceBus.AcceptanceTests.ScenarioDescriptors;
 using NServiceBus.MessageMutator;
 using NServiceBus.Pipeline;
 
@@ -10,7 +11,13 @@ public class ConfigureEndpointAzureServiceBusTransport : IConfigureEndpointTestE
 {
     public Task Configure(string endpointName, EndpointConfiguration configuration, RunSettings settings, PublisherMetadata publisherMetadata)
     {
-        var connectionString = settings.Get<string>("Transport.ConnectionString");
+        var connectionStringName = $"{nameof(AzureServiceBusTransport)}.ConnectionString";
+
+        var connectionString = EnvironmentHelper.GetEnvironmentVariable(connectionStringName);
+        if (connectionString == null)
+        {
+            throw new Exception($"Environment variable with name {connectionStringName} must be provided.");
+        }
 
         var transportConfig = configuration.UseTransport<AzureServiceBusTransport>();
 

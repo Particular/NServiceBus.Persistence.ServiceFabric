@@ -30,14 +30,12 @@
         public static Guid Generate(RuntimeSagaInfo sagaInfo, string correlationPropertyName, object correlationPropertyValue)
         {
             var serializedPropertyValue = JsonConvert.SerializeObject(correlationPropertyValue);
-            // Needs to be discussed if FullName is a good idea
             return DeterministicGuid($"{sagaInfo.SagaAttribute.SagaDataName}_{correlationPropertyName}_{serializedPropertyValue}");
         }
 
         static Guid DeterministicGuid(string src)
         {
             var stringbytes = Encoding.UTF8.GetBytes(src);
-            // TODO; Should we cache this?
             using (var sha1CryptoServiceProvider = new SHA1CryptoServiceProvider())
             {
                 var hashedBytes = sha1CryptoServiceProvider.ComputeHash(stringbytes);

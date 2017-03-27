@@ -3,7 +3,9 @@
   <Import Project="..\packages\Microsoft.VisualStudio.Azure.Fabric.MSBuild.1.5.0\build\Microsoft.VisualStudio.Azure.Fabric.Application.props" Condition="Exists('..\packages\Microsoft.VisualStudio.Azure.Fabric.MSBuild.1.5.0\build\Microsoft.VisualStudio.Azure.Fabric.Application.props')" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>6722aac7-f141-4492-85bb-be0c82ef7f98</ProjectGuid>
-    <ProjectVersion>1.4</ProjectVersion>
+    <ProjectVersion Condition="$(VisualStudioVersion) == '14.0'">1.5</ProjectVersion>
+    <MinToolsVersion Condition="$(VisualStudioVersion) == '14.0'">1.5</MinToolsVersion>
+    <ProjectVersion Condition="$(VisualStudioVersion) == '15.0'">1.4</ProjectVersion>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">

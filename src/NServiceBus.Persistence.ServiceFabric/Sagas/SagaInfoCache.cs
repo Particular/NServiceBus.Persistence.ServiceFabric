@@ -45,6 +45,12 @@
         {
             foreach (var metadata in metadataCollection)
             {
+                RuntimeSagaInfo existing;
+                var sagaDataType = metadata.SagaEntityType;
+                if (serializerCache.TryGetValue(sagaDataType, out existing))
+                {
+                    throw new Exception($"The saga data '{sagaDataType.FullName}' is being used by both '{existing.SagaType}' and '{metadata.SagaType.FullName}'. Saga data can only be used by one saga.");
+                }
                 serializerCache[metadata.SagaEntityType] = BuildSagaInfo(metadata.SagaEntityType, metadata.SagaType);
             }
         }

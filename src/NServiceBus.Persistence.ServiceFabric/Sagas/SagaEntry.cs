@@ -4,7 +4,7 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Runtime.Serialization;
 
     [DataContract(Namespace = "NServiceBus.Persistence.ServiceFabric", Name = "SagaEntry")]
-    sealed class SagaEntry : IExtensibleDataObject
+    public sealed class SagaEntry : IExtensibleDataObject
     {
         public SagaEntry(string data, Version sagaTypeVersion, Version persistenceVersion)
         {

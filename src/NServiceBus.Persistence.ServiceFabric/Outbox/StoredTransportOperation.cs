@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract(Namespace = "NServiceBus.Persistence.ServiceFabric", Name = "StoredOutboxMessage")]
-    class StoredTransportOperation : IExtensibleDataObject
+    public sealed class StoredTransportOperation : IExtensibleDataObject
     {
         [DataMember(Name = "MessageId", Order = 0)]
         public string MessageId { get; private set; }

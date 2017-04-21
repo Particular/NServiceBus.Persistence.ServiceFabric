@@ -1,7 +1,9 @@
-﻿namespace NServiceBus.Persistence.ComponentTests
+﻿// ReSharper disable AccessToDisposedClosure
+namespace NServiceBus.Persistence.ComponentTests
 {
     using System;
     using System.Threading.Tasks;
+    using Extensibility;
     using NUnit.Framework;
 
     [TestFixture]
@@ -17,25 +19,42 @@
 
             var persister = configuration.SagaStorage;
 
+            ContextBag losingContext;
+            CompletableSynchronizedStorageSession losingSaveSession;
+            TestSagaData staleRecord;
+
             var winningContext = configuration.GetContextBagForSagaStorage();
             var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
-            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, saga);
-            var record = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
-            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, record);
+            try
+            {
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, saga);
+                var record = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, record);
 
-            var losingContext = configuration.GetContextBagForSagaStorage();
-            var losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, saga);
-            var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
-            SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, staleRecord);
+                losingContext = configuration.GetContextBagForSagaStorage();
+                losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, saga);
+                staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, staleRecord);
 
-            record.DateTimeProperty = DateTime.UtcNow;
-            await persister.Update(record, winningSaveSession, winningContext);
-            await winningSaveSession.CompleteAsync();
-            winningSaveSession.Dispose();
+                record.DateTimeProperty = DateTime.UtcNow;
+                await persister.Update(record, winningSaveSession, winningContext);
+                await winningSaveSession.CompleteAsync();
+            }
+            finally
+            {
+                winningSaveSession.Dispose();
+            }
 
-            await persister.Complete(staleRecord, losingSaveSession, losingContext);
-            Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EqualTo("Saga can't be completed as it was updated by another process."));
+            try
+            {
+                await persister.Complete(staleRecord, losingSaveSession, losingContext);
+                Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EqualTo("Saga can't be completed as it was updated by another process."));
+            }
+            finally
+            {
+                losingSaveSession.Dispose();
+            }
         }
     }
 }

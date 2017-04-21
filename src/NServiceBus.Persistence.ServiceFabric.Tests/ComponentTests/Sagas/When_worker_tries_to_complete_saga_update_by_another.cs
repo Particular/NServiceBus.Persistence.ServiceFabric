@@ -11,7 +11,7 @@
         public async Task Should_fail()
         {
             var correlationPropertyData = Guid.NewGuid().ToString();
-            var saga = new TestSagaData { SomeId = correlationPropertyData };
+            var saga = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
 
             await SaveSaga(saga);
 
@@ -29,7 +29,7 @@
             var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
             SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, staleRecord);
 
-            record.DateTimeProperty = DateTime.Now;
+            record.DateTimeProperty = DateTime.UtcNow;
             await persister.Update(record, winningSaveSession, winningContext);
             await winningSaveSession.CompleteAsync();
             winningSaveSession.Dispose();

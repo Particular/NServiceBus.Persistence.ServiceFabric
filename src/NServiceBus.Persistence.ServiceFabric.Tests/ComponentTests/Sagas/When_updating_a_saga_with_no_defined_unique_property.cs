@@ -15,7 +15,8 @@
             var propertyData = Guid.NewGuid().ToString();
             var sagaData = new SagaWithoutCorrelationPropertyData
             {
-                FoundByFinderProperty = propertyData
+                FoundByFinderProperty = propertyData,
+                DateTimeProperty = DateTime.UtcNow
             };
 
             var finder = typeof(CustomFinder);

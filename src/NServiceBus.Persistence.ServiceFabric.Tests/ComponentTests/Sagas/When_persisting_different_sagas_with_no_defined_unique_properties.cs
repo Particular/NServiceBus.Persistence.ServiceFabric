@@ -15,7 +15,8 @@ namespace NServiceBus.Persistence.ComponentTests
             var propertyData = Guid.NewGuid().ToString();
             var saga1 = new SagaWithoutCorrelationPropertyData
             {
-                FoundByFinderProperty = propertyData
+                FoundByFinderProperty = propertyData,
+                DateTimeProperty = DateTime.UtcNow
             };
             var saga2 = new AnotherSagaWithoutCorrelationPropertyData
             {

@@ -18,7 +18,7 @@ namespace NServiceBus.Persistence.ComponentTests
             Guid generatedSagaId;
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                var sagaData = new TestSagaData { SomeId = correlationPropertyData };
+                var sagaData = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
                 var correlationProperty = SetActiveSagaInstanceForSave(insertContextBag, new TestSaga(), sagaData);
                 generatedSagaId = sagaData.Id;
 
@@ -40,7 +40,7 @@ namespace NServiceBus.Persistence.ComponentTests
                 startSecondTaskSync.SetResult(true);
                 await firstTaskCanCompleteSync.Task;
 
-                record.DateTimeProperty = DateTime.Now;
+                record.DateTimeProperty = DateTime.UtcNow;
                 await persister.Update(record, winningSaveSession, winningContext);
                 await winningSaveSession.CompleteAsync();
                 winningSaveSession.Dispose();
@@ -60,7 +60,7 @@ namespace NServiceBus.Persistence.ComponentTests
                 firstTaskCanCompleteSync.SetResult(true);
                 await firstTask;
 
-                staleRecord.DateTimeProperty = DateTime.Now.AddHours(1);
+                staleRecord.DateTimeProperty = DateTime.UtcNow.AddHours(1);
                 await persister.Update(staleRecord, losingSaveSession, losingSaveContext);
                 Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{generatedSagaId}] already saved."));
             });

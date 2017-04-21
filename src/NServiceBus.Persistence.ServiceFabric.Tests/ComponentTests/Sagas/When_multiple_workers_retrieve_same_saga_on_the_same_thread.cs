@@ -17,7 +17,7 @@
             Guid generatedSagaId;
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
             {
-                var sagaData = new TestSagaData { SomeId = correlationPropertyData };
+                var sagaData = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
                 var correlationProperty = SetActiveSagaInstanceForSave(insertContextBag, new TestSaga(), sagaData);
                 generatedSagaId = sagaData.Id;
 
@@ -37,7 +37,7 @@
             var staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
             SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, staleRecord);
 
-            record.DateTimeProperty = DateTime.Now;
+            record.DateTimeProperty = DateTime.UtcNow;
             await persister.Update(record, winningSaveSession, winningContext);
             await winningSaveSession.CompleteAsync();
             winningSaveSession.Dispose();

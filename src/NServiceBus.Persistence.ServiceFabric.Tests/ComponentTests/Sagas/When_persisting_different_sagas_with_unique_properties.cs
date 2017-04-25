@@ -13,11 +13,12 @@
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga1 = new SagaWithCorrelationPropertyData
             {
-                CorrelatedProperty = correlationPropertyData
+                CorrelatedProperty = correlationPropertyData,
+                DateTimeProperty = DateTime.UtcNow
             };
             var saga2 = new AnotherSagaWithCorrelatedPropertyData
             {
-                CorrelatedProperty = correlationPropertyData
+                CorrelatedProperty = correlationPropertyData,
             };
 
             var persister = configuration.SagaStorage;

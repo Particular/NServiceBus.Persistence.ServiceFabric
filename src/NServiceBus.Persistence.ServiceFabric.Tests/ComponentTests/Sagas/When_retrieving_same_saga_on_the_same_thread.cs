@@ -7,17 +7,25 @@ namespace NServiceBus.Persistence.ComponentTests
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_worker_tries_to_complete_saga_update_by_another : SagaPersisterTests<TestSaga,TestSagaData>
+    public class When_retrieving_same_saga_on_the_same_thread : SagaPersisterTests
     {
         [Test]
-        public async Task Should_fail()
+        public async Task Save_should_fail_when_data_changes_between_read_and_update()
         {
             var correlationPropertyData = Guid.NewGuid().ToString();
-            var saga = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
-
-            await SaveSaga(saga);
 
             var persister = configuration.SagaStorage;
+            var insertContextBag = configuration.GetContextBagForSagaStorage();
+            Guid generatedSagaId;
+            using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
+            {
+                var sagaData = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
+                var correlationProperty = SetActiveSagaInstanceForSave(insertContextBag, new TestSaga(), sagaData);
+                generatedSagaId = sagaData.Id;
+
+                await persister.Save(sagaData, correlationProperty, insertSession, insertContextBag);
+                await insertSession.CompleteAsync();
+            }
 
             ContextBag losingContext;
             CompletableSynchronizedStorageSession losingSaveSession;
@@ -27,13 +35,13 @@ namespace NServiceBus.Persistence.ComponentTests
             var winningSaveSession = await configuration.SynchronizedStorage.OpenSession(winningContext);
             try
             {
-                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, saga);
-                var record = await persister.Get<TestSagaData>(saga.Id, winningSaveSession, winningContext);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
+                var record = await persister.Get<TestSagaData>(generatedSagaId, winningSaveSession, winningContext);
                 SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(winningContext, record);
 
                 losingContext = configuration.GetContextBagForSagaStorage();
                 losingSaveSession = await configuration.SynchronizedStorage.OpenSession(losingContext);
-                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, saga);
+                SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, new TestSagaData { Id = generatedSagaId, SomeId = correlationPropertyData });
                 staleRecord = await persister.Get<TestSagaData>("SomeId", correlationPropertyData, losingSaveSession, losingContext);
                 SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(losingContext, staleRecord);
 
@@ -48,8 +56,8 @@ namespace NServiceBus.Persistence.ComponentTests
 
             try
             {
-                await persister.Complete(staleRecord, losingSaveSession, losingContext);
-                Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EqualTo("Saga can't be completed as it was updated by another process."));
+                await persister.Update(staleRecord, losingSaveSession, losingContext);
+                Assert.That(async () => await losingSaveSession.CompleteAsync(), Throws.InstanceOf<Exception>().And.Message.EndsWith($"concurrency violation: saga entity Id[{generatedSagaId}] already saved."));
             }
             finally
             {

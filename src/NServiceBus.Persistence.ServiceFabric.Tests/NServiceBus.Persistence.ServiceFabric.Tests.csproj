@@ -102,7 +102,7 @@
     <Compile Include="ComponentTests\Sagas\AnotherSagaWithoutCorrelationProperty.cs" />
     <Compile Include="ComponentTests\Sagas\CombGuid.cs" />
     <Compile Include="ComponentTests\Sagas\DefaultSagaIdGenerator.cs" />
-    <Compile Include="ComponentTests\Sagas\When_multiple_workers_retrieve_same_saga_on_different_threads.cs" />
+    <Compile Include="ComponentTests\Sagas\When_retrieving_same_saga_on_different_threads.cs" />
     <Compile Include="ComponentTests\Sagas\When_worker_tries_to_complete_saga_update_by_another.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_no_defined_unique_properties.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="ComponentTests\Sagas\SagaWithComplexTypeEntity.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_an_escalated_DTC_transaction.cs" />
     <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_complex_types.cs" />
-    <Compile Include="ComponentTests\Sagas\When_multiple_workers_retrieve_same_saga_on_the_same_thread.cs" />
+    <Compile Include="ComponentTests\Sagas\When_retrieving_same_saga_on_the_same_thread.cs" />
     <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_the_same_unique_property_value.cs" />
     <Compile Include="ComponentTests\SubscriptionStorageTests.cs" />
     <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />

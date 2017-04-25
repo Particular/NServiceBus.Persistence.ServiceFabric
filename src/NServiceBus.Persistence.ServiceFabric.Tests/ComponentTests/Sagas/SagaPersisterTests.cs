@@ -145,6 +145,8 @@
                 SetActiveSagaInstanceForGet<TSaga, TSagaData>(context, new TSagaData());
 
                 sagaData = await persister.Get<TSagaData>(correlatedPropertyName, correlationPropertyData, completeSession, context);
+
+                await completeSession.CompleteAsync();
             }
             return sagaData;
         }
@@ -159,6 +161,8 @@
             {
                 SetActiveSagaInstanceForGet<TSaga, TSagaData>(readContextBag, new TSagaData(), availableTypes);
                 sagaData = await configuration.SagaStorage.Get<TSagaData>(sagaId, readSession, readContextBag);
+
+                await readSession.CompleteAsync();
             }
             return sagaData;
         }

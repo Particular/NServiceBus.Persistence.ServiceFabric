@@ -1,4 +1,14 @@
-## Testing
+## How to run the tests
+
+* Install the Service Fabric SDK (https://azure.microsoft.com/en-us/downloads/)
+* Ensure you have an environment variable `AzureServiceBusTransport.ConnectionString` containing a valid Azure ServiceBus connection string 
+* Start the "Service Fabric Local Cluster Manager"
+* via SF Cluster Manager tray icon, select "Start a local Cluster"
+* In the "NServiceBus.Persistence.ServiceFabric" solution, go to the "Tests" project and select open the class representing the test suite you want to run (e.g. in case of the acceptance tests, open the `AcceptanceTests.cs` file
+* Run the test in the opened file. This may take a while to connect to the SF cluster but once running, all executed tests will be shown in the test runner.
+
+
+## How the test execution works
 
 With Service Fabric code that needs to access infrastructure like the reliable state manager has to be run inside the cluster. This applies to integration tests as well. A classical integration test (here as an example against SQL Server) might look like this
 

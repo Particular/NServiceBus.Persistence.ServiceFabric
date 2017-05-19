@@ -1,4 +1,4 @@
-﻿namespace NServiceBus.Persistence.ServiceFabric.AcceptanceTests.App_Packages.NSB.AcceptanceTests._6._2._0_rc0001.Reliability.Outbox
+﻿namespace NServiceBus.AcceptanceTests.Reliability.Outbox
 {
     using System;
     using System.Collections.Generic;

@@ -9,7 +9,15 @@
         public bool SupportsNativePubSub { get; } = true;
         public bool SupportsNativeDeferral { get; } = true;
         public bool SupportsOutbox { get; } = true;
-        public IConfigureEndpointTestExecution TransportConfiguration { get; } = new ConfigureEndpointAzureServiceBusTransport();
-        public IConfigureEndpointTestExecution PersistenceConfiguration { get; } = new ConfigureEndpointServiceFabricPersistence();
+
+        public IConfigureEndpointTestExecution CreateTransportConfiguration()
+        {
+            return new ConfigureEndpointAzureServiceBusTransport();
+        }
+
+        public IConfigureEndpointTestExecution CreatePersistenceConfiguration()
+        {
+            return new ConfigureEndpointServiceFabricPersistence();
+        }
     }
 }

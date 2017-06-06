@@ -1,11 +1,10 @@
-﻿namespace NServiceBus.AcceptanceTests.Reliability.Outbox
+﻿namespace NServiceBus.AcceptanceTests.Outbox
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
     using AcceptanceTesting;
     using AcceptanceTesting.Customization;
-    using Configuration.AdvanceExtensibility;
     using EndpointTemplates;
     using NServiceBus.Pipeline;
     using NUnit.Framework;
@@ -13,7 +12,7 @@
     public class When_a_message_is_audited : NServiceBusAcceptanceTest
     {
         [Test]
-        public async Task Should_be_dispatched_immediately()
+        public async Task Should_dispatch_audit_message_immediately()
         {
             Requires.OutboxPersistence();
 
@@ -40,7 +39,6 @@
                 EndpointSetup<DefaultServer>(
                     b =>
                     {
-                        b.GetSettings().Set("DisableOutboxTransportCheck", true);
                         b.EnableOutbox();
                         b.Pipeline.Register("BlowUpAfterDispatchBehavior", new BlowUpAfterDispatchBehavior(), "For testing");
                         b.AuditProcessedMessagesTo<AuditSpyEndpoint>();

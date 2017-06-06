@@ -1,17 +1,16 @@
-﻿namespace NServiceBus.AcceptanceTests.Reliability.Outbox
+﻿namespace NServiceBus.AcceptanceTests.Outbox
 {
     using System;
     using System.Threading.Tasks;
     using AcceptanceTesting;
     using AcceptanceTesting.Customization;
-    using Configuration.AdvanceExtensibility;
     using EndpointTemplates;
     using NUnit.Framework;
 
     public class When_a_duplicate_message_arrives : NServiceBusAcceptanceTest
     {
         [Test]
-        public async Task Should_not_dispatch_messages_already_dispatched()
+        public async Task Should_not_invoke_handler_for_a_duplicate_message()
         {
             Requires.OutboxPersistence();
 
@@ -33,16 +32,18 @@
                     });
                 }))
                 .WithEndpoint<DownstreamEndpoint>()
-                .Done(c => c.Done)
+                .Done(c => c.Done && c.MessagesReceivedByDownstreamEndpoint >= 2 && c.MessagesReceivedByOutboxEndpoint >= 2)
                 .Run();
 
             Assert.AreEqual(2, context.MessagesReceivedByDownstreamEndpoint);
+            Assert.AreEqual(2, context.MessagesReceivedByOutboxEndpoint);
         }
 
         public class Context : ScenarioContext
         {
             public int MessagesReceivedByDownstreamEndpoint { get; set; }
             public bool Done { get; set; }
+            public int MessagesReceivedByOutboxEndpoint { get; set; }
         }
 
         public class DownstreamEndpoint : EndpointConfigurationBuilder
@@ -75,7 +76,6 @@
                 EndpointSetup<DefaultServer>(b =>
                 {
                     b.LimitMessageProcessingConcurrencyTo(1); // We limit to one to avoid race conditions on dispatch and this allows us to reliable check whether deduplication happens properly
-                    b.GetSettings().Set("DisableOutboxTransportCheck", true);
                     b.EnableOutbox();
                     b.ConfigureTransport().Routing().RouteToEndpoint(typeof(SendOrderAcknowledgement), typeof(DownstreamEndpoint));
                 });
@@ -83,8 +83,11 @@
 
             class PlaceOrderHandler : IHandleMessages<PlaceOrder>
             {
+                public Context Context { get; set; }
+
                 public Task Handle(PlaceOrder message, IMessageHandlerContext context)
                 {
+                    Context.MessagesReceivedByOutboxEndpoint++;
                     return context.Send(new SendOrderAcknowledgement
                     {
                         Terminator = message.Terminator

@@ -12,7 +12,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             var outboxTransaction = transaction as ServiceFabricOutboxTransaction;
             if (outboxTransaction != null)
             {
-                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.StateManager, outboxTransaction.Transaction);
+                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.Transaction);
                 return Task.FromResult(session);
             }
             return EmptyTask;

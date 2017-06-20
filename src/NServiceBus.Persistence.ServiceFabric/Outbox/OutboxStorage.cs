@@ -47,7 +47,7 @@
 
         public Task<OutboxTransaction> BeginTransaction(ContextBag context)
         {
-            return Task.FromResult<OutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager));
+            return Task.FromResult<OutboxTransaction>(new ServiceFabricOutboxTransaction(new ServiceFabricTransaction(reliableStateManager)));
         }
 
         public async Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
@@ -59,7 +59,7 @@
                 operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers);
             }
 
-            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction.Value;
+            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction.Transaction;
             if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations)).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");

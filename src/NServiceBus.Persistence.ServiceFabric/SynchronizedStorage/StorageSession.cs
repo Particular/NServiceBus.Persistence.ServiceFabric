@@ -1,55 +1,48 @@
 namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
 
     class StorageSession : CompletableSynchronizedStorageSession, IServiceFabricStorageSession
     {
-        Lazy<ITransaction> transaction;
-
-        public StorageSession(IReliableStateManager stateManager, Lazy<ITransaction> transaction)
+        public StorageSession(ServiceFabricTransaction transaction) : this(transaction, false)
         {
-            StateManager = stateManager;
-            this.transaction = transaction;
-            actions = new List<Func<ITransaction, Task>>();
         }
 
-        public IReliableStateManager StateManager { get; }
+        public StorageSession(IReliableStateManager stateManager) : this(new ServiceFabricTransaction(stateManager), true)
+        {
+        }
 
-        public ITransaction Transaction => transaction.Value;
-
-        // this will lead to closure allocations
-        List<Func<ITransaction, Task>> actions;
+        StorageSession(ServiceFabricTransaction transaction, bool ownsTransaction)
+        {
+            this.ownsTransaction = ownsTransaction;
+            this.transaction = transaction;
+        }
 
         public void Dispose()
         {
-            actions.Clear();
-
-            if (transaction.IsValueCreated)
+            if (ownsTransaction)
             {
-                transaction.Value.Dispose();
+                transaction.Dispose();
             }
         }
+
+        public Task CompleteAsync()
+        {
+            return ownsTransaction ? transaction.Commit() : TaskEx.CompletedTask;
+        }
+
+        public IReliableStateManager StateManager => transaction.StateManager;
+
+        public ITransaction Transaction => transaction.Transaction;
 
         public Task Add(Func<ITransaction, Task> action)
         {
-            actions.Add(action);
-            return TaskEx.CompletedTask;
+            return transaction.Add(action);
         }
 
-        public async Task CompleteAsync()
-        {
-            foreach (var action in actions)
-            {
-                await action(Transaction).ConfigureAwait(false);
-            }
-
-            if (transaction.IsValueCreated)
-            {
-                await transaction.Value.CommitAsync().ConfigureAwait(false);
-            }
-        }
+        ServiceFabricTransaction transaction;
+        bool ownsTransaction;
     }
 }

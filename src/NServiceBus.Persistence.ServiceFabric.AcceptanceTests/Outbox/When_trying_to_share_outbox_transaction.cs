@@ -1,4 +1,4 @@
-﻿namespace NServiceBus.Persistence.ServiceFabric.AcceptanceTests
+﻿namespace NServiceBus.Persistence.ServiceFabric.AcceptanceTests.Outbox
 {
     using System;
     using System.Threading.Tasks;

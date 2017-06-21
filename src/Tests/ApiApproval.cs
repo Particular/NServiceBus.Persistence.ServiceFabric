@@ -1,33 +1,18 @@
-﻿namespace Tests
+﻿using System.IO;
+using System.Runtime.CompilerServices;
+using ApiApprover;
+using NServiceBus;
+using NServiceBus.Persistence.ServiceFabric;
+using NUnit.Framework;
+
+[TestFixture]
+public class ApiApproval
 {
-    using System;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using ApprovalTests;
-    using NServiceBus.Persistence.ServiceFabric;
-    using NUnit.Framework;
-    using PublicApiGenerator;
-
-    [TestFixture]
-    public class APIApprovals
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void Approve()
     {
-        [Test]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public void ApprovePersistence()
-        {
-            var publicApi = Filter(ApiGenerator.GeneratePublicApi(typeof(ServiceFabricPersistence).Assembly));
-            Approvals.Verify(publicApi);
-        }
-
-        string Filter(string text)
-        {
-            return string.Join(Environment.NewLine, text.Split(new[]
-                {
-                    Environment.NewLine
-                }, StringSplitOptions.RemoveEmptyEntries)
-                .Where(l => !l.StartsWith("[assembly: ReleaseDateAttribute("))
-                .Where(l => !string.IsNullOrWhiteSpace(l))
-            );
-        }
+        Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
+        PublicApiApprover.ApprovePublicApi(typeof(ServiceFabricPersistence).Assembly);
     }
 }

@@ -35,7 +35,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public IReliableStateManager StateManager => transaction.StateManager;
 
-        public ITransaction Transaction => transaction.Transaction;
+        public ITransaction Transaction => transaction.NativeTransaction;
 
         public Task Add(Func<ITransaction, Task> action)
         {

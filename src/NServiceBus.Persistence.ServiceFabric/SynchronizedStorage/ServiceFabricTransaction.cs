@@ -11,20 +11,20 @@ namespace NServiceBus.Persistence.ServiceFabric
         {
             StateManager = stateManager;
             actions = new List<Func<ITransaction, Task>>();
-            transaction = new Lazy<ITransaction>(StateManager.CreateTransaction);
+            lazyNativeTransaction = new Lazy<ITransaction>(StateManager.CreateTransaction);
         }
 
         public IReliableStateManager StateManager { get; }
 
-        public ITransaction Transaction => transaction.Value;
+        public ITransaction NativeTransaction => lazyNativeTransaction.Value;
 
         public void Dispose()
         {
             actions.Clear();
 
-            if (transaction.IsValueCreated)
+            if (lazyNativeTransaction.IsValueCreated)
             {
-                Transaction.Dispose();
+                NativeTransaction.Dispose();
             }
         }
 
@@ -38,18 +38,18 @@ namespace NServiceBus.Persistence.ServiceFabric
         {
             foreach (var action in actions)
             {
-                await action(Transaction).ConfigureAwait(false);
+                await action(NativeTransaction).ConfigureAwait(false);
             }
 
-            if (transaction.IsValueCreated)
+            if (lazyNativeTransaction.IsValueCreated)
             {
-                await Transaction.CommitAsync().ConfigureAwait(false);
+                await NativeTransaction.CommitAsync().ConfigureAwait(false);
             }
         }
 
         // this will lead to closure allocations
         List<Func<ITransaction, Task>> actions;
 
-        Lazy<ITransaction> transaction;
+        Lazy<ITransaction> lazyNativeTransaction;
     }
 }

@@ -59,7 +59,7 @@
                 operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers);
             }
 
-            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction.Transaction;
+            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction.NativeTransaction;
             if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations)).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");

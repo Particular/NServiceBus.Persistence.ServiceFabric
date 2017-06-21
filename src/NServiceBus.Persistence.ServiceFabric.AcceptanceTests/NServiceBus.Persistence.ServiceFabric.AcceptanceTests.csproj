@@ -183,6 +183,7 @@
     <Compile Include="ConfigureEndpointServiceFabricPersistence.cs" />
     <Compile Include="SagaDataStorage\When_storing_saga_with_default_collection_mapping.cs" />
     <Compile Include="SagaDataStorage\When_storing_saga_with_custom_saga_attribute.cs" />
+    <Compile Include="Outbox\When_trying_to_share_outbox_transaction.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="TestSuiteConstraints.cs" />

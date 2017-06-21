@@ -106,6 +106,7 @@
     <Compile Include="ServiceFabricPersistenceStorageSessionExtensions.cs" />
     <Compile Include="StaticVersions.cs" />
     <Compile Include="SynchronizedStorage\IServiceFabricStorageSession.cs" />
+    <Compile Include="SynchronizedStorage\ServiceFabricTransaction.cs" />
     <Compile Include="SynchronizedStorage\SynchronizedStorage.cs" />
     <Compile Include="SynchronizedStorage\StorageSession.cs" />
     <Compile Include="SynchronizedStorage\SynchronizedStorageFeature.cs" />

@@ -1,37 +1,25 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
-    using System;
     using System.Threading.Tasks;
-    using Microsoft.ServiceFabric.Data;
     using Outbox;
 
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {
-        internal IReliableStateManager StateManager { get; }
-        internal Lazy<ITransaction> Transaction { get; }
+        internal ServiceFabricTransaction Transaction { get; }
 
-        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager)
+        public ServiceFabricOutboxTransaction(ServiceFabricTransaction transaction)
         {
-            StateManager = stateManager;
-            Transaction = new Lazy<ITransaction>(stateManager.CreateTransaction);
+            Transaction = transaction;
         }
 
         public void Dispose()
         {
-            if (Transaction.IsValueCreated)
-            {
-                Transaction.Value.Dispose();
-            }
+            Transaction.Dispose();
         }
 
         public Task Commit()
         {
-            if (Transaction.IsValueCreated)
-            {
-                return Transaction.Value.CommitAsync();
-            }
-
-            return TaskEx.CompletedTask;
+            return Transaction.Commit();
         }
     }
 }

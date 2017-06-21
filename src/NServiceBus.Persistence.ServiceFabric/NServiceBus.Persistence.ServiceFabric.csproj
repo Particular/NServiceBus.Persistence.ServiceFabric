@@ -18,8 +18,8 @@
     <None Include="..\..\packaging\nuget\nservicebus.persistence.servicefabric.nuspec" Link="nservicebus.persistence.servicefabric.nuspec" />
     <PackageReference Include="GitVersionTask" Version="4.0.0-beta0012" />
     <PackageReference Include="NuGetPackager" Version="0.6.3" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.5.216" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="5.5.216" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="5.6.220" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
     <PackageReference Include="NServiceBus" Version="6.2.0" />
   </ItemGroup>

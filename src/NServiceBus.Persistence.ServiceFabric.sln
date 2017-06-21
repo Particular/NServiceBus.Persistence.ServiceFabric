@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
-MinimumVisualStudioVersion = 10.0.40219.1
+MinimumVisualStudioVersion = 15.0.26430.13
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.Persistence.ServiceFabric", "NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj", "{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NServiceBus.Persistence.TestRunner", "NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj", "{2A4EE72F-E17F-4858-ADAA-34FB47068F5C}"

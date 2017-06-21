@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Runtime.CompilerServices;
 using ApiApprover;
-using NServiceBus;
 using NServiceBus.Persistence.ServiceFabric;
 using NUnit.Framework;
 

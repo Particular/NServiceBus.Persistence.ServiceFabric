@@ -10,6 +10,8 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="NServiceBus.Persistence.ServiceFabric.approved.cs" />
+    <Compile Remove="NServiceBus.Persistence.ServiceFabric.received.cs" />
     <PackageReference Include="ApprovalTests" Version="3.0.13" />
     <PackageReference Include="ApprovalUtilities" Version="3.0.13" />
     <PackageReference Include="ApiApprover" Version="6.1.0-beta2" />

@@ -15,6 +15,7 @@
     <UpdateAssemblyInfo>true</UpdateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="..\..\packaging\nuget\nservicebus.persistence.servicefabric.nuspec" Link="nservicebus.persistence.servicefabric.nuspec" />
     <PackageReference Include="GitVersionTask" Version="4.0.0-beta0012" />
     <PackageReference Include="NuGetPackager" Version="0.6.3" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.5.216" />

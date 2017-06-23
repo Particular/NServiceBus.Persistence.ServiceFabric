@@ -102,6 +102,7 @@
         [TestCaseSource(nameof(GetTestCases))]
         public async Task _(string testName)
         {
+            Console.WriteLine("GetTestCases " + testName);
             Result result = null;
             try
             {
@@ -188,8 +189,10 @@
                     imageStoreConnectionString = clusterManifest["Management"]["ImageStoreConnectionString"];
                     await TearDown().ConfigureAwait(false);
                     var app = fabric.ApplicationManager;
-                    app.CopyApplicationPackage(imageStoreConnectionString, TestAppPkgPath, ImageStorePath.ToString());
-                    await app.ProvisionApplicationAsync(ImageStorePath.ToString()).ConfigureAwait(false);
+                    var store = ImageStorePath.ToString();
+                    Console.WriteLine("CopyApplicationPackage. imageStoreConnectionString:" + imageStoreConnectionString + ". TestAppPkgPath:" + TestAppPkgPath + ". store:" + store);
+                    app.CopyApplicationPackage(imageStoreConnectionString, TestAppPkgPath, store);
+                    await app.ProvisionApplicationAsync(store).ConfigureAwait(false);
                     var nameValueCollection = new NameValueCollection();
                     // currently hardcoded
                     foreach (var toPromote in environmentVariablesToPromote)

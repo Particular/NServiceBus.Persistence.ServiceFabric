@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceManifest Name="NServiceBus.Persistence.ServiceFabric.TestsPkg"
+<ServiceManifest Name="TestsPkg"
                  Version="1.0.0"
                  xmlns="http://schemas.microsoft.com/2011/01/fabric"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -11,7 +11,7 @@
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
       <ExeHost>
-        <Program>NServiceBus.Persistence.ServiceFabric.Tests.exe</Program>
+        <Program>Tests.exe</Program>
       </ExeHost>
     </EntryPoint>
   </CodePackage>

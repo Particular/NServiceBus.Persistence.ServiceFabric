@@ -153,5 +153,7 @@
 <Compile Remove="$(NuGetPackageRoot)**\\Tx\ImmediateDispatch\When_requesting_immediate_dispatch_with_exactly_once.cs " />
 <Compile Remove="$(NuGetPackageRoot)**\\Tx\ImmediateDispatch\When_sending_inside_ambient_tx.cs " />
 <Compile Remove="$(NuGetPackageRoot)**\\Versioning\When_multiple_versions_of_a_message_is_published.cs " />
+<!-- Excluding for now since it contains Assert that is happening outside the unit test thread -->
+<Compile Remove="$(NuGetPackageRoot)**\\Sagas\When_saga_is_mapped_to_complex_expression.cs " />
   </ItemGroup>
 </Project>

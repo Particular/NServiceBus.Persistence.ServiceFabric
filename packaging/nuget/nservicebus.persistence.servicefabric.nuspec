@@ -25,6 +25,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\binaries\NServiceBus.Persistence.ServiceFabric.???" target="lib\net452" />
+    <file src="..\..\binaries\net452\NServiceBus.Persistence.ServiceFabric.???" target="lib\net452" />
   </files>
 </package>

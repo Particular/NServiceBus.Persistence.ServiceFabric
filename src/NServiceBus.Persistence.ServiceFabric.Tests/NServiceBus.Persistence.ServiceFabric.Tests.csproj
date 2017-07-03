@@ -1,156 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <ProjectGuid>{F953E221-368B-4850-9AE2-E2F7A012A32D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NServiceBus.Persistence.ServiceFabric.Tests</RootNamespace>
-    <AssemblyName>NServiceBus.Persistence.ServiceFabric.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PlatformTarget>x64</PlatformTarget>  
+    <TargetFramework>net452</TargetFramework>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Test.snk</AssemblyOriginatorKeyFile>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AdditionalFileItemNames>$(AdditionalFileItemNames);None</AdditionalFileItemNames>
-  </PropertyGroup>
-  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+    <AssemblyName>Tests</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ServiceFabric.Data, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.Data.2.5.216\lib\net45\Microsoft.ServiceFabric.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ServiceFabric.Data.Interfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.Data.2.5.216\lib\net45\Microsoft.ServiceFabric.Data.Interfaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.ServiceFabric.FabricTransport, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.FabricTransport.Internal.2.5.216\lib\net45\Microsoft.ServiceFabric.FabricTransport.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ServiceFabric.Internal, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.5.5.216\lib\net45\Microsoft.ServiceFabric.Internal.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ServiceFabric.Internal.Strings, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.5.5.216\lib\net45\Microsoft.ServiceFabric.Internal.Strings.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ServiceFabric.Services, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.Services.2.5.216\lib\net45\Microsoft.ServiceFabric.Services.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ServiceFabric.Services.Remoting, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.Services.Remoting.2.5.216\lib\net45\Microsoft.ServiceFabric.Services.Remoting.dll</HintPath>
-    </Reference>
-    <Reference Include="NServiceBus.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NServiceBus.6.3.3\lib\net452\NServiceBus.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunitlite, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnitLite.3.6.1\lib\net45\nunitlite.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Fabric, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.5.5.216\lib\net45\System.Fabric.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Fabric.Management.ServiceModel, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.5.5.216\lib\net45\System.Fabric.Management.ServiceModel.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Fabric.Management.ServiceModel.XmlSerializers, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ServiceFabric.5.5.216\lib\net45\System.Fabric.Management.ServiceModel.XmlSerializers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Fabric.Strings, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <HintPath>..\packages\Microsoft.ServiceFabric.5.5.216\lib\net45\System.Fabric.Strings.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="5.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.6.220" />
+    <PackageReference Include="NServiceBus" Version="6.3.3" />
+    <PackageReference Include="NUnit" Version="3.7.1" />
+    <PackageReference Include="NUnitLite" Version="3.7.1" />
+    <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
+    <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ComponentTests\IPersistenceTestsConfiguration.cs" />
-    <Compile Include="ComponentTests\OutboxStorageTests.cs" />
-    <Compile Include="ComponentTests\RequiresExtensionsForPersistenceTestsConfiguration.cs" />
-    <Compile Include="ComponentTests\Sagas\AnotherSagaWithoutCorrelationProperty.cs" />
-    <Compile Include="ComponentTests\Sagas\CombGuid.cs" />
-    <Compile Include="ComponentTests\Sagas\DefaultSagaIdGenerator.cs" />
-    <Compile Include="ComponentTests\Sagas\When_retrieving_same_saga_on_different_threads.cs" />
-    <Compile Include="ComponentTests\Sagas\When_worker_tries_to_complete_saga_update_by_another.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_no_defined_unique_properties.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_the_same_saga_twice_in_two_sessions_on_the_same_thread.cs" />
-    <Compile Include="ComponentTests\Sagas\When_retrieving_the_same_saga_twice.cs" />
-    <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_no_defined_unique_property.cs" />
-    <Compile Include="ComponentTests\Sagas\When_saga_not_found_return_default.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_different_sagas_with_unique_properties.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_the_same_unique_property_as_another_saga.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_the_same_unique_property_as_a_completed_saga.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_no_defined_unique_property.cs" />
-    <Compile Include="ComponentTests\Sagas\SagaWithComplexType.cs" />
-    <Compile Include="ComponentTests\Sagas\SagaWithComplexTypeEntity.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_an_escalated_DTC_transaction.cs" />
-    <Compile Include="ComponentTests\Sagas\When_persisting_a_saga_with_complex_types.cs" />
-    <Compile Include="ComponentTests\Sagas\When_retrieving_same_saga_on_the_same_thread.cs" />
-    <Compile Include="ComponentTests\Sagas\When_updating_a_saga_with_the_same_unique_property_value.cs" />
-    <Compile Include="ComponentTests\SubscriptionStorageTests.cs" />
-    <Compile Include="ComponentTests\PersistenceTestsConfiguration.cs" />
-    <Compile Include="ComponentTests\Sagas\AnotherSagaWithCorrelatedPropertyData.cs" />
-    <Compile Include="ComponentTests\Sagas\SagaPersisterTests.cs" />
-    <Compile Include="ComponentTests\Sagas\SagaWithoutCorrelationPropertyData.cs" />
-    <Compile Include="ComponentTests\Sagas\SagaWithCorrelationPropertyData.cs" />
-    <Compile Include="ComponentTests\Sagas\SimpleSagaEntitySaga.cs" />
-    <Compile Include="ComponentTests\Sagas\TestSagaData.cs" />
-    <Compile Include="ComponentTests\Sagas\When_completing_a_saga_with_no_defined_correlation_property.cs" />
-    <Compile Include="ComponentTests\Sagas\When_completing_a_saga_loaded_by_id.cs" />
-    <Compile Include="ComponentTests\Sagas\When_completing_a_saga_with_correlation_property.cs" />
-    <Compile Include="ComponentTests\TimeoutStorageTests.cs" />
-    <Compile Include="LetsSeeTest.cs" />
-    <Compile Include="PersistenceTestsConfiguration.cs" />
-    <Compile Include="SynchronizedStorage\StorageSessionTests.cs" />
-    <Compile Include="Tests.cs" />
-    <Compile Include="Program.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PackageRoot\Config\Settings.xml" />
-    <None Include="PackageRoot\ServiceManifest.xml" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj">
-      <Project>{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}</Project>
-      <Name>NServiceBus.Persistence.ServiceFabric</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj">
-      <Project>{2A4EE72F-E17F-4858-ADAA-34FB47068F5C}</Project>
-      <Name>NServiceBus.Persistence.TestRunner</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

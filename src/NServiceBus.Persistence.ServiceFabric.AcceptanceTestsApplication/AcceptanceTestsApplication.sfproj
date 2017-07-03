@@ -27,10 +27,10 @@
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric.AcceptanceTests\NServiceBus.Persistence.ServiceFabric.AcceptanceTests.csproj" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric.AcceptanceTests\AcceptanceTests.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

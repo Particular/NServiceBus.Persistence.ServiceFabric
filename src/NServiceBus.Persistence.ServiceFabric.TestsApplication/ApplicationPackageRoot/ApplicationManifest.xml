@@ -6,7 +6,7 @@
     <Parameter Name="Tests_TargetReplicaSetSize" DefaultValue="1" />
   </Parameters>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="NServiceBus.Persistence.ServiceFabric.TestsPkg" ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="TestsPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
   </ServiceManifestImport>
   <DefaultServices>

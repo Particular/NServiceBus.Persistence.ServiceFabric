@@ -19,11 +19,11 @@
     <PackageReference Include="Mono.Cecil" Version="0.10.0-beta6" />
     <PackageReference Include="NServiceBus" Version="6.2.0" />
     <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="5.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="5.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
     <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
   </ItemGroup>

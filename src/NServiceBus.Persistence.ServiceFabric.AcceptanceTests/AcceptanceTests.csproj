@@ -12,11 +12,11 @@
     <PackageReference Include="NUnit" Version="3.7.1" />
     <PackageReference Include="NUnitLite" Version="3.7.1" />
     <PackageReference Include="WindowsAzure.ServiceBus" Version="4.1.2" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="5.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.6.220" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.6.220" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric" Version="5.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.7.198" />
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
     <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
     <PackageReference Include="NServiceBus.AcceptanceTesting" Version="6.3.3" />
     <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="7.2.3" />

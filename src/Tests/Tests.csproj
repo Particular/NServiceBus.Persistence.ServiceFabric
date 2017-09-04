@@ -5,9 +5,6 @@
     <TargetFramework>net452</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="NServiceBus.Persistence.ServiceFabric.approved.cs" />
@@ -17,7 +14,7 @@
     <PackageReference Include="ApiApprover" Version="6.1.0-beta2" />
     <PackageReference Include="PublicApiGenerator" Version="6.1.0-beta2" />
     <PackageReference Include="Mono.Cecil" Version="0.10.0-beta6" />
-    <PackageReference Include="NServiceBus" Version="6.2.0" />
+    <PackageReference Include="NServiceBus" Version="7.0.0-*" />
     <PackageReference Include="NUnit" Version="3.7.1" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />

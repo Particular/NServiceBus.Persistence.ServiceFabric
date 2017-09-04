@@ -5,7 +5,6 @@
     <TargetFramework>net452</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
   <ItemGroup>
@@ -18,10 +17,10 @@
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
     <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
-    <PackageReference Include="NServiceBus.AcceptanceTesting" Version="6.3.3" />
-    <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="7.2.3" />
-    <PackageReference Include="NServiceBus" Version="6.3.3" />
-    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="6.3.3" />
+    <PackageReference Include="NServiceBus.AcceptanceTesting" Version="7.0.0-*" />
+    <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0-*" />
+    <PackageReference Include="NServiceBus" Version="7.0.0-*" />
+    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="7.0.0-*" />
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
     <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
   </ItemGroup>

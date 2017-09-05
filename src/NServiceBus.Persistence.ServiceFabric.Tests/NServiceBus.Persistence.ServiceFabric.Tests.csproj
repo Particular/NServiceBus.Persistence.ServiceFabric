@@ -16,8 +16,8 @@
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
     <PackageReference Include="NServiceBus" Version="7.0.0-*" />
-    <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="NUnitLite" Version="3.7.1" />
+    <PackageReference Include="NUnit" Version="3.*" />
+    <PackageReference Include="NUnitLite" Version="3.*" />
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
     <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
     <Reference Include="System.Transactions" />

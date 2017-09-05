@@ -8,8 +8,8 @@
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="NUnitLite" Version="3.7.1" />
+    <PackageReference Include="NUnit" Version="3.*" />
+    <PackageReference Include="NUnitLite" Version="3*" />
     <PackageReference Include="WindowsAzure.ServiceBus" Version="4.1.2" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />

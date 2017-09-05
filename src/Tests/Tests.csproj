@@ -25,7 +25,7 @@
     <PackageReference Include="PublicApiGenerator" Version="6.1.0-beta2" />
     <PackageReference Include="Mono.Cecil" Version="0.10.0-beta6" />
     <PackageReference Include="NServiceBus" Version="7.0.0-*" />
-    <PackageReference Include="NUnit" Version="3.7.1" />
+    <PackageReference Include="NUnit" Version="3.*" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="5.7.198" />

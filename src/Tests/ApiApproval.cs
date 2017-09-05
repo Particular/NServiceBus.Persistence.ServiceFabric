@@ -1,17 +1,22 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using ApiApprover;
-using NServiceBus.Persistence.ServiceFabric;
+using ApprovalTests;
+using ApprovalTests.Reporters;
 using NUnit.Framework;
+using PublicApiGenerator;
 
 [TestFixture]
-public class ApiApproval
+public class APIApprovals
 {
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void Approve()
+    [UseReporter(typeof(DiffReporter), typeof(AllFailingTestsClipboardReporter))]
+    public void ApproveServiceFabricPersistence()
     {
-        Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
-        PublicApiApprover.ApprovePublicApi(typeof(ServiceFabricPersistence).Assembly);
+        var combine = Path.Combine(TestContext.CurrentContext.TestDirectory, "NServiceBus.Persistence.ServiceFabric.dll");
+        var assembly = Assembly.LoadFile(combine);
+        var publicApi = ApiGenerator.GeneratePublicApi(assembly);
+        Approvals.Verify(publicApi);
     }
 }

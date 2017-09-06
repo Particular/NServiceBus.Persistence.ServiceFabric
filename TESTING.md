@@ -8,6 +8,25 @@
 * Run the test in the opened file. This may take a while to connect to the SF cluster but once running, all executed tests will be shown in the test runner.
 
 
+## How to debug tests
+
+### Acceptance Test
+
+* Copy the acceptance test that is failing into the acceptance test project
+* Rename it
+* Add `Debugger.Break();` to the start of the test
+* Run the tests as described above without the debug mode. Attach the debugger to the `AcceptanceTests.exe` process running under Network Authority.
+
+
+### Debugging external references
+
+Consider for example debugging of `NServiceBus.Azure.Transports.WindowsServiceBus` is required. By default the application pkg that is deployed to the Service Fabric Cluster only contains PDBs of the projects that are built in the same solution. So in order to debug the third party either include the project in the solution or execute the following steps:
+
+* Create a debug build of the external library
+* Create a debug build of the solution
+* Copy paste the debug build including the PDBs of the external library into [ApplicationName]Application\pkg\Debug\[ApplicationName]Pkg\Code
+* Include the source file with a break point of the external library and execute the test without rebuilding the solution
+
 ## How the test execution works
 
 With Service Fabric code that needs to access infrastructure like the reliable state manager has to be run inside the cluster. This applies to integration tests as well. A classical integration test (here as an example against SQL Server) might look like this

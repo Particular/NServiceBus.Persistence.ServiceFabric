@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>  
+    <PlatformTarget>x64</PlatformTarget>
     <TargetFramework>net452</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
     <AssemblyName>Tests</AssemblyName>
     <RootNamespace>Tests</RootNamespace>
@@ -16,9 +15,9 @@
     <PackageReference Include="Microsoft.ServiceFabric" Version="5.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
-    <PackageReference Include="NServiceBus" Version="6.3.3" />
-    <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="NUnitLite" Version="3.7.1" />
+    <PackageReference Include="NServiceBus" Version="7.0.0-*" />
+    <PackageReference Include="NUnit" Version="3.*" />
+    <PackageReference Include="NUnitLite" Version="3.*" />
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
     <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
     <Reference Include="System.Transactions" />

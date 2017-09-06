@@ -1,24 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>  
+    <PlatformTarget>x64</PlatformTarget>
     <TargetFramework>net452</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>True</DebugSymbols>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ApiApprover\**" />
+    <EmbeddedResource Remove="ApiApprover\**" />
+    <None Remove="ApiApprover\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Remove="NServiceBus.Persistence.ServiceFabric.approved.cs" />
     <Compile Remove="NServiceBus.Persistence.ServiceFabric.received.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ApprovalTests" Version="3.0.13" />
     <PackageReference Include="ApprovalUtilities" Version="3.0.13" />
     <PackageReference Include="ApiApprover" Version="6.1.0-beta2" />
     <PackageReference Include="PublicApiGenerator" Version="6.1.0-beta2" />
     <PackageReference Include="Mono.Cecil" Version="0.10.0-beta6" />
-    <PackageReference Include="NServiceBus" Version="6.2.0" />
-    <PackageReference Include="NUnit" Version="3.7.1" />
+    <PackageReference Include="NServiceBus" Version="7.0.0-*" />
+    <PackageReference Include="NUnit" Version="3.*" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="5.7.198" />

@@ -2,7 +2,7 @@
 using Microsoft.ServiceFabric.Services.Runtime;
 using NServiceBus;
 using NServiceBus.AcceptanceTesting.Support;
-using NServiceBus.Configuration.AdvanceExtensibility;
+using NServiceBus.Configuration.AdvancedExtensibility;
 using NServiceBus.Persistence.ServiceFabric;
 using NUnit.Framework;
 

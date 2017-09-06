@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>  
+    <PlatformTarget>x64</PlatformTarget>
     <TargetFramework>net452</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
@@ -12,7 +12,7 @@
     <EmbeddedResource Remove="ApiApprover\**" />
     <None Remove="ApiApprover\**" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Remove="NServiceBus.Persistence.ServiceFabric.approved.cs" />
     <Compile Remove="NServiceBus.Persistence.ServiceFabric.received.cs" />

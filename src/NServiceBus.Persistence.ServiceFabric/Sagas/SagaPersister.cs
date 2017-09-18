@@ -40,7 +40,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         }
 
         public async Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context)
-            where TSagaData : IContainSagaData
+            where TSagaData : class, IContainSagaData
         {
             var storageSession = (StorageSession) session;
 
@@ -60,7 +60,8 @@ namespace NServiceBus.Persistence.ServiceFabric
             }
         }
 
-        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context) where TSagaData : IContainSagaData
+        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context)
+            where TSagaData : class, IContainSagaData
         {
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagaId = SagaIdGenerator.Generate(sagaInfo, propertyName, propertyValue);

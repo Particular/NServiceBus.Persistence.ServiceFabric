@@ -8,7 +8,7 @@
 
     public class SagaPersisterTests<TSaga, TSagaData> : SagaPersisterTests
         where TSaga : Saga<TSagaData>, new()
-        where TSagaData : IContainSagaData, new()
+        where TSagaData : class, IContainSagaData, new()
     {
         protected Task SaveSaga(TSagaData saga, params Type[] availableTypes) => SaveSaga<TSaga, TSagaData>(saga, availableTypes);
         protected Task<TSagaData> GetByIdAndComplete(Guid sagaId, params Type[] availableTypes) => GetByIdAndComplete<TSaga, TSagaData>(sagaId, availableTypes);
@@ -38,7 +38,7 @@
 
         protected async Task SaveSaga<TSaga, TSagaData>(TSagaData saga, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>, new()
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var insertContextBag = configuration.GetContextBagForSagaStorage();
             using (var insertSession = await configuration.SynchronizedStorage.OpenSession(insertContextBag))
@@ -52,7 +52,7 @@
 
         protected async Task<TSagaData> GetByIdAndComplete<TSaga, TSagaData>(Guid sagaId, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>, new()
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var context = configuration.GetContextBagForSagaStorage();
             TSagaData sagaData;
@@ -71,7 +71,7 @@
 
         protected async Task<TSagaData> GetByIdAndUpdate<TSaga, TSagaData>(Guid sagaId, Action<TSagaData> update, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>, new()
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var context = configuration.GetContextBagForSagaStorage();
             TSagaData sagaData;
@@ -92,7 +92,7 @@
 
         protected async Task<TSagaData> GetByCorrelationPropertyAndUpdate<TSaga, TSagaData>(string correlatedPropertyName, object correlationPropertyData, Action<TSagaData> update)
             where TSaga : Saga<TSagaData>, new()
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var context = configuration.GetContextBagForSagaStorage();
             TSagaData sagaData;
@@ -114,7 +114,7 @@
 
         protected async Task<TSagaData> GetByCorrelationPropertyAndComplete<TSaga, TSagaData>(string correlatedPropertyName, object correlationPropertyData)
            where TSaga : Saga<TSagaData>, new()
-           where TSagaData : IContainSagaData, new()
+           where TSagaData : class, IContainSagaData, new()
         {
             var context = configuration.GetContextBagForSagaStorage();
             TSagaData sagaData;
@@ -134,7 +134,7 @@
 
         protected async Task<TSagaData> GetByCorrelationProperty<TSaga, TSagaData>(string correlatedPropertyName, object correlationPropertyData)
            where TSaga : Saga<TSagaData>, new()
-           where TSagaData : IContainSagaData, new()
+           where TSagaData : class, IContainSagaData, new()
         {
             var context = configuration.GetContextBagForSagaStorage();
             TSagaData sagaData;
@@ -153,7 +153,7 @@
 
         protected async Task<TSagaData> GetById<TSaga, TSagaData>(Guid sagaId, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>, new()
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var readContextBag = configuration.GetContextBagForSagaStorage();
             TSagaData sagaData;
@@ -169,7 +169,7 @@
 
         protected SagaCorrelationProperty SetActiveSagaInstanceForSave<TSaga, TSagaData>(ContextBag context, TSaga saga, TSagaData sagaData, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var sagaMetadata = configuration.SagaMetadataCollection.FindByEntity(typeof(TSagaData));
             var sagaInstance = new ActiveSagaInstance(saga, sagaMetadata, () => DateTime.UtcNow);
@@ -196,11 +196,11 @@
 
         protected void SetActiveSagaInstanceForGet<TSaga, TSagaData>(ContextBag context, TSagaData sagaData, params Type[] availableTypes)
             where TSaga : Saga<TSagaData>, new ()
-            where TSagaData : IContainSagaData, new()
+            where TSagaData : class, IContainSagaData, new()
         {
             var sagaMetadata = configuration.SagaMetadataCollection.FindByEntity(typeof(TSagaData));
             var sagaInstance = new ActiveSagaInstance(new TSaga(), sagaMetadata, () => DateTime.UtcNow);
-        
+
             sagaInstance.AttachNewEntity(sagaData);
             context.Set(sagaInstance);
         }

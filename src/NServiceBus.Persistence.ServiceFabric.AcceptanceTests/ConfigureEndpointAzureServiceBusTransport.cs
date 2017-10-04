@@ -19,6 +19,8 @@ public class ConfigureEndpointAzureServiceBusTransport : IConfigureEndpointTestE
             throw new Exception($"Environment variable with name {connectionStringName} must be provided.");
         }
 
+        configuration.UseSerialization<XmlSerializer>();
+
         var transportConfig = configuration.UseTransport<AzureServiceBusTransport>();
 
         transportConfig.ConnectionString(connectionString);

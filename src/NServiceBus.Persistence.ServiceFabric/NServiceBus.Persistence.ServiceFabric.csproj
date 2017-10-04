@@ -16,6 +16,6 @@
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="[2.7.198, 3.0)" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="[5.7.198, 6.0)" />
     <PackageReference Include="Newtonsoft.Json" Version="[10.0.1, 11.0.0)" />
-    <PackageReference Include="NServiceBus" Version="[7.0.0-beta0005, 8.0.0)" />
+    <PackageReference Include="NServiceBus" Version="[7.0.0-*, 8.0.0)" />
   </ItemGroup>
 </Project>

@@ -8,8 +8,6 @@
     <NoWarn>CS0419;CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Service Fabric persister for NServiceBus</Description>
   </PropertyGroup>
   <ItemGroup>
@@ -17,5 +15,6 @@
     <PackageReference Include="Microsoft.ServiceFabric" Version="[5.7.198, 6.0)" />
     <PackageReference Include="Newtonsoft.Json" Version="[10.0.1, 11.0.0)" />
     <PackageReference Include="NServiceBus" Version="[7.0.0-*, 8.0.0)" />
+    <PackageReference Include="Particular.Packaging" Version="*" PrivateAssets="All" />
   </ItemGroup>
 </Project>

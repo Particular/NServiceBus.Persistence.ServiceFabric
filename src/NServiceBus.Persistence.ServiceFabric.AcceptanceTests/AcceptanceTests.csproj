@@ -1,145 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net452</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.*" />
-    <PackageReference Include="NUnitLite" Version="3.*" />
-    <PackageReference Include="WindowsAzure.ServiceBus" Version="4.1.2" />
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="2.7.198" />
-    <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="2.7.198" />
-    <PackageReference Include="Microsoft.ServiceFabric" Version="5.7.198" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="2.7.198" />
-    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
-    <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
-    <PackageReference Include="NServiceBus.AcceptanceTesting" Version="7.0.0-*" />
-    <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0-*" />
-    <PackageReference Include="NServiceBus" Version="7.0.0-*" />
-    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="7.0.0-*" />
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
     <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
   </ItemGroup>
-  <ItemGroup>
 
-<Compile Remove="$(NuGetPackageRoot)**\\ConfigureEndpointInMemoryPersistence.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\ConfigureEndpointLearningPersistence.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\ConfigureEndpointLearningTransport.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\ConventionEnforcementTests.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DeterministicGuid.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Audit\When_auditing.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Audit\When_auditing_message_with_TimeToBeReceived.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Audit\When_audit_is_overridden_in_code.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Audit\When_a_message_is_audited.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Audit\When_a_replymessage_is_audited.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Correlation\When_replying_to_received_message_without_correlationid.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Correlation\When_sending_with_no_correlation_id.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DataBus\When_sending_databus_properties.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DataBus\When_sending_databus_properties_with_unobtrusive.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DataBus\When_using_custom_IDataBus.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DelayedDelivery\When_Deferring_a_message.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DelayedDelivery\When_deferring_a_message_to_the_past.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DelayedDelivery\When_deferring_to_non_local.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\DelayedDelivery\When_using_special_characters_in_headers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Forwarding\When_forwarding_is_configured_for_endpoint.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Forwarding\When_requesting_message_to_be_forwarded.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\MessageId\When_message_has_empty_id_header.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\MessageId\When_message_has_no_id_header.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Pipeline\When_a_message_is_audited.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Pipeline\When_a_message_is_faulted.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Pipeline\When_a_message_is_sent.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Pipeline\When_handling_current_message_later.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Pipeline\When_sending_to_another_endpoint.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_cross_q_transactional_message_is_moved_to_error_queue.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_custom_policy_always_moves_to_error.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_custom_policy_does_single_delayed_retry_before_move_to_error.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_custom_policy_moves_to_overridden_error_queue.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_delayed_retries_with_immediate_retries_disabled.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_error_is_overridden_in_code.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_immediate_retries_disabled.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_immediate_retries_fail.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_immediate_retries_with_dtc_on.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_immediate_retries_with_native_transactions.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_message_fails_retries.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_message_is_deferred_by_delayed_retries_using_dtc.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_message_is_moved_to_error_queue_using_dtc.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_message_with_TimeToBeReceived_fails.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_non_transactional_message_is_moved_to_error_queue.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_receiveonly_message_is_moved_to_error_queue.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_transactionscope_message_is_moved_to_error_queue.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_transactions_off.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Recoverability\When_using_special_characters_in_headers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_base_event_from_2_publishers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_configure_routes_for_unobtrusive_messages.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_extending_command_routing.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_making_endpoint_uniquely_addressable.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_multiple_mappings_exists.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_overriding_local_address.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_publishing.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_publishing_an_event_implementing_two_unrelated_interfaces.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_publishing_an_interface.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_publishing_an_interface_with_unobtrusive.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_publishing_using_base_type.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_publishing_with_overridden_local_address.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_registering_publishers_unobtrusive_messages_code.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_registering_publishers_unobtrusive_messages_config.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\when_replying_to_a_message_sent_to_specific_instance.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_replying_to_message.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_replying_to_message_with_interface_and_unobtrusive.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_routing_reply_to_any_instance.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_routing_reply_to_specific_address.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_routing_reply_to_specific_instance.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\When_using_custom_routing_strategy.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_extending_event_routing.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_multi_subscribing_to_a_polymorphic_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_publishing_from_sendonly.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_publishing_to_scaled_out_subscribers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_subscribing_to_a_base_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_subscribing_to_a_derived_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_subscribing_to_multiple_publishers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_subscribing_to_scaled_out_publisher.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_unsubscribing_from_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_unsubscribing_to_scaled_out_publisher.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\MessageDrivenSubscriptions\When_using_autosubscribe_with_missing_publisher_information.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\NativePublishSubscribe\When_multi_subscribing_to_a_polymorphic_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\NativePublishSubscribe\When_publishing_from_sendonly.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\NativePublishSubscribe\When_publishing_to_scaled_out_subscribers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\NativePublishSubscribe\When_subscribing_to_a_base_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\NativePublishSubscribe\When_subscribing_to_a_derived_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Routing\NativePublishSubscribe\When_unsubscribing_from_event.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Satellites\When_a_message_is_available.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Scheduling\When_scheduling_a_recurring_task.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\SelfVerification\When_running_saga_tests.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\SelfVerification\When_using_custom_components.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_configuring_custom_xml_namespace.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_no_content_type.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_registering_additional_deserializers.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_registering_custom_serializer.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_registering_deserializers_with_settings.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_sanitizing_xml_messages.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_serializing_a_message.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_skip_wrapping_xml.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_wrapping_is_not_skipped.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Serialization\When_xml_serializer_used_with_unobtrusive_mode.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Timeout\CyclingOutageTimeoutPersister.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Timeout\When_timeout_storage_is_unavailable_temporarily.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\TimeToBeReceived\When_TimeToBeReceived_has_expired.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\TimeToBeReceived\When_TimeToBeReceived_has_expired_convention.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\TimeToBeReceived\When_TimeToBeReceived_has_not_expired.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\TimeToBeReceived\When_TimeToBeReceived_used_with_unobtrusive_mode.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\FakePromotableResourceManager.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\Issue_2481.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\When_receiving_with_dtc_enabled.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\When_receiving_with_native_multi_queue_transaction.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\When_receiving_with_the_default_settings.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\When_sending_within_an_ambient_transaction.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\ImmediateDispatch\When_requesting_immediate_dispatch_with_at_least_once.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\ImmediateDispatch\When_requesting_immediate_dispatch_with_at_most_once.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Tx\ImmediateDispatch\When_requesting_immediate_dispatch_with_exactly_once.cs" />
-<Compile Remove="$(NuGetPackageRoot)**\\Versioning\When_multiple_versions_of_a_message_is_published.cs" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="2.7.198" />
+    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="7.0.0-*" />
+    <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureServiceBus" Version="8.0.0-*" />
+    <PackageReference Include="NUnit" Version="3.7.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="\**\ConfigureEndpointInMemoryPersistence.cs" />
+    <Compile Remove="\**\ConfigureEndpointLearningPersistence.cs" />
+    <Compile Remove="\**\ConfigureEndpointLearningTransport.cs" />
+    <Compile Remove="\**\ConventionEnforcementTests.cs" />
+    <Compile Remove="\**\DeterministicGuid.cs" />
+    <Compile Remove="\**\Audit\*.*" />
+    <Compile Remove="\**\Correlation\*.*" />
+    <Compile Remove="\**\DataBus\*.*" />
+    <Compile Remove="\**\DelayedDelivery\*.*" />
+    <Compile Remove="\**\Forwarding\*.*" />
+    <Compile Remove="\**\MessageId\*.*" />
+    <Compile Remove="\**\Pipeline\*.*" />
+    <Compile Remove="\**\Recoverability\*.*" />
+    <Compile Remove="\**\Routing\**\*.*" />
+    <Compile Remove="\**\Satellites\*.*" />
+    <Compile Remove="\**\Scheduling\*.*" />
+    <Compile Remove="\**\SelfVerification\*.*" />
+    <Compile Remove="\**\Serialization\*.*" />
+    <Compile Remove="\**\Timeout\*.*" />
+    <Compile Remove="\**\TimeToBeReceived\*.*" />
+    <Compile Remove="\**\Tx\**\*.*" />
+    <Compile Remove="\**\Versioning\*.*" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 15.0.26430.13
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NServiceBus.Persistence.ServiceFabric", "NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj", "{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}"
 EndProject
@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		..\GitVersion.yml = ..\GitVersion.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTests", "NServiceBus.Persistence.ServiceFabric.ApiTests\ApiTests.csproj", "{D2168A42-F409-454A-971D-4E725C9C0703}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{54E44B3B-EECF-4818-BE4D-12124BFE4C53}.Debug|x64.Build.0 = Debug|Any CPU
 		{54E44B3B-EECF-4818-BE4D-12124BFE4C53}.Release|x64.ActiveCfg = Release|Any CPU
 		{54E44B3B-EECF-4818-BE4D-12124BFE4C53}.Release|x64.Build.0 = Release|Any CPU
+		{D2168A42-F409-454A-971D-4E725C9C0703}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2168A42-F409-454A-971D-4E725C9C0703}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2168A42-F409-454A-971D-4E725C9C0703}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2168A42-F409-454A-971D-4E725C9C0703}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿namespace Tests
+﻿namespace ApiTests
 {
     using System;
     using System.Collections.Generic;

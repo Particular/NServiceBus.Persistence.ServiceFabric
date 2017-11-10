@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net452</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
-    <AssemblyName>Tests</AssemblyName>
+    <RootNamespace>NServiceBus.Persistence.ServiceFabric.Tests</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>

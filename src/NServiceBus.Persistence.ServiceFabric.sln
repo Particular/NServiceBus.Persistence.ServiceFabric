@@ -13,7 +13,7 @@ Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "TestsApplication", "NServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcceptanceTests", "NServiceBus.Persistence.ServiceFabric.AcceptanceTests\AcceptanceTests.csproj", "{06901074-7B2E-4544-B388-8B0EB9B3735E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NServiceBus.Persistence.ServiceFabric.Tests", "NServiceBus.Persistence.ServiceFabric.Tests\NServiceBus.Persistence.ServiceFabric.Tests.csproj", "{F953E221-368B-4850-9AE2-E2F7A012A32D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "NServiceBus.Persistence.ServiceFabric.Tests\Tests.csproj", "{F953E221-368B-4850-9AE2-E2F7A012A32D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHarness", "TestHarness\TestHarness.csproj", "{54E44B3B-EECF-4818-BE4D-12124BFE4C53}"
 EndProject

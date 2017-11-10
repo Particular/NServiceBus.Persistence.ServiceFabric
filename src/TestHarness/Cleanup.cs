@@ -1,4 +1,4 @@
-namespace Tests
+namespace TestHarness
 {
     using System.Fabric;
     using System.Fabric.Description;

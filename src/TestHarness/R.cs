@@ -1,4 +1,4 @@
-﻿namespace Tests
+﻿namespace TestHarness
 {
     using System;
     using System.Collections.Generic;

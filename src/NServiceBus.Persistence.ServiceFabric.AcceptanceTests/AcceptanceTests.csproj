@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
-    <ProjectReference Include="..\NServiceBus.Persistence.TestRunner\NServiceBus.Persistence.TestRunner.csproj" />
+    <ProjectReference Include="..\TestRunner\TestRunner.csproj" />
   </ItemGroup>
 
   <ItemGroup>

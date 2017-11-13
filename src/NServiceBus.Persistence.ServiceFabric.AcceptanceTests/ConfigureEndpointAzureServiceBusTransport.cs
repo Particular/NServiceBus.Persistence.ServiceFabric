@@ -73,8 +73,7 @@ class TestIndependenceSkipBehavior : Behavior<IIncomingPhysicalMessageContext>
 
     public override Task Invoke(IIncomingPhysicalMessageContext context, Func<Task> next)
     {
-        string runId;
-        if (!context.MessageHeaders.TryGetValue("$AcceptanceTesting.TestRunId", out runId) || runId != testRunId)
+        if (!context.MessageHeaders.TryGetValue("$AcceptanceTesting.TestRunId", out var runId) || runId != testRunId)
         {
             Console.WriteLine($"Skipping message {context.MessageId} from previous test run");
             return Task.FromResult(0);

@@ -18,8 +18,7 @@
 
         static StorageSession GetServiceFabricSession(this SynchronizedStorageSession session)
         {
-            var storageSession = session as StorageSession;
-            if (storageSession != null)
+            if (session is StorageSession storageSession)
             {
                 return storageSession;
             }

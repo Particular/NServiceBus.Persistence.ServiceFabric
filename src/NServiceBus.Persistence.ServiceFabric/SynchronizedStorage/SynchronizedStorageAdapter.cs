@@ -9,8 +9,7 @@ namespace NServiceBus.Persistence.ServiceFabric
     {
         public Task<CompletableSynchronizedStorageSession> TryAdapt(OutboxTransaction transaction, ContextBag context)
         {
-            var outboxTransaction = transaction as ServiceFabricOutboxTransaction;
-            if (outboxTransaction != null)
+            if (transaction is ServiceFabricOutboxTransaction outboxTransaction)
             {
                 // this session will not own the transaction, the outbox part owns the transaction
                 CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.Transaction);

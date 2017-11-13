@@ -47,9 +47,15 @@
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj is StoredOutboxMessage && Equals((StoredOutboxMessage) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            return obj is StoredOutboxMessage message && Equals(message);
         }
 
         public override int GetHashCode()

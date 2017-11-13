@@ -53,8 +53,7 @@
 
                 foreach (var type in typeInfo)
                 {
-                    PropertyInfo property;
-                    if (properties.TryGetValue(type.DependencyType, out property))
+                    if (properties.TryGetValue(type.DependencyType, out var property))
                     {
                         var methodInfo = testFixtureType.GetInterfaceMap(type.GenericType).TargetMethods.FirstOrDefault();
                         if (methodInfo != null)

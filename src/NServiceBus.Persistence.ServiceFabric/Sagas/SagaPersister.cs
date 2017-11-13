@@ -114,8 +114,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         static void SetEntry(ContextBag context, Guid sagaId, SagaEntry value)
         {
-            Dictionary<Guid, SagaEntry> entries;
-            if (context.TryGet(ContextKey, out entries) == false)
+            if (context.TryGet(ContextKey, out Dictionary<Guid, SagaEntry> entries) == false)
             {
                 entries = new Dictionary<Guid, SagaEntry>();
                 context.Set(ContextKey, entries);
@@ -125,12 +124,9 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         static SagaEntry GetEntry(ReadOnlyContextBag context, Guid sagaDataId)
         {
-            Dictionary<Guid, SagaEntry> entries;
-            if (context.TryGet(ContextKey, out entries))
+            if (context.TryGet(ContextKey, out Dictionary<Guid, SagaEntry> entries))
             {
-                SagaEntry entry;
-
-                if (entries.TryGetValue(sagaDataId, out entry))
+                if (entries.TryGetValue(sagaDataId, out var entry))
                 {
                     return entry;
                 }

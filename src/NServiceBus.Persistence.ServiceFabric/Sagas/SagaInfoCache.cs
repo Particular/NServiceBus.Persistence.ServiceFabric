@@ -33,8 +33,7 @@
 
         public RuntimeSagaInfo GetInfo(Type sagaDataType)
         {
-            RuntimeSagaInfo sagaInfo;
-            if (!serializerCache.TryGetValue(sagaDataType, out sagaInfo))
+            if (!serializerCache.TryGetValue(sagaDataType, out var sagaInfo))
             {
                 throw new Exception($"Unable to retrieve sage information for {sagaDataType}.");
             }
@@ -45,9 +44,8 @@
         {
             foreach (var metadata in metadataCollection)
             {
-                RuntimeSagaInfo existing;
                 var sagaDataType = metadata.SagaEntityType;
-                if (serializerCache.TryGetValue(sagaDataType, out existing))
+                if (serializerCache.TryGetValue(sagaDataType, out var existing))
                 {
                     throw new Exception($"The saga data '{sagaDataType.FullName}' is being used by both '{existing.SagaType}' and '{metadata.SagaType.FullName}'. Saga data can only be used by one saga.");
                 }

@@ -174,8 +174,7 @@
             var sagaMetadata = configuration.SagaMetadataCollection.FindByEntity(typeof(TSagaData));
             var sagaInstance = new ActiveSagaInstance(saga, sagaMetadata, () => DateTime.UtcNow);
             var correlationProperty = SagaCorrelationProperty.None;
-            SagaMetadata.CorrelationPropertyMetadata correlatedProp;
-            if (sagaMetadata.TryGetCorrelationProperty(out correlatedProp))
+            if (sagaMetadata.TryGetCorrelationProperty(out var correlatedProp))
             {
                 var prop = sagaData.GetType().GetProperty(correlatedProp.Name);
 

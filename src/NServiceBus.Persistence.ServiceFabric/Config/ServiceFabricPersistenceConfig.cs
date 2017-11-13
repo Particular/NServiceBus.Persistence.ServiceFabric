@@ -25,8 +25,7 @@ namespace NServiceBus
 
         internal static IReliableStateManager StateManager(this ReadOnlySettings settings)
         {
-            IReliableStateManager value;
-            if (settings.TryGet("ServiceFabricPersistence.StateManager", out value))
+            if (settings.TryGet("ServiceFabricPersistence.StateManager", out IReliableStateManager value))
             {
                 return value;
             }

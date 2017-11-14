@@ -77,7 +77,7 @@
                 ServiceUri = new Uri($"fabric:/{typeName}/Tests");
                 var oneLevelUp = Path.Combine(DetermineCallerFilePath(), @"..\");
                 var applicationName = $"{typeName}Application";
-                var directory = Directory.EnumerateDirectories(oneLevelUp, $"*.{applicationName}", SearchOption.TopDirectoryOnly).Single();
+                var directory = Directory.EnumerateDirectories(oneLevelUp, $"{applicationName}", SearchOption.TopDirectoryOnly).Single();
 #if DEBUG
                 var directoryName = "Debug";
 #else

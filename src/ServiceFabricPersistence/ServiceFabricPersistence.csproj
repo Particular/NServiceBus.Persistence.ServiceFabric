@@ -7,6 +7,7 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)NServiceBus.snk</AssemblyOriginatorKeyFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Description>Service Fabric persister for NServiceBus</Description>
+    <AssemblyName>NServiceBus.Persistence.ServiceFabric</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

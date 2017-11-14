@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NServiceBus.Persistence.ServiceFabric\NServiceBus.Persistence.ServiceFabric.csproj" />
+    <ProjectReference Include="..\ServiceFabricPersistence\ServiceFabricPersistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

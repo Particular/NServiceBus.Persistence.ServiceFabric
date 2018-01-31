@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="[3.0.456, 4.0)" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="[10.0.3, 11.0.0)" />
     <PackageReference Include="NServiceBus" Version="[7.0.0-beta0012, 8.0.0)" />
     <PackageReference Include="Particular.CodeRules" Version="0.2.0" PrivateAssets="All" />
     <PackageReference Include="Particular.Packaging" Version="0.1.0" PrivateAssets="All" />
@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="SourceLink.Create.GitHub" Version="2.7.6" PrivateAssets="All" />
-    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.5.0" />
+    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.7.6" />
   </ItemGroup>
 
 </Project>

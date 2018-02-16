@@ -70,20 +70,21 @@
         {
             configuration.RequiresOutboxSupport();
 
-            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            var cts = new CancellationTokenSource();
 
             var storage = (OutboxStorage)configuration.OutboxStorage;
             var ctx = configuration.GetContextBagForOutbox();
 
             var cleanupTask = Task.Run(async () =>
             {
-                using (var tx = stateManager.CreateTransaction())
+                while (!cts.IsCancellationRequested)
                 {
-                    await storage.Cleanup.GetCountAsync(tx);
+                    await configuration.CleanupMessagesOlderThan(DateTimeOffset.UtcNow);
                 }
 
                 long cleanupCount = 1;
-                while (!cts.IsCancellationRequested && cleanupCount > 0)
+                var innerCts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // make sure we never spin indefinitely
+                while (!innerCts.IsCancellationRequested && cleanupCount > 0)
                 {
                     await configuration.CleanupMessagesOlderThan(DateTimeOffset.UtcNow);
 
@@ -112,6 +113,7 @@
             });
 
             await Task.WhenAll(inserts);
+            cts.Cancel();
 
             Assert.AreEqual(0, await cleanupTask);
         }

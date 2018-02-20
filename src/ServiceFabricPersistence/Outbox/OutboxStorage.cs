@@ -91,20 +91,27 @@
 
             using (var tx = reliableStateManager.CreateTransaction())
             {
-                var iterator = await Cleanup.CreateEnumerableAsync(tx).ConfigureAwait(false);
-                var enumerator = iterator.GetAsyncEnumerator();
-
                 var currentIndex = 0;
                 var somethingToCommit = false;
-                while (await enumerator.MoveNextAsync(cancellationToken).ConfigureAwait(false) && currentIndex <= 100)
+                var cleanConditionalValue = await Cleanup.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+
+                while (cleanConditionalValue.HasValue && currentIndex <= 100)
                 {
-                    var cleanupCommand = enumerator.Current;
+                    var cleanupCommand = cleanConditionalValue.Value;
+
                     if (cleanupCommand.StoredAt <= date)
                     {
                         await Outbox.TryRemoveAsync(tx, cleanupCommand.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                        await Cleanup.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
                         somethingToCommit = true;
                     }
+                    else
+                    {
+                        break;
+                    }
+
                     currentIndex++;
+                    cleanConditionalValue = await Cleanup.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
                 }
 
                 if (somethingToCommit)

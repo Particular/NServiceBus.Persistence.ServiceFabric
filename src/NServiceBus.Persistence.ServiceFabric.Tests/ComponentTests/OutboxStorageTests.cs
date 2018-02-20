@@ -84,7 +84,7 @@
 
             var messageId = Guid.NewGuid().ToString();
 
-            var beforeStore = DateTimeOffset.UtcNow;
+            var beforeStore = DateTimeOffset.UtcNow.AddTicks(-1);
 
             var messageToStore = new OutboxMessage(messageId, new[] { new TransportOperation("x", null, null, null) });
             using (var transaction = await storage.BeginTransaction(ctx))

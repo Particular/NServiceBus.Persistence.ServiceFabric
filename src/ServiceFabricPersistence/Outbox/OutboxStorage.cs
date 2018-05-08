@@ -86,7 +86,16 @@
             }
         }
 
-        internal async Task CleanUpOldOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
+        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
+        {
+            // Both, the old and the new queues are cleaned up. This ensures that under no circumstance something is left over in the old outbox 
+            // The operational lock on the old queue should be short lived and should not collide with anything (there's no longer an active producer that enqueues to this queue).
+            return Task.WhenAll(
+                CleanUpOldOutboxQueue(olderThan, cancellationToken),
+                CleanUpNewOutboxQueue(olderThan, cancellationToken));
+        }
+
+        async Task CleanUpOldOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -123,7 +132,7 @@
             }
         }
 
-        internal async Task CleanUpNewOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
+        async Task CleanUpNewOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -145,14 +154,18 @@
                     }
                     else
                     {
-                        // if there's something to clean up, enqueue the message to commit the previously processed data
-                        // if there's nothing, just go outside the loop and transaction will be aborted
                         if (somethingToCommit)
                         {
+                            // there's something to commit. The last cleanupCommand is enqueued again and the whole batch is committed
+
                             await Cleanup.EnqueueAsync(tx, cleanupCommand, cancellationToken, defaultOperationTimeout).ConfigureAwait(false);
+                            await tx.CommitAsync().ConfigureAwait(false);
+                            return;
                         }
 
-                        break;
+                        // nothing to commit, make the message reappear
+                        tx.Abort();
+                        return;
                     }
 
                     currentIndex++;

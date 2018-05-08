@@ -62,11 +62,10 @@
             return Task.FromResult(0);
         }
 
-        public async Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
+        public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
         {
             var storage = (OutboxStorage) OutboxStorage;
-            await storage.CleanUpOldOutboxQueue(beforeStore, CancellationToken.None);
-            await storage.CleanUpNewOutboxQueue(beforeStore, CancellationToken.None);
+            return storage.CleanUpOutboxQueue(beforeStore, CancellationToken.None);
         }
     }
 }

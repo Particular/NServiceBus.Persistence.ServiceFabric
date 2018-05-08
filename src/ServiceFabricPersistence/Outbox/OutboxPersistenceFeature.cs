@@ -74,7 +74,8 @@
                         var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
 
                         var olderThan = now - timeToKeepDeduplicationData;
-                        await storage.CleanupMessagesOlderThan(olderThan, token).ConfigureAwait(false);
+                        await storage.CleanUpOldOutboxQueue(olderThan, token).ConfigureAwait(false);
+                        await storage.CleanUpNewOutboxQueue(olderThan, token).ConfigureAwait(false);
 
                         var delay = nextClean - now;
                         if (delay > TimeSpan.Zero)

@@ -20,7 +20,8 @@
 
         public IReliableDictionary<string, StoredOutboxMessage> Outbox { get; set; }
 
-        public IReliableQueue<CleanupStoredOutboxCommand> Cleanup { get; set; }
+        public IReliableQueue<CleanupStoredOutboxCommand> CleanupOld { get; set; }
+        public IReliableConcurrentQueue<CleanupStoredOutboxCommand> Cleanup { get; set; }
 
         public async Task<OutboxMessage> Get(string messageId, ContextBag context)
         {
@@ -85,7 +86,7 @@
             }
         }
 
-        internal async Task CleanupMessagesOlderThan(DateTimeOffset date, CancellationToken cancellationToken)
+        internal async Task CleanUpOldOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -93,16 +94,17 @@
             {
                 var currentIndex = 0;
                 var somethingToCommit = false;
-                var cleanConditionalValue = await Cleanup.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                
+                var cleanConditionalValue = await CleanupOld.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
 
                 while (cleanConditionalValue.HasValue && currentIndex <= 100)
                 {
                     var cleanupCommand = cleanConditionalValue.Value;
 
-                    if (cleanupCommand.StoredAt <= date)
+                    if (cleanupCommand.StoredAt <= olderThan)
                     {
                         await Outbox.TryRemoveAsync(tx, cleanupCommand.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
-                        await Cleanup.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                        await CleanupOld.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
                         somethingToCommit = true;
                     }
                     else
@@ -111,7 +113,50 @@
                     }
 
                     currentIndex++;
-                    cleanConditionalValue = await Cleanup.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                    cleanConditionalValue = await CleanupOld.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                }
+
+                if (somethingToCommit)
+                {
+                    await tx.CommitAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        internal async Task CleanUpNewOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var tx = reliableStateManager.CreateTransaction())
+            {
+                var currentIndex = 0;
+                var somethingToCommit = false;
+
+                var cleanConditionalValue = await Cleanup.TryDequeueAsync(tx, cancellationToken, defaultOperationTimeout).ConfigureAwait(false);
+
+                while (cleanConditionalValue.HasValue && currentIndex <= 100)
+                {
+                    var cleanupCommand = cleanConditionalValue.Value;
+
+                    if (cleanupCommand.StoredAt <= olderThan)
+                    {
+                        await Outbox.TryRemoveAsync(tx, cleanupCommand.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
+                        somethingToCommit = true;
+                    }
+                    else
+                    {
+                        // if there's something to clean up, enqueue the message to commit the previously processed data
+                        // if there's nothing, just go outside the loop and transaction will be aborted
+                        if (somethingToCommit)
+                        {
+                            await Cleanup.EnqueueAsync(tx, cleanupCommand, cancellationToken, defaultOperationTimeout).ConfigureAwait(false);
+                        }
+
+                        break;
+                    }
+
+                    currentIndex++;
+                    cleanConditionalValue = await Cleanup.TryDequeueAsync(tx, cancellationToken, defaultOperationTimeout).ConfigureAwait(false);
                 }
 
                 if (somethingToCommit)

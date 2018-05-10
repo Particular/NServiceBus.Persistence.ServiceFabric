@@ -10,7 +10,8 @@ namespace NServiceBus.Persistence.ServiceFabric
         {
             storage.Outbox = await stateManager.GetOrAddAsync<IReliableDictionary<string, StoredOutboxMessage>>("outbox").ConfigureAwait(false);
 
-            storage.Cleanup = await stateManager.GetOrAddAsync<IReliableQueue<CleanupStoredOutboxCommand>>("outboxCleanup").ConfigureAwait(false);
+            storage.CleanupOld = await stateManager.GetOrAddAsync<IReliableQueue<CleanupStoredOutboxCommand>>("outboxCleanup").ConfigureAwait(false);
+            storage.Cleanup = await stateManager.GetOrAddAsync<IReliableConcurrentQueue<CleanupStoredOutboxCommand>>("outboxCleanupConcurrent").ConfigureAwait(false);
         }
     }
 }

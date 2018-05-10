@@ -64,7 +64,8 @@
 
         public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
         {
-            return ((OutboxStorage) OutboxStorage).CleanupMessagesOlderThan(beforeStore, CancellationToken.None);
+            var storage = (OutboxStorage) OutboxStorage;
+            return storage.CleanUpOutboxQueue(beforeStore, CancellationToken.None);
         }
     }
 }

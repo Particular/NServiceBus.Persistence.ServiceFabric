@@ -8,7 +8,6 @@ using PublicApiGenerator;
 public class APIApprovals
 {
     [Test]
-    [MethodImpl(MethodImplOptions.NoInlining)]
     public void ApproveServiceFabricPersistence()
     {
         var publicApi = ApiGenerator.GeneratePublicApi(typeof(ServiceFabricPersistence).Assembly);

@@ -28,6 +28,10 @@ namespace TestRunner
         {
         }
 
+        public void SendMessage(TestMessage message)
+        {
+        }
+
         TService service;
     }
 }

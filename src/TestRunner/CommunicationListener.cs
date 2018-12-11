@@ -10,7 +10,6 @@ namespace TestRunner
     using NServiceBus.Persistence.TestRunner;
     using NUnit.Framework.Api;
     using NUnit.Framework.Interfaces;
-    using NUnit.Framework.Internal.Filters;
 
     /// <summary>
     /// The communication listener reflects the assembly containing TService for tests and loads them into an

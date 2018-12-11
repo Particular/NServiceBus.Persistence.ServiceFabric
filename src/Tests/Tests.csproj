@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>NServiceBus.Persistence.ServiceFabric.Tests</RootNamespace>
     <SignAssembly>true</SignAssembly>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus" Version="7.0.0" />
+    <PackageReference Include="NServiceBus" Version="7.1.4" />
   </ItemGroup>
 
 </Project>

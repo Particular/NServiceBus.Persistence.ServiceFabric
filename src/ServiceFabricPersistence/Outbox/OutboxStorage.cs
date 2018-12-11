@@ -102,7 +102,6 @@
             using (var tx = reliableStateManager.CreateTransaction())
             {
                 var currentIndex = 0;
-                var somethingToCommit = false;
                 
                 var cleanConditionalValue = await CleanupOld.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
 
@@ -114,7 +113,6 @@
                     {
                         await Outbox.TryRemoveAsync(tx, cleanupCommand.MessageId, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
                         await CleanupOld.TryDequeueAsync(tx, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
-                        somethingToCommit = true;
                     }
                     else
                     {
@@ -125,10 +123,7 @@
                     cleanConditionalValue = await CleanupOld.TryPeekAsync(tx, LockMode.Default, defaultOperationTimeout, cancellationToken).ConfigureAwait(false);
                 }
 
-                if (somethingToCommit)
-                {
-                    await tx.CommitAsync().ConfigureAwait(false);
-                }
+                await tx.CommitAsync().ConfigureAwait(false);
             }
         }
 
@@ -172,10 +167,7 @@
                     cleanConditionalValue = await Cleanup.TryDequeueAsync(tx, cancellationToken, defaultOperationTimeout).ConfigureAwait(false);
                 }
 
-                if (somethingToCommit)
-                {
-                    await tx.CommitAsync().ConfigureAwait(false);
-                }
+                await tx.CommitAsync().ConfigureAwait(false);
             }
         }
     }

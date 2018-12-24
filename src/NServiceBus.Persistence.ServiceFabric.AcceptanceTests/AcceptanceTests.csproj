@@ -9,8 +9,9 @@
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="NUnitLite" Version="3.7.1" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.12.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="WindowsAzure.ServiceBus" Version="4.1.2" />
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.0.467" />
     <PackageReference Include="Microsoft.ServiceFabric.FabricTransport.Internal" Version="3.0.467" />

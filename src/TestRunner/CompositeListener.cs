@@ -36,6 +36,14 @@
             }
         }
 
+        public void SendMessage(TestMessage message)
+        {
+            foreach (var testListener in testListeners)
+            {
+                testListener.SendMessage(message);
+            }
+        }
+
         ITestListener[] testListeners;
     }
 }

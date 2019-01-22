@@ -1,17 +1,15 @@
-﻿using System.IO;
-using System.Runtime.CompilerServices;
-using ApiApprover;
-using NServiceBus.Persistence.ServiceFabric;
+﻿using NServiceBus.Persistence.ServiceFabric;
 using NUnit.Framework;
+using Particular.Approvals;
+using PublicApiGenerator;
 
 [TestFixture]
 public class ApiApproval
 {
     [Test]
-    [MethodImpl(MethodImplOptions.NoInlining)]
     public void Approve()
     {
-        Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
-        PublicApiApprover.ApprovePublicApi(typeof(ServiceFabricPersistence).Assembly);
+        var publicApi = ApiGenerator.GeneratePublicApi(typeof(ServiceFabricPersistence).Assembly);
+        Approver.Verify(publicApi);
     }
 }

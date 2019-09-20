@@ -16,9 +16,9 @@
             return GetServiceFabricSession(session);
         }
 
-        static StorageSession GetServiceFabricSession(this SynchronizedStorageSession session)
+        static IServiceFabricStorageSession GetServiceFabricSession(this SynchronizedStorageSession session)
         {
-            if (session is StorageSession storageSession)
+            if (session is IServiceFabricStorageSession storageSession)
             {
                 return storageSession;
             }

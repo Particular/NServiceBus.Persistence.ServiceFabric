@@ -1,14 +1,17 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using System.Threading.Tasks;
+    using Microsoft.ServiceFabric.Data;
     using Outbox;
 
     class ServiceFabricOutboxTransaction : OutboxTransaction
     {
-        internal ServiceFabricTransaction Transaction { get; }
+        internal ITransaction Transaction { get; }
+        internal IReliableStateManager StateManager { get; }
 
-        public ServiceFabricOutboxTransaction(ServiceFabricTransaction transaction)
+        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager, ITransaction transaction)
         {
+            StateManager = stateManager;
             Transaction = transaction;
         }
 
@@ -19,7 +22,7 @@
 
         public Task Commit()
         {
-            return Transaction.Commit();
+            return Transaction.CommitAsync();
         }
     }
 }

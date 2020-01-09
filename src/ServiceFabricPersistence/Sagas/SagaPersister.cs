@@ -4,12 +4,11 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Extensibility;
+    using Microsoft.ServiceFabric.Data.Collections;
     using Sagas;
 
     class SagaPersister : ISagaPersister
     {
-        SagaInfoCache sagaInfoCache;
-
         public SagaPersister() : this(new SagaInfoCache())
         {
         }
@@ -21,43 +20,37 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public async Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (StorageSession) session;
+            var storageSession = (StorageSession)session;
 
             var entry = GetEntry(context, sagaData.Id);
 
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
-            await storageSession.Add(async tx =>
-                {
-                    var conditionalValue = await sagas.TryRemoveAsync(tx, sagaData.Id).ConfigureAwait(false);
-                    if (conditionalValue.HasValue && conditionalValue.Value.Data != entry.Data)
-                    {
-                        throw new Exception("Saga can't be completed as it was updated by another process.");
-                    }
-                })
-                .ConfigureAwait(false);
+            var conditionalValue = await sagas.TryRemoveAsync(storageSession.Transaction, sagaData.Id).ConfigureAwait(false);
+            if (conditionalValue.HasValue && conditionalValue.Value.Data != entry.Data)
+            {
+                throw new Exception("Saga can't be completed as it was updated by another process.");
+            }
         }
 
         public async Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context)
             where TSagaData : class, IContainSagaData
         {
-            var storageSession = (StorageSession) session;
+            var storageSession = (StorageSession)session;
 
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
-            using (var tx = storageSession.StateManager.CreateTransaction())
+            var conditionalValue = await sagas.TryGetValueAsync(storageSession.Transaction, sagaId, LockMode.Update).ConfigureAwait(false);
+            if (conditionalValue.HasValue)
             {
-                var conditionalValue = await sagas.TryGetValueAsync(tx, sagaId).ConfigureAwait(false);
-                if (conditionalValue.HasValue)
-                {
-                    SetEntry(context, sagaId, conditionalValue.Value);
+                SetEntry(context, sagaId, conditionalValue.Value);
 
-                    return sagaInfo.FromSagaEntry<TSagaData>(conditionalValue.Value);
-                }
-                return default(TSagaData);
+                return sagaInfo.FromSagaEntry<TSagaData>(conditionalValue.Value);
             }
+
+            return default;
         }
 
         public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context)
@@ -71,29 +64,26 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (StorageSession) session;
+            var storageSession = (StorageSession)session;
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
             var entry = sagaInfo.ToSagaEntry(sagaData);
 
-            await storageSession.Add(async tx =>
+            if (!await sagas.TryAddAsync(storageSession.Transaction, sagaData.Id, entry).ConfigureAwait(false))
+            {
+                if (correlationProperty == SagaCorrelationProperty.None)
                 {
-                    if (!await sagas.TryAddAsync(tx, sagaData.Id, entry).ConfigureAwait(false))
-                    {
-                        if (correlationProperty == SagaCorrelationProperty.None)
-                        {
-                            throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
-                        }
-                        throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists.");
-                    }
-                })
-                .ConfigureAwait(false);
+                    throw new Exception("A saga with this identifier already exists. This should never happened as saga identifier are meant to be unique.");
+                }
+
+                throw new Exception($"The saga with the correlation id 'Name: {correlationProperty.Name} Value: {correlationProperty.Value}' already exists.");
+            }
         }
 
         public async Task Update(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
         {
-            var storageSession = (StorageSession) session;
+            var storageSession = (StorageSession)session;
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 
@@ -102,14 +92,10 @@ namespace NServiceBus.Persistence.ServiceFabric
 
             var newEntry = sagaInfo.ToSagaEntry(sagaData);
 
-            await storageSession.Add(async tx =>
-                {
-                    if (!await sagas.TryUpdateAsync(tx, sagaData.Id, newEntry, loadedEntry).ConfigureAwait(false))
-                    {
-                        throw new Exception($"{nameof(SagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
-                    }
-                })
-                .ConfigureAwait(false);
+            if (!await sagas.TryUpdateAsync(storageSession.Transaction, sagaData.Id, newEntry, loadedEntry).ConfigureAwait(false))
+            {
+                throw new Exception($"{nameof(SagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
+            }
         }
 
         static void SetEntry(ContextBag context, Guid sagaId, SagaEntry value)
@@ -119,6 +105,7 @@ namespace NServiceBus.Persistence.ServiceFabric
                 entries = new Dictionary<Guid, SagaEntry>();
                 context.Set(ContextKey, entries);
             }
+
             entries[sagaId] = value;
         }
 
@@ -131,8 +118,11 @@ namespace NServiceBus.Persistence.ServiceFabric
                     return entry;
                 }
             }
+
             throw new Exception("The saga should be retrieved with Get method before it's updated");
         }
+
+        SagaInfoCache sagaInfoCache;
 
         const string ContextKey = "NServiceBus.Persistence.ServiceFabric.Sagas";
     }

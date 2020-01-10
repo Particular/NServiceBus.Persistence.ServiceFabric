@@ -16,7 +16,7 @@ namespace NServiceBus
         /// </summary>
         /// <param name="configuration">The persistence extension.</param>
         /// <param name="stateManager">The state manager to be used.</param>
-        /// <param name="transactionTimeout">The transaction timeout. Default 4 seconds.</param>
+        /// <param name="transactionTimeout">The transaction timeout. The default is 4 seconds.</param>
         public static void StateManager(this PersistenceExtensions<ServiceFabricPersistence> configuration, IReliableStateManager stateManager, TimeSpan? transactionTimeout = null)
         {
             Guard.AgainstNull(nameof(configuration), configuration);

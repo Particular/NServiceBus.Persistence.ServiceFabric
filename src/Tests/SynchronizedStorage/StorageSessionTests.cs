@@ -18,7 +18,7 @@
         [SetUp]
         public void SetUp()
         {
-            session = new StorageSession(stateManager, stateManager.CreateTransaction(), true);
+            session = new StorageSession(stateManager, stateManager.CreateTransaction(), TimeSpan.FromSeconds(4), true);
         }
 
         [Test]

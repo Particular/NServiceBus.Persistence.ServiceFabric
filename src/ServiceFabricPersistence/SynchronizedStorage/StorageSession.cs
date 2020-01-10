@@ -1,15 +1,17 @@
 namespace NServiceBus.Persistence.ServiceFabric
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
 
     class StorageSession : CompletableSynchronizedStorageSession, IServiceFabricStorageSession
     {
-        public StorageSession(IReliableStateManager stateManager, ITransaction transaction, bool ownsTransaction)
+        public StorageSession(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout, bool ownsTransaction)
         {
             this.ownsTransaction = ownsTransaction;
             StateManager = stateManager;
             Transaction = transaction;
+            TransactionTimeout = transactionTimeout;
         }
 
         public void Dispose()
@@ -28,6 +30,8 @@ namespace NServiceBus.Persistence.ServiceFabric
         public IReliableStateManager StateManager { get; }
 
         public ITransaction Transaction { get; }
+        
+        public TimeSpan TransactionTimeout { get; }
 
         bool ownsTransaction;
     }

@@ -12,7 +12,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             if (transaction is ServiceFabricOutboxTransaction outboxTransaction)
             {
                 // this session will not own the transaction, the outbox part owns the transaction
-                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.StateManager, outboxTransaction.Transaction, false);
+                CompletableSynchronizedStorageSession session = new StorageSession(outboxTransaction.StateManager, outboxTransaction.Transaction, outboxTransaction.TransactionTimeout, false);
                 return Task.FromResult(session);
             }
             return EmptyTask;

@@ -20,7 +20,8 @@
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
 
-            SynchronizedStorage = new SynchronizedStorage(stateManager);
+            var transactionTimeout = TimeSpan.FromSeconds(4);
+            SynchronizedStorage = new SynchronizedStorage(stateManager, transactionTimeout);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
 
             var sagaInfoCache = new SagaInfoCache();
@@ -31,7 +32,7 @@
             sagaIdGenerator.Initialize(sagaInfoCache);
             SagaIdGenerator = sagaIdGenerator;
 
-            OutboxStorage = new OutboxStorage(statefulService.StateManager);
+            OutboxStorage = new OutboxStorage(statefulService.StateManager, transactionTimeout);
         }
 
         IReliableStateManager stateManager;

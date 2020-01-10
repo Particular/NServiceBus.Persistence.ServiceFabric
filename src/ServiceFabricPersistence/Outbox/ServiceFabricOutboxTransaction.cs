@@ -1,5 +1,6 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
     using Outbox;
@@ -8,11 +9,13 @@
     {
         internal ITransaction Transaction { get; }
         internal IReliableStateManager StateManager { get; }
+        internal TimeSpan TransactionTimeout { get; }
 
-        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager, ITransaction transaction)
+        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout)
         {
             StateManager = stateManager;
             Transaction = transaction;
+            TransactionTimeout = transactionTimeout;
         }
 
         public void Dispose()

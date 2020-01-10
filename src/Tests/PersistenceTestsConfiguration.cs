@@ -15,13 +15,13 @@
 
     public partial class PersistenceTestsConfiguration
     {
-        public PersistenceTestsConfiguration()
+        public PersistenceTestsConfiguration(TimeSpan? transactionTimeout = null)
         {
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
 
-            var transactionTimeout = TimeSpan.FromSeconds(4);
-            SynchronizedStorage = new SynchronizedStorage(stateManager, transactionTimeout);
+            var timeout = transactionTimeout ?? TimeSpan.FromSeconds(4);
+            SynchronizedStorage = new SynchronizedStorage(stateManager, timeout);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
 
             var sagaInfoCache = new SagaInfoCache();
@@ -32,7 +32,7 @@
             sagaIdGenerator.Initialize(sagaInfoCache);
             SagaIdGenerator = sagaIdGenerator;
 
-            OutboxStorage = new OutboxStorage(statefulService.StateManager, transactionTimeout);
+            OutboxStorage = new OutboxStorage(statefulService.StateManager, timeout);
         }
 
         IReliableStateManager stateManager;

@@ -2,6 +2,7 @@ namespace TestRunner
 {
     using System.Collections.Generic;
     using System.Fabric;
+    using System.Linq;
     using System.Threading.Tasks;
     using Interfaces;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
@@ -18,15 +19,6 @@ namespace TestRunner
 
         protected abstract TSelf Self { get; }
 
-        protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
-        {
-            return new[] { new ServiceReplicaListener(context =>
-            {
-                communicationListener = new CommunicationListener<TSelf>(Self);
-                return new CompositeCommunicationListener(communicationListener, this.CreateServiceRemotingListener(context));
-            }) };
-        }
-
         public Task<string[]> Tests()
         {
             return communicationListener.Tests();
@@ -35,6 +27,19 @@ namespace TestRunner
         public Task<Result> Run(string testName)
         {
             return communicationListener.Run(testName);
+        }
+
+        protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
+        {
+            var localListeners = new[]
+            {
+                new ServiceReplicaListener(context =>
+                {
+                    communicationListener = new CommunicationListener<TSelf>(Self);
+                    return communicationListener;
+                }, "CommunicationListener")
+            };
+            return this.CreateServiceRemotingReplicaListeners().Concat(localListeners);
         }
 
         CommunicationListener<TSelf> communicationListener;

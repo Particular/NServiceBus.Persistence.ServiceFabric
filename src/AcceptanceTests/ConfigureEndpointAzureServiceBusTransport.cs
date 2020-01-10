@@ -1,4 +1,6 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using NServiceBus;
 using NServiceBus.AcceptanceTesting;
@@ -24,10 +26,9 @@ public class ConfigureEndpointAzureServiceBusTransport : IConfigureEndpointTestE
         var transportConfig = configuration.UseTransport<AzureServiceBusTransport>();
 
         transportConfig.ConnectionString(connectionString);
-
-        transportConfig.UseForwardingTopology();
-
-        transportConfig.Sanitization().UseStrategy<ValidateAndHashIfNeeded>();
+        
+        transportConfig.SubscriptionNameShortener(n => n.Length > MaxEntityName ? MD5DeterministicNameBuilder.Build(n) : n);
+        transportConfig.RuleNameShortener(n => n.Length > MaxEntityName ? MD5DeterministicNameBuilder.Build(n) : n);
 
         configuration.RegisterComponents(c => { c.ConfigureComponent<TestIndependenceMutator>(DependencyLifecycle.SingleInstance); });
 
@@ -38,6 +39,22 @@ public class ConfigureEndpointAzureServiceBusTransport : IConfigureEndpointTestE
         configuration.Recoverability().Immediate(retriesSettings => retriesSettings.NumberOfRetries(3));
 
         return Task.FromResult(0);
+    }
+    
+    const int MaxEntityName = 50;
+
+    static class MD5DeterministicNameBuilder
+    {
+        public static string Build(string input)
+        {
+            var inputBytes = Encoding.Default.GetBytes(input);
+            // use MD5 hash to get a 16-byte hash of the string
+            using (var provider = new MD5CryptoServiceProvider())
+            {
+                var hashBytes = provider.ComputeHash(inputBytes);
+                return new Guid(hashBytes).ToString();
+            }
+        }
     }
 
     public Task Cleanup()

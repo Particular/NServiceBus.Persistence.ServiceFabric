@@ -42,6 +42,8 @@
         public bool SupportsFinders { get; } = true;
         public bool SupportsSubscriptions { get; } = false;
         public bool SupportsTimeouts { get; } = false;
+        public bool SupportsOptimisticConcurrency { get; } = false;
+        public bool SupportsPessimisticConcurrency { get; } = true;
         public ISagaIdGenerator SagaIdGenerator { get; }
 
         public ISagaPersister SagaStorage { get; }

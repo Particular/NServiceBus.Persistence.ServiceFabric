@@ -4,8 +4,6 @@
 
     public class EventSourceTestListener : ITestListener
     {
-        EventSourceLogger logger = EventSourceLogger.GetLogger();
-
         public void TestStarted(ITest test)
         {
         }
@@ -26,5 +24,7 @@
         public void SendMessage(TestMessage message)
         {
         }
+
+        EventSourceLogger logger = EventSourceLogger.GetLogger();
     }
 }

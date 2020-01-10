@@ -42,7 +42,7 @@
                         .ToArray();
                 });
 
-                var statefulService = (StatefulService) test.Properties.Get("StatefulService");
+                var statefulService = (StatefulService)test.Properties.Get("StatefulService");
                 var properties = statefulServicePropertyCache.GetOrAdd(statefulService.GetType(), type =>
                 {
                     return

@@ -38,7 +38,7 @@
 
         public void SendMessage(TestMessage message)
         {
-            foreach(var testListener in testListeners)
+            foreach (var testListener in testListeners)
             {
                 testListener.SendMessage(message);
             }

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using NServiceBus.Persistence.ServiceFabric;
+﻿using NServiceBus.Persistence.ServiceFabric;
 using NUnit.Framework;
 using Particular.Approvals;
 using PublicApiGenerator;

@@ -18,7 +18,9 @@
 
         protected override void Setup(FeatureConfigurationContext context)
         {
-            var outboxStorage = new OutboxStorage(context.Settings.StateManager());
+            var transactionTimeout = context.Settings.TransactionTimeout();
+            var outboxStorage = new OutboxStorage(context.Settings.StateManager(), transactionTimeout);
+
             context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
 
             var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromHours(1);

@@ -16,11 +16,13 @@ namespace NServiceBus
         /// </summary>
         /// <param name="configuration">The persistence extension.</param>
         /// <param name="stateManager">The state manager to be used.</param>
-        public static void StateManager(this PersistenceExtensions<ServiceFabricPersistence> configuration, IReliableStateManager stateManager)
+        /// <param name="transactionTimeout">The transaction timeout. The default is 4 seconds.</param>
+        public static void StateManager(this PersistenceExtensions<ServiceFabricPersistence> configuration, IReliableStateManager stateManager, TimeSpan? transactionTimeout = null)
         {
             Guard.AgainstNull(nameof(configuration), configuration);
             Guard.AgainstNull(nameof(stateManager), stateManager);
             configuration.GetSettings().Set("ServiceFabricPersistence.StateManager", stateManager);
+            configuration.GetSettings().Set("ServiceFabricPersistence.StateManager.TransactionTimeout", stateManager);
         }
 
         internal static IReliableStateManager StateManager(this ReadOnlySettings settings)
@@ -30,6 +32,11 @@ namespace NServiceBus
                 return value;
             }
             throw new Exception("StateManager must be defined.");
+        }
+        
+        internal static TimeSpan TransactionTimeout(this ReadOnlySettings settings)
+        {
+            return settings.TryGet("ServiceFabricPersistence.StateManager.TransactionTimeout", out TimeSpan value) ? value : TimeSpan.FromSeconds(4);
         }
     }
 }

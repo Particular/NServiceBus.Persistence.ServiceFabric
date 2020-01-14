@@ -80,6 +80,6 @@ namespace NServiceBus
     public class static ServiceFabricPersistenceConfig
     {
         public static NServiceBus.Persistence.ServiceFabric.SagaSettings SagaSettings(this NServiceBus.PersistenceExtensions<NServiceBus.Persistence.ServiceFabric.ServiceFabricPersistence> configuration) { }
-        public static void StateManager(this NServiceBus.PersistenceExtensions<NServiceBus.Persistence.ServiceFabric.ServiceFabricPersistence> configuration, Microsoft.ServiceFabric.Data.IReliableStateManager stateManager) { }
+        public static void StateManager(this NServiceBus.PersistenceExtensions<NServiceBus.Persistence.ServiceFabric.ServiceFabricPersistence> configuration, Microsoft.ServiceFabric.Data.IReliableStateManager stateManager, System.Nullable<System.TimeSpan> transactionTimeout = null) { }
     }
 }

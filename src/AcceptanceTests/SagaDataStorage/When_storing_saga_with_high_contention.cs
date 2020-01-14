@@ -79,13 +79,14 @@
                     mapper.ConfigureMapping<AdditionalMessage>(m => m.SomeId).ToSaga(d => d.SomeId);
                 }
 
-                public Task Handle(StartSaga message, IMessageHandlerContext context)
+                public async Task Handle(StartSaga message, IMessageHandlerContext context)
                 {
                     Data.SomeId = message.SomeId;
                     TestContext.Watch.Start();
                     TestContext.SagaStarted = true;
 
-                    return context.SendLocal(new FireInTheWhole { SomeId =  message.SomeId });
+                    await Task.WhenAll(Enumerable.Range(0, TestContext.NumberOfMessages).Select(i => context.SendLocal(new AdditionalMessage {SomeId = message.SomeId})));
+                    TestContext.MessagesSent = true;
                 }
 
                 public class HighContentionSagaData : ContainSagaData
@@ -103,22 +104,6 @@
                         MarkAsComplete();
                         await context.SendLocal(new DoneSaga { SomeId = message.SomeId, HitCount = Data.Hit });
                     }
-                }
-            }
-
-            class CreateLoadHandler : IHandleMessages<FireInTheWhole>
-            {
-                readonly Context testContext;
-
-                public CreateLoadHandler(Context testContext)
-                {
-                    this.testContext = testContext;
-                }
-
-                public async Task Handle(FireInTheWhole message, IMessageHandlerContext context)
-                {
-                    await Task.WhenAll(Enumerable.Range(0, testContext.NumberOfMessages).Select(i => context.SendLocal(new AdditionalMessage {SomeId = message.SomeId})));
-                    testContext.MessagesSent = true;
                 }
             }
 
@@ -150,11 +135,6 @@
         {
             public Guid SomeId { get; set; }
             public int HitCount { get; set; }
-        }
-
-        public class FireInTheWhole : IMessage
-        {
-            public Guid SomeId { get; set; }
         }
 
         public class AdditionalMessage : IMessage

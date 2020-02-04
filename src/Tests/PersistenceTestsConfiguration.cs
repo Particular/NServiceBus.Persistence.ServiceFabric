@@ -3,7 +3,6 @@
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Gateway.Deduplication;
     using Microsoft.ServiceFabric.Data;
     using NUnit.Framework;
     using Outbox;
@@ -53,7 +52,6 @@
         public IPersistTimeouts TimeoutStorage { get; }
         public IQueryTimeouts TimeoutQuery { get; }
         public IOutboxStorage OutboxStorage { get; }
-        public IDeduplicateMessages GatewayStorage { get; }
 
         public async Task Configure()
         {

@@ -41,8 +41,6 @@ namespace NServiceBus.Persistence.ComponentTests
 
         IOutboxStorage OutboxStorage { get; }
 
-        IDeduplicateMessages GatewayStorage { get; }
-
         Task Configure();
 
         Task Cleanup();

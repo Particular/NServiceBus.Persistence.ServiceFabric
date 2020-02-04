@@ -3,7 +3,6 @@ namespace NServiceBus.Persistence.ComponentTests
 {
     using System;
     using System.Threading.Tasks;
-    using Gateway.Deduplication;
     using Outbox;
     using Sagas;
     using Timeout.Core;

@@ -13,11 +13,6 @@
         <Program>AcceptanceTests.exe</Program>
       </ExeHost>
     </EntryPoint>
-    <EnvironmentVariables>
-      <EnvironmentVariable Name="AzureServiceBus.ConnectionString" Value=""/>
-      <EnvironmentVariable Name="AzureServiceBusTransport.ConnectionString" Value=""/>
-      <EnvironmentVariable Name="Transport.UseSpecific" Value="AzureServiceBusTransport"/>
-    </EnvironmentVariables>
   </CodePackage>
 
   <ConfigPackage Name="Config" Version="1.0.0" />

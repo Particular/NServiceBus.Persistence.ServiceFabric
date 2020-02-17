@@ -12,7 +12,7 @@
 
         public IConfigureEndpointTestExecution CreateTransportConfiguration()
         {
-            return new ConfigureEndpointAzureServiceBusTransport();
+            return new ConfigureEndpointLearningTransport();
         }
 
         public IConfigureEndpointTestExecution CreatePersistenceConfiguration()

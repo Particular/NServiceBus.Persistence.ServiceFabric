@@ -14,6 +14,7 @@ namespace NServiceBus.Persistence.ComponentTests
         }
 
         [Test]
+        [Ignore("Flaky - Needs investigation")]
         public async Task Should_fail_with_timeout()
         {
             configuration.RequiresPessimisticConcurrencySupport();

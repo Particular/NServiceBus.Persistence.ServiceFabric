@@ -9,27 +9,26 @@ namespace NServiceBus.Persistence.ComponentTests
     {
         public override async Task OneTimeSetUp()
         {
-            configuration = new PersistenceTestsConfiguration(TimeSpan.FromMilliseconds(100));
+            configuration = new PersistenceTestsConfiguration(TimeSpan.FromMilliseconds(20));
             await configuration.Configure();
         }
 
         [Test]
-        [Ignore("Flaky - Needs investigation")]
         public async Task Should_fail_with_timeout()
         {
             configuration.RequiresPessimisticConcurrencySupport();
-            
+
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
             await SaveSaga(saga);
 
             var firstSessionDateTimeValue = DateTime.UtcNow.AddDays(-2);
             var secondSessionDateTimeValue = DateTime.UtcNow.AddDays(-1);
-            
+
             var firstSessionGetDone = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             var secondSessionGetDone = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             var persister = configuration.SagaStorage;
-            
+
             async Task FirstSession()
             {
                 var firstContent = configuration.GetContextBagForSagaStorage();
@@ -40,12 +39,12 @@ namespace NServiceBus.Persistence.ComponentTests
                     var record = await persister.Get<TestSagaData>(saga.Id, firstSaveSession, firstContent);
                     firstSessionGetDone.SetResult(true);
 
-                    await Task.Delay(200).ConfigureAwait(false);
+                    await Task.Delay(100).ConfigureAwait(false);
+                    await secondSessionGetDone.Task.ConfigureAwait(false);
 
                     SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(firstContent, record);
                     record.DateTimeProperty = firstSessionDateTimeValue;
                     await persister.Update(record, firstSaveSession, firstContent);
-                    await secondSessionGetDone.Task.ConfigureAwait(false);
                     await firstSaveSession.CompleteAsync();
                 }
                 finally
@@ -61,11 +60,12 @@ namespace NServiceBus.Persistence.ComponentTests
                 try
                 {
                     SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(secondContext, saga);
-                    
+
                     await firstSessionGetDone.Task.ConfigureAwait(false);
-                    
+
                     var recordTask = persister.Get<TestSagaData>(saga.Id, secondSession, secondContext);
                     secondSessionGetDone.SetResult(true);
+
                     var record = await recordTask.ConfigureAwait(false);
                     SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(secondContext, record);
                     record.DateTimeProperty = secondSessionDateTimeValue;
@@ -77,8 +77,8 @@ namespace NServiceBus.Persistence.ComponentTests
                     secondSession.Dispose();
                 }
             }
-            
-            Assert.ThrowsAsync<TimeoutException>(async () => await Task.WhenAll(SecondSession(), FirstSession()));
+
+            Assert.ThrowsAsync<TimeoutException>(async () => await Task.WhenAll(FirstSession(), SecondSession()));
         }
     }
 }

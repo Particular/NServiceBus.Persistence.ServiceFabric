@@ -90,5 +90,3 @@ src/scaffolding.config
 # JetBrains Rider
 .idea/
 *.sln.iml
-src/NServiceBus.Persistence.ServiceFabric.Tests/Properties/launchSettings.json
-src/NServiceBus.Persistence.ServiceFabric.AcceptanceTests/Properties/launchSettings.json

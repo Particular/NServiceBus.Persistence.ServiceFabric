@@ -9,11 +9,17 @@ namespace NServiceBus.Persistence.ComponentTests
     [TestFixture]
     public class When_worker_tries_to_complete_saga_update_by_another_optimistic : SagaPersisterTests<TestSaga,TestSagaData>
     {
+        public override async Task OneTimeSetUp()
+        {
+            configuration = new PersistenceTestsConfiguration(null, true);
+            await configuration.Configure();
+        }
+
         [Test]
         public async Task Should_fail()
         {
             configuration.RequiresOptimisticConcurrencySupport();
-            
+
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
 

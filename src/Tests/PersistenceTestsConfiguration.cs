@@ -14,8 +14,11 @@
 
     public partial class PersistenceTestsConfiguration
     {
-        public PersistenceTestsConfiguration(TimeSpan? transactionTimeout = null)
+        readonly bool useOptimisticConcurrency;
+
+        public PersistenceTestsConfiguration(TimeSpan? transactionTimeout = null, bool useOptimisticConcurrency = false)
         {
+            this.useOptimisticConcurrency = useOptimisticConcurrency;
             var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
 
@@ -41,8 +44,8 @@
         public bool SupportsFinders { get; } = true;
         public bool SupportsSubscriptions { get; } = false;
         public bool SupportsTimeouts { get; } = false;
-        public bool SupportsOptimisticConcurrency { get; } = false;
-        public bool SupportsPessimisticConcurrency { get; } = true;
+        public bool SupportsOptimisticConcurrency => useOptimisticConcurrency;
+        public bool SupportsPessimisticConcurrency => !useOptimisticConcurrency;
         public ISagaIdGenerator SagaIdGenerator { get; }
 
         public ISagaPersister SagaStorage { get; }

@@ -43,7 +43,10 @@ namespace NServiceBus.Persistence.ServiceFabric
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
 
-            var conditionalValue = await sagas.TryGetValueAsync(storageSession.Transaction, sagaId, LockMode.Update, storageSession.TransactionTimeout, CancellationToken.None).ConfigureAwait(false);
+            var lockMode = SagaSettings.GetOptimisticConcurrency(context) ? LockMode.Default : LockMode.Update;
+
+            var conditionalValue = await sagas.TryGetValueAsync(storageSession.Transaction, sagaId, lockMode, storageSession.TransactionTimeout, CancellationToken.None).ConfigureAwait(false);
+
             if (conditionalValue.HasValue)
             {
                 SetEntry(context, sagaId, conditionalValue.Value);

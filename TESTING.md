@@ -159,7 +159,7 @@ Let's assume a new test library called NServiceBus.Persistence.ServiceFabric.Com
   </Target>
 ```
 
-- Add to the Tests project the following test
+- Add the following test to the TestHarness project:
 
 ```
     public class ComponentTests : R<Tests>

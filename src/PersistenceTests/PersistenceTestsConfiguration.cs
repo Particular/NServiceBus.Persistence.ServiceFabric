@@ -3,21 +3,21 @@
     using System;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
-    using Microsoft.ServiceFabric.Services.Runtime;
     using NServiceBus.Outbox;
     using NServiceBus.Sagas;
     using NUnit.Framework;
     using Persistence;
     using Persistence.ServiceFabric;
-
+    using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;
+    
     public partial class PersistenceTestsConfiguration
     {
-        public bool SupportsDtc => false;
-        public bool SupportsOutbox => false;
-        public bool SupportsFinders => false;
-        public bool SupportsSubscriptions => true;
-        public bool SupportsTimeouts => true;
-        public bool SupportsPessimisticConcurrency => false;
+        public bool SupportsDtc { get; } = false;
+        public bool SupportsOutbox { get; } = true;
+        public bool SupportsFinders { get; } = true;
+        public bool SupportsSubscriptions { get; } = false;
+        public bool SupportsTimeouts { get; } = false;
+        public bool SupportsPessimisticConcurrency { get; } = true;
 
         public ISagaIdGenerator SagaIdGenerator { get; set; }
         public ISagaPersister SagaStorage { get; set; }

@@ -2,11 +2,13 @@
 
 * Install the Service Fabric SDK (https://azure.microsoft.com/en-us/downloads/)
 * Ensure you have an environment variable `AzureServiceBusTransport.ConnectionString` containing a valid Azure ServiceBus connection string 
+* Configure the cluster to use 5 nodes
 * Start the "Service Fabric Local Cluster Manager"
 * via SF Cluster Manager tray icon, select "Start a local Cluster"
-* In the "NServiceBus.Persistence.ServiceFabric" solution, go to the "Tests" project and select open the class representing the test suite you want to run (e.g. in case of the acceptance tests, open the `AcceptanceTests.cs` file
+* In the "NServiceBus.Persistence.ServiceFabric" solution, go to the "TestHarness" project and select open the class representing the test suite you want to run (e.g. in case of the acceptance tests, open the `AcceptanceTests.cs` file
 * Run the test in the opened file. This may take a while to connect to the SF cluster but once running, all executed tests will be shown in the test runner.
 
+Once they appear in your test runner, you can re-run the tests from there. Keep in mind that, due to the fact the tests are deployed to a Service Fabric application, test discovery does not work. If tests are added, build the solution and then run the tests from the "TestHarness" project as mentioned above.
 
 ## How to debug tests
 

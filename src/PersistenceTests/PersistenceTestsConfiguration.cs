@@ -25,12 +25,17 @@
         public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; set; }
         public IOutboxStorage OutboxStorage { get; set; }
 
+        public PersistenceTestsConfiguration(TimeSpan timeout)
+        {
+            SessionTimeout = timeout;
+        }
+
         public async Task Configure()
         {
             var statefulService = (StatefulService)TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
 
-            var timeout = TimeSpan.FromSeconds(4);
+            var timeout = SessionTimeout ?? TimeSpan.FromSeconds(4);
             SynchronizedStorage = new SynchronizedStorage(stateManager, timeout);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
 

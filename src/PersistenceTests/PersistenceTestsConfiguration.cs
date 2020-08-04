@@ -9,7 +9,7 @@
     using Persistence;
     using Persistence.ServiceFabric;
     using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;
-    
+
     public partial class PersistenceTestsConfiguration
     {
         public bool SupportsDtc { get; } = false;
@@ -23,9 +23,9 @@
         public ISagaPersister SagaStorage { get; set; }
         public ISynchronizedStorage SynchronizedStorage { get; set; }
         public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; set; }
-        public IOutboxStorage OutboxStorage { get; }
+        public IOutboxStorage OutboxStorage { get; set; }
 
-        public PersistenceTestsConfiguration()
+        public async Task Configure()
         {
             var statefulService = (StatefulService)TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
@@ -43,10 +43,6 @@
             SagaIdGenerator = sagaIdGenerator;
 
             OutboxStorage = new OutboxStorage(statefulService.StateManager, timeout);
-        }
-
-        public async Task Configure()
-        {
             await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage).ConfigureAwait(false);
         }
 

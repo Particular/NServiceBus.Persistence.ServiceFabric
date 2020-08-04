@@ -14,7 +14,7 @@
     {
         public bool SupportsDtc { get; } = false;
         public bool SupportsOutbox { get; } = true;
-        public bool SupportsFinders { get; } = true;
+        public bool SupportsFinders { get; } = false;
         public bool SupportsSubscriptions { get; } = false;
         public bool SupportsTimeouts { get; } = false;
         public bool SupportsPessimisticConcurrency { get; } = true;

@@ -3,7 +3,6 @@ namespace NServiceBus.Persistence.ComponentTests
     using System;
     using System.Threading.Tasks;
     using NUnit.Framework;
-    using ServiceFabric;
 
     [TestFixture]
     public class When_concurrent_update_exceed_transaction_timeout_pessimistic : SagaPersisterTests<TestSaga,TestSagaData>

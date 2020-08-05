@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-     <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="7.4.0-PullRequest5680.221" />
-     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
+    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="7.4.0-PullRequest5680.221" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
   </ItemGroup>
 
 </Project>

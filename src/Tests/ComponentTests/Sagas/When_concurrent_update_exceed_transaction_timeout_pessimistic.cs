@@ -63,7 +63,6 @@ namespace NServiceBus.Persistence.ComponentTests
                 }
             }
 
-            //Assert.ThrowsAsync<TimeoutException>(async () => await Task.WhenAll(FirstSession(), SecondSession()));
             var firstSessionTask = FirstSession();
             var secondSessionTask = SecondSession();
 

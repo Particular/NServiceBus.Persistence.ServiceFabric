@@ -18,10 +18,6 @@
 
         public bool SupportsFinders { get; } = false;
 
-        public bool SupportsSubscriptions { get; } = false;
-
-        public bool SupportsTimeouts { get; } = false;
-
         public bool SupportsPessimisticConcurrency { get; } = true;
 
         public ISagaIdGenerator SagaIdGenerator { get; set; }
@@ -33,11 +29,6 @@
         public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; set; }
 
         public IOutboxStorage OutboxStorage { get; set; }
-
-        public PersistenceTestsConfiguration(TimeSpan timeout)
-        {
-            SessionTimeout = timeout;
-        }
 
         public async Task Configure()
         {

@@ -23,14 +23,6 @@
             SynchronizedStorage = new SynchronizedStorage(stateManager, timeout);
             SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
 
-            var sagaInfoCache = new SagaInfoCache();
-            sagaInfoCache.Initialize(SagaMetadataCollection);
-            SagaStorage = new SagaPersister(sagaInfoCache);
-
-            var sagaIdGenerator = new SagaIdGenerator();
-            sagaIdGenerator.Initialize(sagaInfoCache);
-            SagaIdGenerator = sagaIdGenerator;
-
             OutboxStorage = new OutboxStorage(statefulService.StateManager, timeout);
         }
 
@@ -38,14 +30,13 @@
 
         public bool SupportsDtc { get; } = false;
         public bool SupportsOutbox { get; } = true;
-        public bool SupportsFinders { get; } = true;
+        public bool SupportsFinders { get; } = false;
         public bool SupportsSubscriptions { get; } = false;
         public bool SupportsTimeouts { get; } = false;
         public bool SupportsOptimisticConcurrency { get; } = false;
         public bool SupportsPessimisticConcurrency { get; } = true;
         public ISagaIdGenerator SagaIdGenerator { get; }
 
-        public ISagaPersister SagaStorage { get; }
         public ISynchronizedStorage SynchronizedStorage { get; }
         public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; }
         public ISubscriptionStorage SubscriptionStorage { get; }

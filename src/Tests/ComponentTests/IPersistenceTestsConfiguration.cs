@@ -4,7 +4,6 @@ namespace NServiceBus.Persistence.ComponentTests
     using System;
     using System.Threading.Tasks;
     using Outbox;
-    using Sagas;
     using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
 
@@ -21,12 +20,8 @@ namespace NServiceBus.Persistence.ComponentTests
         bool SupportsTimeouts { get; }
 
         bool SupportsOptimisticConcurrency { get; }
-        
+
         bool SupportsPessimisticConcurrency { get; }
-
-        ISagaIdGenerator SagaIdGenerator { get; }
-
-        ISagaPersister SagaStorage { get; }
 
         ISynchronizedStorage SynchronizedStorage { get; }
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 15.0.26430.13
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceFabricPersistence", "ServiceFabricPersistence\ServiceFabricPersistence.csproj", "{6447FA5E-9C6B-4DFB-87BE-7399D6B4DFBF}"
 EndProject
@@ -23,7 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\GitVersion.yml = ..\GitVersion.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTests", "ApiTests\ApiTests.csproj", "{D2168A42-F409-454A-971D-4E725C9C0703}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTests", "ApiTests\ApiTests.csproj", "{D2168A42-F409-454A-971D-4E725C9C0703}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersistenceTests", "PersistenceTests\PersistenceTests.csproj", "{96C692AC-82D8-4B09-8F3F-CA4A1CD9B328}"
+EndProject
+Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "PersistenceTestsApplication", "PersistenceTestsApplication\PersistenceTestsApplication.sfproj", "{F6204F6B-F082-463C-811B-0C0F920F1237}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +71,16 @@ Global
 		{D2168A42-F409-454A-971D-4E725C9C0703}.Debug|x64.Build.0 = Debug|Any CPU
 		{D2168A42-F409-454A-971D-4E725C9C0703}.Release|x64.ActiveCfg = Release|Any CPU
 		{D2168A42-F409-454A-971D-4E725C9C0703}.Release|x64.Build.0 = Release|Any CPU
+		{96C692AC-82D8-4B09-8F3F-CA4A1CD9B328}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{96C692AC-82D8-4B09-8F3F-CA4A1CD9B328}.Debug|x64.Build.0 = Debug|Any CPU
+		{96C692AC-82D8-4B09-8F3F-CA4A1CD9B328}.Release|x64.ActiveCfg = Release|Any CPU
+		{96C692AC-82D8-4B09-8F3F-CA4A1CD9B328}.Release|x64.Build.0 = Release|Any CPU
+		{F6204F6B-F082-463C-811B-0C0F920F1237}.Debug|x64.ActiveCfg = Debug|x64
+		{F6204F6B-F082-463C-811B-0C0F920F1237}.Debug|x64.Build.0 = Debug|x64
+		{F6204F6B-F082-463C-811B-0C0F920F1237}.Debug|x64.Deploy.0 = Debug|x64
+		{F6204F6B-F082-463C-811B-0C0F920F1237}.Release|x64.ActiveCfg = Release|x64
+		{F6204F6B-F082-463C-811B-0C0F920F1237}.Release|x64.Build.0 = Release|x64
+		{F6204F6B-F082-463C-811B-0C0F920F1237}.Release|x64.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

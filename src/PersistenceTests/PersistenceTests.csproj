@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net461</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>NServiceBus.Persistence.ServiceFabric.PersistenceTests</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
+    <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceFabricPersistence\ServiceFabricPersistence.csproj" />
+    <ProjectReference Include="..\TestRunner\TestRunner.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="7.4.0" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
+  </ItemGroup>
+
+</Project>

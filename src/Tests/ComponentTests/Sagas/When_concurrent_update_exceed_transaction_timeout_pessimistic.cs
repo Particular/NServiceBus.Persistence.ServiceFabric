@@ -31,54 +31,46 @@ namespace NServiceBus.Persistence.ComponentTests
 
             async Task FirstSession()
             {
-                var firstContent = configuration.GetContextBagForSagaStorage();
-                var firstSaveSession = await configuration.SynchronizedStorage.OpenSession(firstContent);
-                try
+                var firstSessionContext = configuration.GetContextBagForSagaStorage();
+                using (var firstSaveSession = await configuration.SynchronizedStorage.OpenSession(firstSessionContext))
                 {
-                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(firstContent, saga);
-                    var record = await persister.Get<TestSagaData>(saga.Id, firstSaveSession, firstContent);
+                    var record = await persister.Get<TestSagaData>(saga.Id, firstSaveSession, firstSessionContext);
                     firstSessionGetDone.SetResult(true);
 
-                    await Task.Delay(100).ConfigureAwait(false);
+                    await Task.Delay(1000).ConfigureAwait(false);
                     await secondSessionGetDone.Task.ConfigureAwait(false);
 
-                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(firstContent, record);
                     record.DateTimeProperty = firstSessionDateTimeValue;
-                    await persister.Update(record, firstSaveSession, firstContent);
+                    await persister.Update(record, firstSaveSession, firstSessionContext);
                     await firstSaveSession.CompleteAsync();
-                }
-                finally
-                {
-                    firstSaveSession.Dispose();
                 }
             }
 
             async Task SecondSession()
             {
                 var secondContext = configuration.GetContextBagForSagaStorage();
-                var secondSession = await configuration.SynchronizedStorage.OpenSession(secondContext);
-                try
+                using (var secondSession = await configuration.SynchronizedStorage.OpenSession(secondContext))
                 {
-                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(secondContext, saga);
-
                     await firstSessionGetDone.Task.ConfigureAwait(false);
 
                     var recordTask = persister.Get<TestSagaData>(saga.Id, secondSession, secondContext);
                     secondSessionGetDone.SetResult(true);
 
                     var record = await recordTask.ConfigureAwait(false);
-                    SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(secondContext, record);
                     record.DateTimeProperty = secondSessionDateTimeValue;
                     await persister.Update(record, secondSession, secondContext);
                     await secondSession.CompleteAsync();
                 }
-                finally
-                {
-                    secondSession.Dispose();
-                }
             }
 
-            Assert.ThrowsAsync<TimeoutException>(async () => await Task.WhenAll(FirstSession(), SecondSession()));
+            var firstSessionTask = FirstSession();
+            var secondSessionTask = SecondSession();
+
+            Assert.DoesNotThrowAsync(async () => await firstSessionTask);
+            Assert.CatchAsync<Exception>(async () => await secondSessionTask);
+
+            var updatedSaga = await GetById(saga.Id);
+            Assert.That(updatedSaga.DateTimeProperty, Is.EqualTo(firstSessionDateTimeValue));
         }
     }
 }

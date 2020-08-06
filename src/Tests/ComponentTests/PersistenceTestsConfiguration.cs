@@ -20,15 +20,8 @@ namespace NServiceBus.Persistence.ComponentTests
                     sagaMetadataCollection = new SagaMetadataCollection();
                     sagaMetadataCollection.Initialize(new[]
                     {
-                        typeof(AnotherSagaWithCorrelatedProperty),
-                        typeof(AnotherSagaWithoutCorrelationProperty),
-                        typeof(AnotherCustomFinder),
-                        typeof(SagaWithComplexType),
-                        typeof(SagaWithCorrelationProperty),
                         typeof(SagaWithoutCorrelationProperty),
-                        typeof(CustomFinder),
-                        typeof(SimpleSagaEntitySaga),
-                        typeof(TestSaga)
+                        typeof(CustomFinder)
                     });
                 }
                 return sagaMetadataCollection;

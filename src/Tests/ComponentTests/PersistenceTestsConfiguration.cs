@@ -18,11 +18,6 @@ namespace NServiceBus.Persistence.ComponentTests
                 if (sagaMetadataCollection == null)
                 {
                     sagaMetadataCollection = new SagaMetadataCollection();
-                    sagaMetadataCollection.Initialize(new[]
-                    {
-                        typeof(SagaWithoutCorrelationProperty),
-                        typeof(CustomFinder)
-                    });
                 }
                 return sagaMetadataCollection;
             }

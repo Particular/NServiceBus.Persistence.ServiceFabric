@@ -56,7 +56,12 @@
             [ServiceFabricSaga(CollectionName = CustomCollectionName, SagaDataName = CustomEntityName)]
             public class CustomizedCollectionSaga : Saga<CustomizedCollectionSaga.CustomizedCollectionSagaData>, IAmStartedByMessages<StartSaga>
             {
-                public Context TestContext { get; set; }
+                Context testContext;
+
+                public CustomizedCollectionSaga(Context testContext)
+                {
+                    this.testContext = testContext;
+                }
 
                 protected override void ConfigureHowToFindSaga(SagaPropertyMapper<CustomizedCollectionSagaData> mapper)
                 {
@@ -65,7 +70,7 @@
 
                 public Task Handle(StartSaga message, IMessageHandlerContext context)
                 {
-                    TestContext.SagaId = Data.Id;
+                    testContext.SagaId = Data.Id;
 
                     return Task.FromResult(0);
                 }

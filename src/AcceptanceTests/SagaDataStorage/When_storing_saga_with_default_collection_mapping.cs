@@ -52,7 +52,12 @@
 
             public class ConventionBasedSaga : Saga<ConventionBasedSaga.ConventionBasedSagaData>, IAmStartedByMessages<StartSaga>
             {
-                public Context TestContext { get; set; }
+                Context testContext;
+
+                public ConventionBasedSaga(Context testContext)
+                {
+                    this.testContext = testContext;
+                }
 
                 protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ConventionBasedSagaData> mapper)
                 {
@@ -61,7 +66,7 @@
 
                 public Task Handle(StartSaga message, IMessageHandlerContext context)
                 {
-                    TestContext.SagaId = Data.Id;
+                    testContext.SagaId = Data.Id;
 
                     return Task.FromResult(0);
                 }

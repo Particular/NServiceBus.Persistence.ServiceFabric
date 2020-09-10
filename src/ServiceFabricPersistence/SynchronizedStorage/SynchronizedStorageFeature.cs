@@ -10,8 +10,8 @@
             var stateManager = context.Settings.StateManager();
             var transactionTimeout = context.Settings.TransactionTimeout();
 
-            context.Services.AddSingleton<ISynchronizedStorage>(b => new SynchronizedStorage(stateManager, transactionTimeout));
-            context.Services.AddSingleton<ISynchronizedStorageAdapter>(b => new SynchronizedStorageAdapter());
+            context.Services.AddSingleton<ISynchronizedStorage>(new SynchronizedStorage(stateManager, transactionTimeout));
+            context.Services.AddSingleton<ISynchronizedStorageAdapter>(new SynchronizedStorageAdapter());
         }
     }
 }

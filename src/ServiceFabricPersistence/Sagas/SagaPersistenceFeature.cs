@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using Features;
+    using Microsoft.Extensions.DependencyInjection;
     using Sagas;
 
     class SagaPersistenceFeature : Feature
@@ -21,7 +22,7 @@
             var infoCache = new SagaInfoCache(jsonSerializerSettings, readerCreator, writerCreator);
             var persister = new SagaPersister(infoCache);
 
-            context.Container.RegisterSingleton<ISagaPersister>(persister);
+            context.Services.AddSingleton<ISagaPersister>(persister);
 
             idGenerator.Initialize(infoCache);
             infoCache.Initialize(settings.Get<SagaMetadataCollection>());

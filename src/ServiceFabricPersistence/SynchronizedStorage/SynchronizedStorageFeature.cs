@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using Features;
+    using Microsoft.Extensions.DependencyInjection;
 
     class SynchronizedStorageFeature : Feature
     {
@@ -8,10 +9,9 @@
         {
             var stateManager = context.Settings.StateManager();
             var transactionTimeout = context.Settings.TransactionTimeout();
-            
-            var container = context.Container;
-            container.ConfigureComponent(b => new SynchronizedStorage(stateManager, transactionTimeout), DependencyLifecycle.SingleInstance);
-            container.ConfigureComponent(b => new SynchronizedStorageAdapter(), DependencyLifecycle.SingleInstance);
+
+            context.Services.AddSingleton<ISynchronizedStorage>(new SynchronizedStorage(stateManager, transactionTimeout));
+            context.Services.AddSingleton<ISynchronizedStorageAdapter>(new SynchronizedStorageAdapter());
         }
     }
 }

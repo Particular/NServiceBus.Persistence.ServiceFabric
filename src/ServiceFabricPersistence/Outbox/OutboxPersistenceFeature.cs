@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using Features;
     using Logging;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.ServiceFabric.Data;
     using Outbox;
 
@@ -21,7 +22,7 @@
             var transactionTimeout = context.Settings.TransactionTimeout();
             var outboxStorage = new OutboxStorage(context.Settings.StateManager(), transactionTimeout);
 
-            context.Container.RegisterSingleton<IOutboxStorage>(outboxStorage);
+            context.Services.AddSingleton<IOutboxStorage>(outboxStorage);
 
             var timeToKeepDeduplicationData = context.Settings.GetOrDefault<TimeSpan?>(TimeToKeepDeduplicationEntries) ?? TimeSpan.FromHours(1);
 

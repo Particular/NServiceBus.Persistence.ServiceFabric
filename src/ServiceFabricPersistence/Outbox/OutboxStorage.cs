@@ -153,7 +153,6 @@
                         if (somethingToCommit)
                         {
                             // there's something to commit. The last cleanupCommand is enqueued again and the whole batch is committed
-
                             await Cleanup.EnqueueAsync(tx, cleanupCommand, cancellationToken, transactionTimeout).ConfigureAwait(false);
                             await tx.CommitAsync().ConfigureAwait(false);
                             return;

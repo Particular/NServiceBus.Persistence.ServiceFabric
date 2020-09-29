@@ -18,6 +18,11 @@
   <ItemGroup>
     <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.0.0-alpha.561" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
+    <PackageReference Include="Particular.CodeRules" Version="0.7.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\TestSuppressions.cs" Link="TestSuppressions.cs" />
   </ItemGroup>
 
 </Project>

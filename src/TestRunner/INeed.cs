@@ -15,9 +15,7 @@
     ///  ]]>
     ///  </code>
     /// </summary>
-    /// <typeparam name="TDependency"></typeparam>
     [Need]
-    // ReSharper disable once TypeParameterCanBeVariant
     public interface INeed<TDependency>
     {
         void Need(TDependency dependency);

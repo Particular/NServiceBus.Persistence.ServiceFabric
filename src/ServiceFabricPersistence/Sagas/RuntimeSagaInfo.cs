@@ -8,7 +8,6 @@
 
     class RuntimeSagaInfo
     {
-        // ReSharper disable once NotAccessedField.Local
         Type sagaDataType;
 
         public readonly Type SagaType;

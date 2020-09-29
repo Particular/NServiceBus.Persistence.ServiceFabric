@@ -256,7 +256,6 @@
         static ITestRunner testRunner;
         static string[] environmentVariablesToPromote;
 
-        // ReSharper disable once MemberCanBePrivate.Global
         public class ClusterManifest
         {
             public string Manifest { get; set; }

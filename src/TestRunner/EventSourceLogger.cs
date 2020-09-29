@@ -10,7 +10,7 @@
         {
             // A workaround for the problem where ETW activities do not get tracked until Tasks infrastructure is initialized.
             // This problem will be fixed in .NET Framework 4.6.2.
-            Task.Run(() => { });
+            _ = Task.Run(() => { });
         }
 
         EventSourceLogger()

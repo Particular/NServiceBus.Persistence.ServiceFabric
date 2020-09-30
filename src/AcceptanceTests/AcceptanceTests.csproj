@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="8.0.0-alpha.561" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.0-alpha.168" />
+    <PackageReference Include="Particular.CodeRules" Version="0.7.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +43,10 @@
     <Compile Remove="\**\TimeToBeReceived\*.*" />
     <Compile Remove="\**\Tx\**\*.*" />
     <Compile Remove="\**\Versioning\*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\TestSuppressions.cs" Link="TestSuppressions.cs" />
   </ItemGroup>
 
 </Project>

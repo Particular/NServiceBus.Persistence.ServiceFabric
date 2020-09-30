@@ -1,5 +1,4 @@
-﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-namespace NServiceBus.Persistence.ComponentTests
+﻿namespace NServiceBus.Persistence.ComponentTests
 {
     using System;
     using Extensibility;
@@ -14,14 +13,19 @@ namespace NServiceBus.Persistence.ComponentTests
 
         public SagaMetadataCollection SagaMetadataCollection
         {
-            get{
+            get
+            {
                 if (sagaMetadataCollection == null)
                 {
                     sagaMetadataCollection = new SagaMetadataCollection();
                 }
                 return sagaMetadataCollection;
             }
-            set { sagaMetadataCollection = value; }
+
+            set
+            {
+                sagaMetadataCollection = value;
+            }
         }
 
         SagaMetadataCollection sagaMetadataCollection;

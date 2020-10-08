@@ -84,3 +84,12 @@ namespace NServiceBus
         public static void StateManager(this NServiceBus.PersistenceExtensions<NServiceBus.Persistence.ServiceFabric.ServiceFabricPersistence> configuration, Microsoft.ServiceFabric.Data.IReliableStateManager stateManager, System.Nullable<System.TimeSpan> transactionTimeout = null) { }
     }
 }
+namespace NServiceBus.Testing
+{
+    public class TestableServiceFabricStorageSession : NServiceBus.Persistence.ServiceFabric.IServiceFabricStorageSession, NServiceBus.Persistence.SynchronizedStorageSession
+    {
+        public TestableServiceFabricStorageSession(Microsoft.ServiceFabric.Data.IReliableStateManager stateManager, Microsoft.ServiceFabric.Data.ITransaction transaction) { }
+        public Microsoft.ServiceFabric.Data.IReliableStateManager StateManager { get; }
+        public Microsoft.ServiceFabric.Data.ITransaction Transaction { get; }
+    }
+}

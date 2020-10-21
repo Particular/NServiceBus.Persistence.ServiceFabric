@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="NServiceBus" Version="8.0.0-alpha.630" />
-    <PackageReference Include="NServiceBus.Testing" Version="8.0.0-alpha.107" />
+    <PackageReference Include="NServiceBus.Testing" Version="8.0.0-alpha.98" />
     <PackageReference Include="Particular.CodeRules" Version="0.7.0" PrivateAssets="All" />
   </ItemGroup>
 

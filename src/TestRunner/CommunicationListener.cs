@@ -44,15 +44,24 @@ namespace TestRunner
             });
         }
 
-        public Task CloseAsync(CancellationToken cancellationToken)
+        public async Task CloseAsync(CancellationToken cancellationToken)
         {
-            return Task.Run(() => runner.StopRun(true));
+            runner.StopRun(false);
+
+            while (true)
+            {
+                if (runner.WaitForCompletion(1))
+                {
+                    break;
+                }
+
+                await Task.Delay(3000, cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public void Abort()
         {
-            // fire & forget
-            _ = CloseAsync(CancellationToken.None);
+            runner.StopRun(true);
         }
 
         public Task<string[]> Tests()

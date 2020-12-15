@@ -9,7 +9,7 @@ public class APIApprovals
     [Test]
     public void ApproveServiceFabricPersistence()
     {
-        var publicApi = ApiGenerator.GeneratePublicApi(typeof(ServiceFabricPersistence).Assembly);
+        var publicApi = ApiGenerator.GeneratePublicApi(typeof(ServiceFabricPersistence).Assembly, excludeAttributes: new[] { "System.Reflection.AssemblyMetadataAttribute" });
         Approver.Verify(publicApi);
     }
 }

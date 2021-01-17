@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="4.2.434" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit" Version="3.13.0" />
     <PackageReference Include="Particular.CodeRules" Version="0.7.0" PrivateAssets="All" />
   </ItemGroup>
 

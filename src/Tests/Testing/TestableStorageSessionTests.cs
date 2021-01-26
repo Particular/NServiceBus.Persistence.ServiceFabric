@@ -55,7 +55,7 @@
             }
         }
 
-        class MyMessage {}
+        class MyMessage { }
 
         IReliableStateManager stateManager;
     }

@@ -23,7 +23,7 @@
                 .Done(c => c.SagaId.HasValue)
                 .Run(TimeSpan.FromSeconds(20));
 
-            var collection = await stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(typeof(SagaEndpoint.ConventionBasedSaga.ConventionBasedSagaData).Name);
+            var collection = await stateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(nameof(SagaEndpoint.ConventionBasedSaga.ConventionBasedSagaData));
 
             using (var tx = stateManager.CreateTransaction())
             {

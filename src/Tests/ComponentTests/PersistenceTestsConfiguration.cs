@@ -14,7 +14,8 @@ namespace NServiceBus.Persistence.ComponentTests
 
         public SagaMetadataCollection SagaMetadataCollection
         {
-            get{
+            get
+            {
                 if (sagaMetadataCollection == null)
                 {
                     sagaMetadataCollection = new SagaMetadataCollection();

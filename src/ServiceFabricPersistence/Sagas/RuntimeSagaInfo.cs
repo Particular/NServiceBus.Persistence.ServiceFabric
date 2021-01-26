@@ -8,9 +8,6 @@
 
     class RuntimeSagaInfo
     {
-        // ReSharper disable once NotAccessedField.Local
-        Type sagaDataType;
-
         public readonly Type SagaType;
 
         JsonSerializer jsonSerializer;
@@ -25,7 +22,6 @@
             Func<TextReader, JsonReader> readerCreator,
             Func<TextWriter, JsonWriter> writerCreator)
         {
-            this.sagaDataType = sagaDataType;
             SagaType = sagaType;
             this.jsonSerializer = jsonSerializer;
             this.readerCreator = readerCreator;

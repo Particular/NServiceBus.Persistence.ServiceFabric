@@ -100,7 +100,7 @@
             await storage.SetAsDispatched(messageId, configuration.GetContextBagForOutbox());
 
             await configuration.CleanupMessagesOlderThan(beforeStore);
-            
+
             var message = await storage.Get(messageId, configuration.GetContextBagForOutbox());
             Assert.NotNull(message);
 

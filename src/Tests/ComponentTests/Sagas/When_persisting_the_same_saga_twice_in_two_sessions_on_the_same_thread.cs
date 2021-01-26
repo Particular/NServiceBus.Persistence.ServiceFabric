@@ -13,7 +13,7 @@ namespace NServiceBus.Persistence.ComponentTests
         public async Task Save_process_is_repeatable()
         {
             configuration.RequiresOptimisticConcurrencySupport();
-            
+
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
 

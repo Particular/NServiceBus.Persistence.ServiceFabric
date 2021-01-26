@@ -16,7 +16,7 @@
     {
         public PersistenceTestsConfiguration(TimeSpan? transactionTimeout = null)
         {
-            var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
+            var statefulService = (StatefulService)TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
 
             var timeout = transactionTimeout ?? TimeSpan.FromSeconds(4);
@@ -65,7 +65,7 @@
 
         public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
         {
-            var storage = (OutboxStorage) OutboxStorage;
+            var storage = (OutboxStorage)OutboxStorage;
             return storage.CleanUpOutboxQueue(beforeStore, CancellationToken.None);
         }
     }

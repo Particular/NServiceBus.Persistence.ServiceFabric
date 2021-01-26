@@ -5,24 +5,24 @@ namespace NServiceBus.Persistence.ComponentTests
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_worker_tries_to_complete_saga_update_by_another_pessimistic : SagaPersisterTests<TestSaga,TestSagaData>
+    public class When_worker_tries_to_complete_saga_update_by_another_pessimistic : SagaPersisterTests<TestSaga, TestSagaData>
     {
         [Test]
         public async Task Should_complete()
         {
             configuration.RequiresPessimisticConcurrencySupport();
-            
+
             var correlationPropertyData = Guid.NewGuid().ToString();
             var saga = new TestSagaData { SomeId = correlationPropertyData, DateTimeProperty = DateTime.UtcNow };
             await SaveSaga(saga);
 
             var firstSessionDateTimeValue = DateTime.UtcNow.AddDays(-2);
             var secondSessionDateTimeValue = DateTime.UtcNow.AddDays(-1);
-            
+
             var firstSessionGetDone = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             var secondSessionGetDone = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             var persister = configuration.SagaStorage;
-            
+
             async Task FirstSession()
             {
                 var firstContent = configuration.GetContextBagForSagaStorage();
@@ -52,9 +52,9 @@ namespace NServiceBus.Persistence.ComponentTests
                 try
                 {
                     SetActiveSagaInstanceForGet<TestSaga, TestSagaData>(secondContext, saga);
-                    
+
                     await firstSessionGetDone.Task.ConfigureAwait(false);
-                    
+
                     var recordTask = persister.Get<TestSagaData>(saga.Id, secondSession, secondContext);
                     secondSessionGetDone.SetResult(true);
                     var record = await recordTask.ConfigureAwait(false);
@@ -72,7 +72,7 @@ namespace NServiceBus.Persistence.ComponentTests
             await Task.WhenAll(SecondSession(), FirstSession());
 
             var result = await GetByCorrelationProperty(nameof(TestSagaData.SomeId), correlationPropertyData);
-            
+
             Assert.AreEqual(secondSessionDateTimeValue, result.DateTimeProperty);
         }
     }

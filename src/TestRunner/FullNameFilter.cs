@@ -40,7 +40,7 @@ namespace TestRunner
             return test.FullName.Equals(fullName);
         }
 
-        private bool MatchDescendant(ITest test)
+        bool MatchDescendant(ITest test)
         {
             if (test.Tests == null)
             {

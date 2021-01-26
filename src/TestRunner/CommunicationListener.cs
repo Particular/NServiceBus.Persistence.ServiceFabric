@@ -52,7 +52,7 @@ namespace TestRunner
         public void Abort()
         {
             // fire & forget
-            CloseAsync(CancellationToken.None);
+            _ = CloseAsync(CancellationToken.None);
         }
 
         public Task<string[]> Tests()

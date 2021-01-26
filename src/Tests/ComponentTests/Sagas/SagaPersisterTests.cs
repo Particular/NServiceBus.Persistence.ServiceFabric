@@ -194,7 +194,7 @@
         }
 
         protected void SetActiveSagaInstanceForGet<TSaga, TSagaData>(ContextBag context, TSagaData sagaData, params Type[] availableTypes)
-            where TSaga : Saga<TSagaData>, new ()
+            where TSaga : Saga<TSagaData>, new()
             where TSagaData : class, IContainSagaData, new()
         {
             var sagaMetadata = configuration.SagaMetadataCollection.FindByEntity(typeof(TSagaData));

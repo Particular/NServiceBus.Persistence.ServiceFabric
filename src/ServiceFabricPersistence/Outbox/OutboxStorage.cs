@@ -10,8 +10,8 @@
 
     class OutboxStorage : IOutboxStorage
     {
-        readonly IReliableStateManager reliableStateManager;
-        readonly TimeSpan transactionTimeout;
+        IReliableStateManager reliableStateManager;
+        TimeSpan transactionTimeout;
 
         public OutboxStorage(IReliableStateManager reliableStateManager, TimeSpan transactionTimeout)
         {
@@ -61,7 +61,7 @@
                 operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers);
             }
 
-            var tx = ((ServiceFabricOutboxTransaction) transaction).Transaction;
+            var tx = ((ServiceFabricOutboxTransaction)transaction).Transaction;
             if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations)).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
@@ -89,7 +89,7 @@
 
         internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
         {
-            // Both, the old and the new queues are cleaned up. This ensures that under no circumstance something is left over in the old outbox 
+            // Both, the old and the new queues are cleaned up. This ensures that under no circumstance something is left over in the old outbox
             // The operational lock on the old queue should be short lived and should not collide with anything (there's no longer an active producer that enqueues to this queue).
             return Task.WhenAll(
                 CleanUpOldOutboxQueue(olderThan, cancellationToken),
@@ -103,7 +103,7 @@
             using (var tx = reliableStateManager.CreateTransaction())
             {
                 var currentIndex = 0;
-                
+
                 var cleanConditionalValue = await CleanupOld.TryPeekAsync(tx, LockMode.Default, transactionTimeout, cancellationToken).ConfigureAwait(false);
 
                 while (cleanConditionalValue.HasValue && currentIndex <= 100)

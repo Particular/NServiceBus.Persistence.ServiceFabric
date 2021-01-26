@@ -33,7 +33,7 @@ namespace NServiceBus
             }
             throw new Exception("StateManager must be defined.");
         }
-        
+
         internal static TimeSpan TransactionTimeout(this ReadOnlySettings settings)
         {
             return settings.TryGet("ServiceFabricPersistence.StateManager.TransactionTimeout", out TimeSpan value) ? value : TimeSpan.FromSeconds(4);

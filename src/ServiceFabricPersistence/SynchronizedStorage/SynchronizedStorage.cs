@@ -7,8 +7,8 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class SynchronizedStorage : ISynchronizedStorage
     {
-        readonly IReliableStateManager stateManager;
-        readonly TimeSpan transactionTimeout;
+        IReliableStateManager stateManager;
+        TimeSpan transactionTimeout;
 
         public SynchronizedStorage(IReliableStateManager stateManager, TimeSpan transactionTimeout)
         {
@@ -17,7 +17,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         }
         public Task<CompletableSynchronizedStorageSession> OpenSession(ContextBag contextBag)
         {
-            var session = (CompletableSynchronizedStorageSession) new StorageSession(stateManager, stateManager.CreateTransaction(), transactionTimeout, true);
+            var session = (CompletableSynchronizedStorageSession)new StorageSession(stateManager, stateManager.CreateTransaction(), transactionTimeout, true);
             return Task.FromResult(session);
         }
     }

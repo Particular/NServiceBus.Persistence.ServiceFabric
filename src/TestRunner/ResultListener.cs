@@ -33,6 +33,8 @@
                     case TestStatus.Failed:
                         exception = new AssertionException($"{result.Message}{Environment.NewLine}{result.StackTrace}");
                         break;
+                    default:
+                        break;
                 }
 
                 Result = new Result(result.Output, exception)

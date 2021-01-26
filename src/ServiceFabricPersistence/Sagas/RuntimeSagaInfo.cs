@@ -8,14 +8,11 @@
 
     class RuntimeSagaInfo
     {
-        Type sagaDataType;
-
-        public readonly Type SagaType;
-
+        public Type SagaType;
         JsonSerializer jsonSerializer;
         Func<TextReader, JsonReader> readerCreator;
         Func<TextWriter, JsonWriter> writerCreator;
-        public readonly ServiceFabricSagaAttribute SagaAttribute;
+        public ServiceFabricSagaAttribute SagaAttribute;
         Version CurrentVersion;
 
         public RuntimeSagaInfo(Type sagaDataType,
@@ -24,7 +21,6 @@
             Func<TextReader, JsonReader> readerCreator,
             Func<TextWriter, JsonWriter> writerCreator)
         {
-            this.sagaDataType = sagaDataType;
             SagaType = sagaType;
             this.jsonSerializer = jsonSerializer;
             this.readerCreator = readerCreator;

@@ -12,7 +12,7 @@ public class SetUpFixture
         FixCurrentDirectory();
     }
 
-    void FixCurrentDirectory([CallerFilePath] string callerFilePath="")
+    void FixCurrentDirectory([CallerFilePath] string callerFilePath = "")
     {
         Environment.CurrentDirectory = Directory.GetParent(callerFilePath).FullName;
     }

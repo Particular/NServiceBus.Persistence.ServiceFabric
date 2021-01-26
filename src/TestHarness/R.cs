@@ -63,7 +63,7 @@
             }
             else
             {
-                environmentVariablesToPromote = (string[]) environmentVariables.GetValue(null);
+                environmentVariablesToPromote = (string[])environmentVariables.GetValue(null);
             }
 
             // apply conventions
@@ -121,7 +121,7 @@
             finally
             {
                 Console.WriteLine("------------------------------------------------");
-                Console.WriteLine("Duration: " +  result?.Duration.ToString("0.000000", NumberFormatInfo.InvariantInfo));
+                Console.WriteLine("Duration: " + result?.Duration.ToString("0.000000", NumberFormatInfo.InvariantInfo));
                 Console.WriteLine("Start Time: " + result?.StartTime.ToString("u"));
                 Console.WriteLine("End Time: " + result?.EndTime.ToString("u"));
             }

@@ -4,7 +4,6 @@
 
     public partial class SagaSettings
     {
-
         SettingsHolder settings;
 
         internal SagaSettings(SettingsHolder settings)

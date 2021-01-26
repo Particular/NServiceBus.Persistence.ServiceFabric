@@ -15,7 +15,7 @@ public class ConfigureEndpointServiceFabricPersistence : IConfigureEndpointTestE
             return Task.FromResult(0);
         }
 
-        var statefulService = (StatefulService) TestContext.CurrentContext.Test.Properties.Get("StatefulService");
+        var statefulService = (StatefulService)TestContext.CurrentContext.Test.Properties.Get("StatefulService");
         var persistence = configuration.UsePersistence<ServiceFabricPersistence>();
         persistence.StateManager(statefulService.StateManager);
         return Task.FromResult(0);

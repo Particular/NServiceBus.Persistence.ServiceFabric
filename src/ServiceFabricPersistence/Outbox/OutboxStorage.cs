@@ -10,8 +10,8 @@
 
     class OutboxStorage : IOutboxStorage
     {
-        IReliableStateManager reliableStateManager;
-        TimeSpan transactionTimeout;
+        readonly IReliableStateManager reliableStateManager;
+        readonly TimeSpan transactionTimeout;
 
         public OutboxStorage(IReliableStateManager reliableStateManager, TimeSpan transactionTimeout)
         {

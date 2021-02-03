@@ -7,8 +7,8 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class SynchronizedStorage : ISynchronizedStorage
     {
-        IReliableStateManager stateManager;
-        TimeSpan transactionTimeout;
+        readonly IReliableStateManager stateManager;
+        readonly TimeSpan transactionTimeout;
 
         public SynchronizedStorage(IReliableStateManager stateManager, TimeSpan transactionTimeout)
         {

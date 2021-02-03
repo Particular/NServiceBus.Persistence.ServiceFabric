@@ -114,7 +114,7 @@
 
             class DoneHandler : IHandleMessages<DoneSaga>
             {
-                Context testContext;
+                readonly Context testContext;
 
                 public DoneHandler(Context testContext)
                 {

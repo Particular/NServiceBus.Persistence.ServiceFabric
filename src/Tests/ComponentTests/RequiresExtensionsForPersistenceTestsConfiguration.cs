@@ -11,7 +11,7 @@ namespace NServiceBus.Persistence.ComponentTests
                 Assert.Ignore("Ignoring this test because it requires optimistic concurrency support from persister.");
             }
         }
-        
+
         public static void RequiresPessimisticConcurrencySupport(this IPersistenceTestsConfiguration configuration)
         {
             if (!configuration.SupportsPessimisticConcurrency)
@@ -19,7 +19,7 @@ namespace NServiceBus.Persistence.ComponentTests
                 Assert.Ignore("Ignoring this test because it requires pessimistic concurrency support from persister.");
             }
         }
-        
+
         public static void RequiresDtcSupport(this IPersistenceTestsConfiguration configuration)
         {
             if (!configuration.SupportsDtc)

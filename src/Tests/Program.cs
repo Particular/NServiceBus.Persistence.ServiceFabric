@@ -1,16 +1,15 @@
-﻿using System.Threading;
-using Microsoft.ServiceFabric.Services.Runtime;
-
-namespace NServiceBus.Persistence.ServiceFabric.Tests
+﻿namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
+    using System.Threading;
+    using Microsoft.ServiceFabric.Services.Runtime;
     using Timeout = System.Threading.Timeout;
 
-    internal static class Program
+    static class Program
     {
         /// <summary>
         /// This is the entry point of the service host process.
         /// </summary>
-        private static void Main()
+        static void Main()
         {
 
             ServiceRuntime.RegisterServiceAsync("TestsType",

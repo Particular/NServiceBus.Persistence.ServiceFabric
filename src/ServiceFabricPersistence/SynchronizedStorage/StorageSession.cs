@@ -30,7 +30,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         public IReliableStateManager StateManager { get; }
 
         public ITransaction Transaction { get; }
-        
+
         public TimeSpan TransactionTimeout { get; }
 
         bool ownsTransaction;

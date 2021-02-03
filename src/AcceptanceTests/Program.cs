@@ -3,12 +3,12 @@
     using System.Threading;
     using Microsoft.ServiceFabric.Services.Runtime;
 
-    internal static class Program
+    static class Program
     {
         /// <summary>
         /// This is the entry point of the service host process.
         /// </summary>
-        private static void Main()
+        static void Main()
         {
             // The ServiceManifest.XML file defines one or more service type names.
             // Registering a service maps a service type name to a .NET type.

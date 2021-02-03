@@ -5,7 +5,7 @@ namespace NServiceBus.Persistence.ComponentTests
     using NUnit.Framework;
 
     [TestFixture]
-    public class When_concurrent_update_exceed_transaction_timeout_pessimistic : SagaPersisterTests<TestSaga,TestSagaData>
+    public class When_concurrent_update_exceed_transaction_timeout_pessimistic : SagaPersisterTests<TestSaga, TestSagaData>
     {
         public override async Task OneTimeSetUp()
         {

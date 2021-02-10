@@ -46,7 +46,7 @@ namespace TestRunner
 
         public Task CloseAsync(CancellationToken cancellationToken)
         {
-            return Task.Run(() => runner.StopRun(true));
+            return Task.Run(() => runner.StopRun(true), cancellationToken);
         }
 
         public void Abort()

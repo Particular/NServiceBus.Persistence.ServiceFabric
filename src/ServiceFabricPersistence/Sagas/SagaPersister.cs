@@ -19,31 +19,31 @@ namespace NServiceBus.Persistence.ServiceFabric
             this.sagaInfoCache = sagaInfoCache;
         }
 
-        public async Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
+        public async Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
             var storageSession = (StorageSession)session;
 
             var entry = GetEntry(context, sagaData.Id);
 
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
-            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
+            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var conditionalValue = await sagas.TryRemoveAsync(storageSession.Transaction, sagaData.Id, storageSession.TransactionTimeout, CancellationToken.None).ConfigureAwait(false);
+            var conditionalValue = await sagas.TryRemoveAsync(storageSession.Transaction, sagaData.Id, storageSession.TransactionTimeout, cancellationToken).ConfigureAwait(false);
             if (conditionalValue.HasValue && conditionalValue.Value.Data != entry.Data)
             {
                 throw new Exception("Saga can't be completed as it was updated by another process.");
             }
         }
 
-        public async Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context)
+        public async Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
             where TSagaData : class, IContainSagaData
         {
             var storageSession = (StorageSession)session;
 
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
-            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
+            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var conditionalValue = await sagas.TryGetValueAsync(storageSession.Transaction, sagaId, LockMode.Update, storageSession.TransactionTimeout, CancellationToken.None).ConfigureAwait(false);
+            var conditionalValue = await sagas.TryGetValueAsync(storageSession.Transaction, sagaId, LockMode.Update, storageSession.TransactionTimeout, cancellationToken).ConfigureAwait(false);
             if (conditionalValue.HasValue)
             {
                 SetEntry(context, sagaId, conditionalValue.Value);
@@ -54,24 +54,24 @@ namespace NServiceBus.Persistence.ServiceFabric
             return default;
         }
 
-        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context)
+        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
             where TSagaData : class, IContainSagaData
         {
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagaId = SagaIdGenerator.Generate(sagaInfo, propertyName, propertyValue);
 
-            return Get<TSagaData>(sagaId, session, context);
+            return Get<TSagaData>(sagaId, session, context, cancellationToken);
         }
 
-        public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context)
+        public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
             var storageSession = (StorageSession)session;
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
-            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
+            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName, cancellationToken: cancellationToken).ConfigureAwait(false);
 
             var entry = sagaInfo.ToSagaEntry(sagaData);
 
-            if (!await sagas.TryAddAsync(storageSession.Transaction, sagaData.Id, entry, storageSession.TransactionTimeout, CancellationToken.None).ConfigureAwait(false))
+            if (!await sagas.TryAddAsync(storageSession.Transaction, sagaData.Id, entry, storageSession.TransactionTimeout, cancellationToken).ConfigureAwait(false))
             {
                 if (correlationProperty == SagaCorrelationProperty.None)
                 {
@@ -82,18 +82,18 @@ namespace NServiceBus.Persistence.ServiceFabric
             }
         }
 
-        public async Task Update(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context)
+        public async Task Update(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
             var storageSession = (StorageSession)session;
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
-            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName).ConfigureAwait(false);
+            var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName, cancellationToken: cancellationToken).ConfigureAwait(false);
 
             var newEntry = sagaInfo.ToSagaEntry(sagaData);
 
-            if (!await sagas.TryUpdateAsync(storageSession.Transaction, sagaData.Id, newEntry, loadedEntry, storageSession.TransactionTimeout, CancellationToken.None).ConfigureAwait(false))
+            if (!await sagas.TryUpdateAsync(storageSession.Transaction, sagaData.Id, newEntry, loadedEntry, storageSession.TransactionTimeout, cancellationToken).ConfigureAwait(false))
             {
                 throw new Exception($"{nameof(SagaPersister)} concurrency violation: saga entity Id[{sagaData.Id}] already saved.");
             }

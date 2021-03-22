@@ -52,16 +52,16 @@
                 this.storage = storage;
             }
 
-            protected override Task OnStart(IMessageSession session)
+            protected override Task OnStart(IMessageSession session, CancellationToken cancellationToken)
             {
                 tokenSource = new CancellationTokenSource();
 
-                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token));
+                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token), cancellationToken);
 
-                return TaskEx.CompletedTask;
+                return Task.CompletedTask;
             }
 
-            protected override Task OnStop(IMessageSession session)
+            protected override Task OnStop(IMessageSession session, CancellationToken cancellationToken)
             {
                 tokenSource.Cancel();
                 return cleanupTask;
@@ -110,14 +110,14 @@
                 this.stateManager = stateManager;
             }
 
-            protected override Task OnStart(IMessageSession session)
+            protected override Task OnStart(IMessageSession session, CancellationToken cancellationToken)
             {
                 return stateManager.RegisterOutboxStorage(outboxStorage);
             }
 
-            protected override Task OnStop(IMessageSession session)
+            protected override Task OnStop(IMessageSession session, CancellationToken cancellationToken)
             {
-                return TaskEx.CompletedTask;
+                return Task.CompletedTask;
             }
 
             IReliableStateManager stateManager;

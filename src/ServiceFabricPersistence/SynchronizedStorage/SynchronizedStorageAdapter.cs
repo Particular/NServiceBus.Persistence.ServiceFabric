@@ -1,5 +1,6 @@
 namespace NServiceBus.Persistence.ServiceFabric
 {
+    using System.Threading;
     using System.Threading.Tasks;
     using Extensibility;
     using Outbox;
@@ -7,7 +8,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class SynchronizedStorageAdapter : ISynchronizedStorageAdapter
     {
-        public Task<CompletableSynchronizedStorageSession> TryAdapt(OutboxTransaction transaction, ContextBag context)
+        public Task<CompletableSynchronizedStorageSession> TryAdapt(OutboxTransaction transaction, ContextBag context, CancellationToken cancellationToken = default)
         {
             if (transaction is ServiceFabricOutboxTransaction outboxTransaction)
             {
@@ -18,7 +19,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             return EmptyTask;
         }
 
-        public Task<CompletableSynchronizedStorageSession> TryAdapt(TransportTransaction transportTransaction, ContextBag context)
+        public Task<CompletableSynchronizedStorageSession> TryAdapt(TransportTransaction transportTransaction, ContextBag context, CancellationToken cancellationToken = default)
         {
             return EmptyTask;
         }

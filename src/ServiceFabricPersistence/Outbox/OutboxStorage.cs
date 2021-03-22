@@ -24,12 +24,12 @@
         public IReliableQueue<CleanupStoredOutboxCommand> CleanupOld { get; set; }
         public IReliableConcurrentQueue<CleanupStoredOutboxCommand> Cleanup { get; set; }
 
-        public async Task<OutboxMessage> Get(string messageId, ContextBag context)
+        public async Task<OutboxMessage> Get(string messageId, ContextBag context, CancellationToken cancellationToken = default)
         {
             StoredOutboxMessage storedOutboxMessage;
             using (var tx = reliableStateManager.CreateTransaction())
             {
-                var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
+                var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId, transactionTimeout, cancellationToken).ConfigureAwait(false);
                 if (!conditionalValue.HasValue)
                 {
                     return null;
@@ -42,17 +42,17 @@
             for (var i = 0; i < storedOutboxMessage.TransportOperations.Length; i++)
             {
                 var o = storedOutboxMessage.TransportOperations[i];
-                transportOperations[i] = new TransportOperation(o.MessageId, o.Options, o.Body, o.Headers);
+                transportOperations[i] = new TransportOperation(o.MessageId, new Transport.DispatchProperties(o.Options), o.Body, o.Headers);
             }
             return new OutboxMessage(messageId, transportOperations);
         }
 
-        public Task<OutboxTransaction> BeginTransaction(ContextBag context)
+        public Task<OutboxTransaction> BeginTransaction(ContextBag context, CancellationToken cancellationToken = default)
         {
             return Task.FromResult<OutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager, reliableStateManager.CreateTransaction(), transactionTimeout));
         }
 
-        public async Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context)
+        public async Task Store(OutboxMessage message, OutboxTransaction transaction, ContextBag context, CancellationToken cancellationToken = default)
         {
             var operations = new StoredTransportOperation[message.TransportOperations.Length];
             for (var i = 0; i < message.TransportOperations.Length; i++)
@@ -62,32 +62,32 @@
             }
 
             var tx = ((ServiceFabricOutboxTransaction)transaction).Transaction;
-            if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations)).ConfigureAwait(false))
+            if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations), transactionTimeout, cancellationToken).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
             }
         }
 
-        public async Task SetAsDispatched(string messageId, ContextBag context)
+        public async Task SetAsDispatched(string messageId, ContextBag context, CancellationToken cancellationToken = default)
         {
             using (var tx = reliableStateManager.CreateTransaction())
             {
-                var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId).ConfigureAwait(false);
+                var conditionalValue = await Outbox.TryGetValueAsync(tx, messageId, transactionTimeout, cancellationToken).ConfigureAwait(false);
                 if (conditionalValue.HasValue)
                 {
                     var storedOutboxMessage = conditionalValue.Value;
 
                     var dispatched = storedOutboxMessage.CloneAndMarkAsDispatched();
 
-                    await Outbox.SetAsync(tx, messageId, dispatched).ConfigureAwait(false);
+                    await Outbox.SetAsync(tx, messageId, dispatched, transactionTimeout, cancellationToken).ConfigureAwait(false);
 
-                    await Cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(messageId, storedOutboxMessage.StoredAt)).ConfigureAwait(false);
+                    await Cleanup.EnqueueAsync(tx, new CleanupStoredOutboxCommand(messageId, storedOutboxMessage.StoredAt), cancellationToken).ConfigureAwait(false);
                 }
                 await tx.CommitAsync().ConfigureAwait(false);
             }
         }
 
-        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
+        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken = default)
         {
             // Both, the old and the new queues are cleaned up. This ensures that under no circumstance something is left over in the old outbox
             // The operational lock on the old queue should be short lived and should not collide with anything (there's no longer an active producer that enqueues to this queue).

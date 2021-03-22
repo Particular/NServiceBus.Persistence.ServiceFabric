@@ -28,10 +28,6 @@
 
         ISubscriptionStorage SubscriptionStorage { get; }
 
-        IPersistTimeouts TimeoutStorage { get; }
-
-        IQueryTimeouts TimeoutQuery { get; }
-
         IOutboxStorage OutboxStorage { get; }
 
         Task Configure();

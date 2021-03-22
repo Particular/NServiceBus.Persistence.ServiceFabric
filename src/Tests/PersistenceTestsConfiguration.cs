@@ -8,7 +8,6 @@
     using Outbox;
     using Sagas;
     using ServiceFabric;
-    using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
     using StatefulService = Microsoft.ServiceFabric.Services.Runtime.StatefulService;
 
@@ -40,8 +39,6 @@
         public ISynchronizedStorage SynchronizedStorage { get; }
         public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; }
         public ISubscriptionStorage SubscriptionStorage { get; }
-        public IPersistTimeouts TimeoutStorage { get; }
-        public IQueryTimeouts TimeoutQuery { get; }
         public IOutboxStorage OutboxStorage { get; }
 
         public async Task Configure()
@@ -57,7 +54,7 @@
         public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
         {
             var storage = (OutboxStorage)OutboxStorage;
-            return storage.CleanUpOutboxQueue(beforeStore, CancellationToken.None);
+            return storage.CleanUpOutboxQueue(beforeStore);
         }
     }
 }

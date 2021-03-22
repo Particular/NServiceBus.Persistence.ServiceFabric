@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
     using Outbox;
@@ -23,7 +24,7 @@
             Transaction.Dispose();
         }
 
-        public Task Commit()
+        public Task Commit(CancellationToken cancellationToken = default)
         {
             return Transaction.CommitAsync();
         }

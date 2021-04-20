@@ -41,20 +41,20 @@
         public ISubscriptionStorage SubscriptionStorage { get; }
         public IOutboxStorage OutboxStorage { get; }
 
-        public async Task Configure()
+        public async Task Configure(CancellationToken cancellationToken = default)
         {
-            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage).ConfigureAwait(false);
+            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task Cleanup()
+        public Task Cleanup(CancellationToken cancellationToken = default)
         {
             return Task.FromResult(0);
         }
 
-        public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore)
+        public Task CleanupMessagesOlderThan(DateTimeOffset beforeStore, CancellationToken cancellationToken = default)
         {
             var storage = (OutboxStorage)OutboxStorage;
-            return storage.CleanUpOutboxQueue(beforeStore);
+            return storage.CleanUpOutboxQueue(beforeStore, cancellationToken);
         }
     }
 }

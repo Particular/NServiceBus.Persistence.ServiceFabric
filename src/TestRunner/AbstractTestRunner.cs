@@ -3,6 +3,7 @@ namespace TestRunner
     using System.Collections.Generic;
     using System.Fabric;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Interfaces;
     using Microsoft.ServiceFabric.Services.Communication.Runtime;
@@ -19,14 +20,14 @@ namespace TestRunner
 
         protected abstract TSelf Self { get; }
 
-        public Task<string[]> Tests()
+        public Task<string[]> Tests(CancellationToken cancellationToken = default)
         {
-            return communicationListener.Tests();
+            return communicationListener.Tests(cancellationToken);
         }
 
-        public Task<Result> Run(string testName)
+        public Task<Result> Run(string testName, CancellationToken cancellationToken = default)
         {
-            return communicationListener.Run(testName);
+            return communicationListener.Run(testName, cancellationToken);
         }
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()

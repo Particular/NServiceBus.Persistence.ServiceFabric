@@ -49,7 +49,7 @@
             SagaIdGenerator = sagaIdGenerator;
 
             OutboxStorage = new OutboxStorage(statefulService.StateManager, timeout);
-            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage).ConfigureAwait(false);
+            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage, cancellationToken).ConfigureAwait(false);
         }
 
         public Task Cleanup(CancellationToken cancellationToken = default)

@@ -3,7 +3,7 @@
 <Import Project="$([MSBuild]::GetPathOfFileAbove($(MSBuildThisFile), $(MSBuildThisFileDirectory)..))" Condition="Exists($([MSBuild]::GetPathOfFileAbove($(MSBuildThisFile), $(MSBuildThisFileDirectory)..)))" />
 
   <ItemGroup>
-    <PackageReference Remove="Particular.CodeRules" />
+    <PackageReference Remove="Particular.Analyzers" />
   </ItemGroup>
 
 </Project>

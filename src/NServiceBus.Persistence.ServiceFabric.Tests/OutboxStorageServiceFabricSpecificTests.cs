@@ -95,7 +95,7 @@
                 }
 
                 return cleanupCount;
-            }, CancellationToken.None);
+            });
 
             var inserts = Enumerable.Repeat(1, 200).Select(async _ =>
             {

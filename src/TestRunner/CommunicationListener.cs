@@ -26,7 +26,7 @@ namespace TestRunner
             this.statefulService = statefulService;
         }
 
-        public Task<string> OpenAsync(CancellationToken cancellationToken)
+        public Task<string> OpenAsync(CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {
@@ -44,7 +44,7 @@ namespace TestRunner
             });
         }
 
-        public async Task CloseAsync(CancellationToken cancellationToken)
+        public async Task CloseAsync(CancellationToken cancellationToken = default)
         {
             runner.StopRun(false);
 
@@ -64,13 +64,13 @@ namespace TestRunner
             runner.StopRun(true);
         }
 
-        public Task<string[]> Tests()
+        public Task<string[]> Tests(CancellationToken cancellationToken = default)
         {
             return cachedTestNames;
         }
 
 
-        public Task<Result> Run(string testName)
+        public Task<Result> Run(string testName, CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
             {

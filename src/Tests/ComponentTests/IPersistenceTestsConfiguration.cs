@@ -1,9 +1,9 @@
 ﻿namespace NServiceBus.Persistence.ComponentTests
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Outbox;
-    using Timeout.Core;
     using Unicast.Subscriptions.MessageDrivenSubscriptions;
 
     public interface IPersistenceTestsConfiguration
@@ -28,16 +28,12 @@
 
         ISubscriptionStorage SubscriptionStorage { get; }
 
-        IPersistTimeouts TimeoutStorage { get; }
-
-        IQueryTimeouts TimeoutQuery { get; }
-
         IOutboxStorage OutboxStorage { get; }
 
-        Task Configure();
+        Task Configure(CancellationToken cancellationToken = default);
 
-        Task Cleanup();
+        Task Cleanup(CancellationToken cancellationToken = default);
 
-        Task CleanupMessagesOlderThan(DateTimeOffset beforeStore);
+        Task CleanupMessagesOlderThan(DateTimeOffset beforeStore, CancellationToken cancellationToken = default);
     }
 }

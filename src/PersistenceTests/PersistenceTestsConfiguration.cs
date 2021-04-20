@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.PersistenceTesting
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
     using NServiceBus.Outbox;
@@ -30,7 +31,7 @@
 
         public IOutboxStorage OutboxStorage { get; set; }
 
-        public async Task Configure()
+        public async Task Configure(CancellationToken cancellationToken = default)
         {
             var statefulService = (StatefulService)TestContext.CurrentContext.Test.Properties.Get("StatefulService");
             stateManager = statefulService.StateManager;
@@ -48,10 +49,10 @@
             SagaIdGenerator = sagaIdGenerator;
 
             OutboxStorage = new OutboxStorage(statefulService.StateManager, timeout);
-            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage).ConfigureAwait(false);
+            await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task Cleanup()
+        public Task Cleanup(CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

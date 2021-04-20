@@ -1,6 +1,7 @@
 namespace NServiceBus.Persistence.ServiceFabric
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
 
@@ -22,9 +23,9 @@ namespace NServiceBus.Persistence.ServiceFabric
             }
         }
 
-        public Task CompleteAsync()
+        public Task CompleteAsync(CancellationToken cancellationToken = default)
         {
-            return ownsTransaction ? Transaction.CommitAsync() : TaskEx.CompletedTask;
+            return ownsTransaction ? Transaction.CommitAsync() : Task.CompletedTask;
         }
 
         public IReliableStateManager StateManager { get; }

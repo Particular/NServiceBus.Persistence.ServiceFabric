@@ -52,24 +52,24 @@
                 this.storage = storage;
             }
 
-            protected override Task OnStart(IMessageSession session)
+            protected override Task OnStart(IMessageSession session, CancellationToken cancellationToken = default)
             {
                 tokenSource = new CancellationTokenSource();
 
-                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token));
+                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token), cancellationToken);
 
-                return TaskEx.CompletedTask;
+                return Task.CompletedTask;
             }
 
-            protected override Task OnStop(IMessageSession session)
+            protected override Task OnStop(IMessageSession session, CancellationToken cancellationToken = default)
             {
                 tokenSource.Cancel();
                 return cleanupTask;
             }
 
-            async Task Cleanup(CancellationToken token)
+            async Task Cleanup(CancellationToken cancellationToken)
             {
-                while (!token.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     try
                     {
@@ -78,12 +78,12 @@
 
                         var olderThan = now - timeToKeepDeduplicationData;
 
-                        await storage.CleanUpOutboxQueue(olderThan, token).ConfigureAwait(false);
+                        await storage.CleanUpOutboxQueue(olderThan, cancellationToken).ConfigureAwait(false);
 
                         var delay = nextClean - now;
                         if (delay > TimeSpan.Zero)
                         {
-                            await Task.Delay(delay, token).ConfigureAwait(false);
+                            await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
@@ -110,14 +110,14 @@
                 this.stateManager = stateManager;
             }
 
-            protected override Task OnStart(IMessageSession session)
+            protected override Task OnStart(IMessageSession session, CancellationToken cancellationToken = default)
             {
-                return stateManager.RegisterOutboxStorage(outboxStorage);
+                return stateManager.RegisterOutboxStorage(outboxStorage, cancellationToken);
             }
 
-            protected override Task OnStop(IMessageSession session)
+            protected override Task OnStop(IMessageSession session, CancellationToken cancellationToken = default)
             {
-                return TaskEx.CompletedTask;
+                return Task.CompletedTask;
             }
 
             IReliableStateManager stateManager;

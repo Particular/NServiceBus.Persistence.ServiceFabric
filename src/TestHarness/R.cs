@@ -12,6 +12,7 @@
     using System.Runtime.CompilerServices;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Xml.Linq;
     using Microsoft.ServiceFabric.Services.Remoting.Client;
@@ -100,7 +101,10 @@
 
         [Timeout(600000)]
         [TestCaseSource(nameof(GetTestCases))]
+        // this pragma can be removed after upgrading to Particular.Analyzers 1.2.0
+#pragma warning disable PS0018 // A task-returning method should have a CancellationToken parameter unless it has a parameter implementing ICancellableContext
         public async Task _(string testName)
+#pragma warning restore PS0018 // A task-returning method should have a CancellationToken parameter unless it has a parameter implementing ICancellableContext
         {
             Console.WriteLine("GetTestCases " + testName);
             Result result = null;
@@ -133,7 +137,7 @@
             return TearDown();
         }
 
-        static async Task TearDown()
+        static async Task TearDown(CancellationToken cancellationToken = default)
         {
             using (var fabric = new FabricClient())
             {
@@ -179,15 +183,15 @@
             }
         }
 
-        static async Task SetUp()
+        static async Task SetUp(CancellationToken cancellationToken = default)
         {
             if (testRunner == null)
             {
                 using (var fabric = new FabricClient())
                 {
-                    var clusterManifest = await GetClusterManifest(fabric).ConfigureAwait(false);
+                    var clusterManifest = await GetClusterManifest(fabric, cancellationToken).ConfigureAwait(false);
                     imageStoreConnectionString = clusterManifest["Management"]["ImageStoreConnectionString"];
-                    await TearDown().ConfigureAwait(false);
+                    await TearDown(cancellationToken).ConfigureAwait(false);
                     var app = fabric.ApplicationManager;
                     var store = ImageStorePath.ToString();
                     Console.WriteLine("CopyApplicationPackage. imageStoreConnectionString:" + imageStoreConnectionString + ". TestAppPkgPath:" + TestAppPkgPath + ". store:" + store);
@@ -207,7 +211,7 @@
             }
         }
 
-        static async Task<Dictionary<string, Dictionary<string, string>>> GetClusterManifest(FabricClient fabricClient)
+        static async Task<Dictionary<string, Dictionary<string, string>>> GetClusterManifest(FabricClient fabricClient, CancellationToken cancellationToken)
         {
             var rawManifest = await fabricClient.ClusterManager.GetClusterManifestAsync().ConfigureAwait(false);
             var document = XDocument.Parse(rawManifest);

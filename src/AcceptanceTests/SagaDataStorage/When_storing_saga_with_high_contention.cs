@@ -58,7 +58,7 @@
                     var recoverability = b.Recoverability();
                     recoverability.Immediate(s =>
                     {
-                        s.OnMessageBeingRetried(m =>
+                        s.OnMessageBeingRetried((_, __) =>
                         {
                             c.IncrementNumberOfRetries();
                             return Task.CompletedTask;

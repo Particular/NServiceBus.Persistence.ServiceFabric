@@ -20,7 +20,7 @@ jobs:
       - name: SetupCluster
         run: |
           (New-Object System.Net.WebClient).DownloadFile("https://go.microsoft.com/fwlink/?LinkId=730690", "C:\temp\Cluster.zip")
-          Expand-Archive C:\temp\Cluster.zipp -DestinationPath c:\temp\fabric
+          Expand-Archive C:\temp\Cluster.zip -DestinationPath c:\temp\fabric
           c:\temp\fabric\CreateServiceFabricCluster.ps1 -ClusterConfigFilePath c:\temp\fabric\ClusterConfig.Unsecure.DevCluster.json -AcceptEULA
         shell: pwsh
       - name: Checkout

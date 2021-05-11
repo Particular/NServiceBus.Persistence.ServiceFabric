@@ -56,7 +56,7 @@
             {
                 tokenSource = new CancellationTokenSource();
 
-                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token), cancellationToken);
+                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token), CancellationToken.None);
 
                 return Task.CompletedTask;
             }
@@ -86,9 +86,17 @@
                             await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
                         }
                     }
-                    catch (OperationCanceledException)
+                    catch (OperationCanceledException ex)
                     {
                         // graceful shutdown
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            Logger.Debug("Outbox cleanup cancelled.", ex);
+                        }
+                        else
+                        {
+                            Logger.Warn("Operation cancelled thrown.", ex);
+                        }
                     }
                     catch (TimeoutException)
                     {

@@ -95,7 +95,7 @@
                         }
                         else
                         {
-                            Logger.Warn("Operation cancelled thrown.", ex);
+                            Logger.Warn("OperationCanceledException thrown.", ex);
                         }
                     }
                     catch (TimeoutException)

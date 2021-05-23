@@ -26,23 +26,24 @@ namespace TestRunner
             this.statefulService = statefulService;
         }
 
-        public Task<string> OpenAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.Run(() =>
-            {
-                runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
-                var settings = new Dictionary<string, object>
+        public Task<string> OpenAsync(CancellationToken cancellationToken = default) =>
+            Task.Run(
+                () =>
                 {
-                    {"SynchronousEvents", true} // crucial to run listeners sync
-                };
-                var testSuite = runner.Load(typeof(TService).Assembly, settings);
-                var testNameCache = new HashSet<string>();
-                CacheTests(testNameCache, testSuite);
-                cachedTestNames = Task.FromResult(testNameCache.ToArray());
+                    runner = new NUnitTestAssemblyRunner(new DefaultTestAssemblyBuilder());
+                    var settings = new Dictionary<string, object>
+                    {
+                        {"SynchronousEvents", true} // crucial to run listeners sync
+                    };
 
-                return "";
-            });
-        }
+                    var testSuite = runner.Load(typeof(TService).Assembly, settings);
+                    var testNameCache = new HashSet<string>();
+                    CacheTests(testNameCache, testSuite);
+                    cachedTestNames = Task.FromResult(testNameCache.ToArray());
+
+                    return "";
+                },
+                CancellationToken.None);
 
         public async Task CloseAsync(CancellationToken cancellationToken = default)
         {
@@ -50,6 +51,8 @@ namespace TestRunner
 
             while (true)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (runner.WaitForCompletion(1))
                 {
                     break;
@@ -70,21 +73,21 @@ namespace TestRunner
         }
 
 
-        public Task<Result> Run(string testName, CancellationToken cancellationToken = default)
-        {
-            return Task.Run(() =>
-            {
-                var resultListener = new ResultListener();
-                var provider = new StatefulServiceProviderListener<TService>(statefulService);
-                var eventSourceTestListener = new EventSourceTestListener();
-                var compositeListener = new CompositeListener(provider, resultListener, eventSourceTestListener);
+        public Task<Result> Run(string testName, CancellationToken cancellationToken = default) =>
+            Task.Run(
+                () =>
+                {
+                    var resultListener = new ResultListener();
+                    var provider = new StatefulServiceProviderListener<TService>(statefulService);
+                    var eventSourceTestListener = new EventSourceTestListener();
+                    var compositeListener = new CompositeListener(provider, resultListener, eventSourceTestListener);
 
-                var fullNameFilter = new FullNameFilter(testName);
-                runner.Run(compositeListener, fullNameFilter);
+                    var fullNameFilter = new FullNameFilter(testName);
+                    runner.Run(compositeListener, fullNameFilter);
 
-                return resultListener.Result;
-            });
-        }
+                    return resultListener.Result;
+                },
+                CancellationToken.None);
 
         static void CacheTests(HashSet<string> testNameCache, ITest test)
         {
@@ -108,6 +111,6 @@ namespace TestRunner
         NUnitTestAssemblyRunner runner;
 
         Task<string[]> cachedTestNames;
-        TService statefulService;
+        readonly TService statefulService;
     }
 }

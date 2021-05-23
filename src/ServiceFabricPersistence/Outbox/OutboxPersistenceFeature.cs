@@ -37,13 +37,13 @@
 
         class OutboxCleaner : FeatureStartupTask
         {
-            OutboxStorage storage;
+            readonly OutboxStorage storage;
             TimeSpan timeToKeepDeduplicationData;
             TimeSpan frequencyToRunDeduplicationDataCleanup;
             CancellationTokenSource tokenSource;
             Task cleanupTask;
 
-            static ILog Logger = LogManager.GetLogger<OutboxCleaner>();
+            static readonly ILog Logger = LogManager.GetLogger<OutboxCleaner>();
 
             public OutboxCleaner(OutboxStorage storage, TimeSpan timeToKeepDeduplicationData, TimeSpan frequencyToRunDeduplicationDataCleanup)
             {
@@ -56,7 +56,8 @@
             {
                 tokenSource = new CancellationTokenSource();
 
-                cleanupTask = Task.Run(() => Cleanup(tokenSource.Token), CancellationToken.None);
+                // Task.Run() so the call returns immediately instead of waiting for the first await or return down the call stack
+                cleanupTask = Task.Run(() => CleanupAndSwallowExceptions(tokenSource.Token), CancellationToken.None);
 
                 return Task.CompletedTask;
             }
@@ -67,44 +68,48 @@
                 return cleanupTask;
             }
 
-            async Task Cleanup(CancellationToken cancellationToken)
+            async Task CleanupAndSwallowExceptions(CancellationToken cancellationToken)
             {
-                while (!cancellationToken.IsCancellationRequested)
+                try
                 {
-                    try
+                    while (true)
                     {
-                        var now = DateTime.UtcNow;
-                        var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                        var olderThan = now - timeToKeepDeduplicationData;
-
-                        await storage.CleanUpOutboxQueue(olderThan, cancellationToken).ConfigureAwait(false);
-
-                        var delay = nextClean - now;
-                        if (delay > TimeSpan.Zero)
+                        try
                         {
-                            await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+                            var now = DateTime.UtcNow;
+                            var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
+
+                            var olderThan = now - timeToKeepDeduplicationData;
+
+                            await storage.CleanUpOutboxQueue(olderThan, cancellationToken).ConfigureAwait(false);
+
+                            var delay = nextClean - now;
+                            if (delay > TimeSpan.Zero)
+                            {
+                                await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+                            }
+                        }
+                        catch (TimeoutException)
+                        {
+                            // happens on dead locks
+                        }
+                        catch (Exception ex) when (!(ex is OperationCanceledException))
+                        {
+                            Logger.Warn("Unable to clean outbox storage.", ex);
                         }
                     }
-                    catch (OperationCanceledException ex)
+                }
+                catch (OperationCanceledException ex)
+                {
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        // graceful shutdown
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            Logger.Debug("Outbox cleanup cancelled.", ex);
-                        }
-                        else
-                        {
-                            Logger.Warn("OperationCanceledException thrown.", ex);
-                        }
+                        Logger.Debug("Outbox cleanup canceled.", ex);
                     }
-                    catch (TimeoutException)
+                    else
                     {
-                        // happens on dead locks
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Warn("Unable to clean outbox storage.", ex);
+                        Logger.Warn("OperationCanceledException thrown.", ex);
                     }
                 }
             }
@@ -128,8 +133,8 @@
                 return Task.CompletedTask;
             }
 
-            IReliableStateManager stateManager;
-            OutboxStorage outboxStorage;
+            readonly IReliableStateManager stateManager;
+            readonly OutboxStorage outboxStorage;
         }
     }
 }

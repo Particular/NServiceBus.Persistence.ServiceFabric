@@ -49,16 +49,9 @@ namespace TestRunner
         {
             runner.StopRun(false);
 
-            while (true)
+            while (!runner.WaitForCompletion(1))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (runner.WaitForCompletion(1))
-                {
-                    break;
-                }
-
-                await Task.Delay(3000, cancellationToken).ConfigureAwait(false);
+                await Task.Delay(millisecondsDelay: 3000, cancellationToken).ConfigureAwait(false);
             }
         }
 

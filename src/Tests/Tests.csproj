@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus" Version="8.0.0-alpha.1892" />
+    <PackageReference Include="NServiceBus" Version="8.0.0-alpha.1895" />
     <PackageReference Include="NServiceBus.Testing" Version="8.0.0-alpha.183" />
   </ItemGroup>
 

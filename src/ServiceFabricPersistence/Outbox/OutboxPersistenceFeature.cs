@@ -70,46 +70,36 @@
 
             async Task CleanupAndSwallowExceptions(CancellationToken cancellationToken)
             {
-                try
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    while (true)
+                    try
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
+                        var now = DateTime.UtcNow;
+                        var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
 
-                        try
+                        var olderThan = now - timeToKeepDeduplicationData;
+
+                        await storage.CleanUpOutboxQueue(olderThan, cancellationToken).ConfigureAwait(false);
+
+                        var delay = nextClean - now;
+                        if (delay > TimeSpan.Zero)
                         {
-                            var now = DateTime.UtcNow;
-                            var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
-
-                            var olderThan = now - timeToKeepDeduplicationData;
-
-                            await storage.CleanUpOutboxQueue(olderThan, cancellationToken).ConfigureAwait(false);
-
-                            var delay = nextClean - now;
-                            if (delay > TimeSpan.Zero)
-                            {
-                                await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
-                            }
-                        }
-                        catch (TimeoutException)
-                        {
-                            // happens on dead locks
-                        }
-                        catch (Exception ex) when (!(ex is OperationCanceledException))
-                        {
-                            Logger.Warn("Unable to clean outbox storage.", ex);
+                            await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
                         }
                     }
-                }
-                catch (OperationCanceledException ex)
-                {
-                    if (cancellationToken.IsCancellationRequested)
+                    catch (Exception ex) when (ex.IsCausedBy(cancellationToken))
                     {
-                        Logger.Debug("Outbox cleanup canceled.", ex);
+                        // private token, feature is being stopped, log the exception in case the stack trace is ever needed for debugging
+                        Logger.Debug("Operation canceled while stopping outbox persistence feature.", ex);
+                        break;
                     }
-                    else
+                    catch (TimeoutException)
                     {
-                        Logger.Warn("OperationCanceledException thrown.", ex);
+                        // happens on dead locks
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Warn("Unable to clean outbox storage.", ex);
                     }
                 }
             }

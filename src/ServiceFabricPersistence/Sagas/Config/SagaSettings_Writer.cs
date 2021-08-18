@@ -14,7 +14,7 @@
             settings.Set("ServiceFabricPersistence.Saga.WriterCreator", writerCreator);
         }
 
-        internal static Func<TextWriter, JsonWriter> GetWriterCreator(ReadOnlySettings settings)
+        internal static Func<TextWriter, JsonWriter> GetWriterCreator(IReadOnlySettings settings)
         {
             return settings.GetOrDefault<Func<TextWriter, JsonWriter>>("ServiceFabricPersistence.Saga.WriterCreator");
         }

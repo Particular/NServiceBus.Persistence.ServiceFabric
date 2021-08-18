@@ -25,7 +25,7 @@ namespace NServiceBus
             configuration.GetSettings().Set("ServiceFabricPersistence.StateManager.TransactionTimeout", stateManager);
         }
 
-        internal static IReliableStateManager StateManager(this ReadOnlySettings settings)
+        internal static IReliableStateManager StateManager(this IReadOnlySettings settings)
         {
             if (settings.TryGet("ServiceFabricPersistence.StateManager", out IReliableStateManager value))
             {
@@ -34,7 +34,7 @@ namespace NServiceBus
             throw new Exception("StateManager must be defined.");
         }
 
-        internal static TimeSpan TransactionTimeout(this ReadOnlySettings settings)
+        internal static TimeSpan TransactionTimeout(this IReadOnlySettings settings)
         {
             return settings.TryGet("ServiceFabricPersistence.StateManager.TransactionTimeout", out TimeSpan value) ? value : TimeSpan.FromSeconds(4);
         }

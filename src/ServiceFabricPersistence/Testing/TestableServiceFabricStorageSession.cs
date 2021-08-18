@@ -5,9 +5,9 @@
     using Persistence.ServiceFabric;
 
     /// <summary>
-    /// A fake implementation for <see cref="SynchronizedStorageSession"/> for testing purposes.
+    /// A fake implementation for <see cref="ISynchronizedStorageSession"/> for testing purposes.
     /// </summary>
-    public class TestableServiceFabricStorageSession : SynchronizedStorageSession, IServiceFabricStorageSession
+    public class TestableServiceFabricStorageSession : ISynchronizedStorageSession, IServiceFabricStorageSession
     {
         /// <summary>
         /// Creates a new instance of <see cref="TestableServiceFabricStorageSession"/> using the provided <see cref="IReliableStateManager"/> and <see cref="ITransaction"/>.

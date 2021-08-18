@@ -10,7 +10,7 @@
             settings.Set("ServiceFabricPersistence.Saga.JsonSerializerSettings", jsonSerializerSettings);
         }
 
-        internal static JsonSerializerSettings GetJsonSerializerSettings(ReadOnlySettings settings)
+        internal static JsonSerializerSettings GetJsonSerializerSettings(IReadOnlySettings settings)
         {
             return settings.GetOrDefault<JsonSerializerSettings>("ServiceFabricPersistence.Saga.JsonSerializerSettings");
         }

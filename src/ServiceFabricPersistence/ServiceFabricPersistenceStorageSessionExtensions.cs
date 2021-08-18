@@ -10,13 +10,13 @@
         /// <summary>
         /// Gets the current context ServiceFabricPersistence <see cref="IServiceFabricStorageSession"/>.
         /// </summary>
-        public static IServiceFabricStorageSession ServiceFabricSession(this SynchronizedStorageSession session)
+        public static IServiceFabricStorageSession ServiceFabricSession(this ISynchronizedStorageSession session)
         {
             Guard.AgainstNull(nameof(session), session);
             return GetServiceFabricSession(session);
         }
 
-        static IServiceFabricStorageSession GetServiceFabricSession(this SynchronizedStorageSession session)
+        static IServiceFabricStorageSession GetServiceFabricSession(this ISynchronizedStorageSession session)
         {
             if (session is IServiceFabricStorageSession storageSession)
             {

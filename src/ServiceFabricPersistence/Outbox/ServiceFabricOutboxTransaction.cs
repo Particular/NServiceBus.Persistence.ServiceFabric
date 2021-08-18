@@ -6,7 +6,7 @@
     using Microsoft.ServiceFabric.Data;
     using Outbox;
 
-    class ServiceFabricOutboxTransaction : OutboxTransaction
+    class ServiceFabricOutboxTransaction : IOutboxTransaction
     {
         internal ITransaction Transaction { get; }
         internal IReliableStateManager StateManager { get; }

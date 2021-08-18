@@ -12,7 +12,7 @@
             settings.Set("ServiceFabricPersistence.Saga.ReaderCreator", readerCreator);
         }
 
-        internal static Func<TextReader, JsonReader> GetReaderCreator(ReadOnlySettings settings)
+        internal static Func<TextReader, JsonReader> GetReaderCreator(IReadOnlySettings settings)
         {
             return settings.GetOrDefault<Func<TextReader, JsonReader>>("ServiceFabricPersistence.Saga.ReaderCreator");
         }

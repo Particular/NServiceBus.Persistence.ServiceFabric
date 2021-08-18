@@ -74,7 +74,7 @@
                 {
                     try
                     {
-                        var now = DateTime.UtcNow;
+                        var now = DateTimeOffset.UtcNow;
                         var nextClean = now.Add(frequencyToRunDeduplicationDataCleanup);
 
                         var olderThan = now - timeToKeepDeduplicationData;

@@ -5,7 +5,7 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
 
-    class StorageSession : CompletableSynchronizedStorageSession, IServiceFabricStorageSession
+    class StorageSession : ICompletableSynchronizedStorageSession, IServiceFabricStorageSession
     {
         public StorageSession(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout, bool ownsTransaction)
         {

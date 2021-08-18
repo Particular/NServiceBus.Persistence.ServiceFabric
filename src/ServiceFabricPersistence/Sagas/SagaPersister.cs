@@ -19,7 +19,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             this.sagaInfoCache = sagaInfoCache;
         }
 
-        public async Task Complete(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
+        public async Task Complete(IContainSagaData sagaData, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
             var storageSession = (StorageSession)session;
 
@@ -35,7 +35,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             }
         }
 
-        public async Task<TSagaData> Get<TSagaData>(Guid sagaId, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
+        public async Task<TSagaData> Get<TSagaData>(Guid sagaId, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
             where TSagaData : class, IContainSagaData
         {
             var storageSession = (StorageSession)session;
@@ -54,7 +54,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             return default;
         }
 
-        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
+        public Task<TSagaData> Get<TSagaData>(string propertyName, object propertyValue, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
             where TSagaData : class, IContainSagaData
         {
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
@@ -63,7 +63,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             return Get<TSagaData>(sagaId, session, context, cancellationToken);
         }
 
-        public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
+        public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
             var storageSession = (StorageSession)session;
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
@@ -82,7 +82,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             }
         }
 
-        public async Task Update(IContainSagaData sagaData, SynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
+        public async Task Update(IContainSagaData sagaData, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
             var storageSession = (StorageSession)session;
 
@@ -110,7 +110,7 @@ namespace NServiceBus.Persistence.ServiceFabric
             entries[sagaId] = value;
         }
 
-        static SagaEntry GetEntry(ReadOnlyContextBag context, Guid sagaDataId)
+        static SagaEntry GetEntry(IReadOnlyContextBag context, Guid sagaDataId)
         {
             if (context.TryGet(ContextKey, out Dictionary<Guid, SagaEntry> entries))
             {

@@ -29,7 +29,7 @@ namespace NServiceBus.Persistence.ServiceFabric
     public class ServiceFabricPersistence : NServiceBus.Persistence.PersistenceDefinition { }
     public static class ServiceFabricPersistenceStorageSessionExtensions
     {
-        public static NServiceBus.Persistence.ServiceFabric.IServiceFabricStorageSession ServiceFabricSession(this NServiceBus.Persistence.SynchronizedStorageSession session) { }
+        public static NServiceBus.Persistence.ServiceFabric.IServiceFabricStorageSession ServiceFabricSession(this NServiceBus.Persistence.ISynchronizedStorageSession session) { }
     }
     [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.All, Inherited=false)]
     public sealed class ServiceFabricSagaAttribute : System.Attribute
@@ -85,7 +85,7 @@ namespace NServiceBus
 }
 namespace NServiceBus.Testing
 {
-    public class TestableServiceFabricStorageSession : NServiceBus.Persistence.ServiceFabric.IServiceFabricStorageSession, NServiceBus.Persistence.SynchronizedStorageSession
+    public class TestableServiceFabricStorageSession : NServiceBus.Persistence.ISynchronizedStorageSession, NServiceBus.Persistence.ServiceFabric.IServiceFabricStorageSession
     {
         public TestableServiceFabricStorageSession(Microsoft.ServiceFabric.Data.IReliableStateManager stateManager, Microsoft.ServiceFabric.Data.ITransaction transaction) { }
         public Microsoft.ServiceFabric.Data.IReliableStateManager StateManager { get; }

@@ -58,7 +58,7 @@
             for (var i = 0; i < message.TransportOperations.Length; i++)
             {
                 var t = message.TransportOperations[i];
-                operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body, t.Headers);
+                operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body.ToArray(), t.Headers);
             }
 
             var tx = ((ServiceFabricOutboxTransaction)transaction).Transaction;

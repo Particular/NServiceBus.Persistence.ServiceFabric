@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="8.0.0-alpha.1897" GeneratePathProperty="true" />
-    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.0-alpha.285" />
+    <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

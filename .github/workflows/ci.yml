@@ -1,0 +1,41 @@
+name: Local
+on:
+  pull_request:
+  workflow_dispatch:
+env:
+  DOTNET_NOLOGO: true
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-2019
+            name: Windows
+          #- os: ubuntu-20.04
+          #  name: Linux
+      fail-fast: false
+    steps:
+      - name: Install Service Fabric
+        run: choco install service-fabric-sdk
+      #- name: Set up 5-node cluster
+      #  shell: pwsh
+      #  run: "%PROGRAMFILES%\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager\ServiceFabricLocalClusterManager.exe" -waitformutex -SetupFiveNodeCluster
+      - name: Set up 5-node cluster
+        shell: pwsh
+        run: |
+          # Import the cluster setup utility module
+          $sdkInstallPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
+          $modulePath = Join-Path -Path $sdkInstallPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          Import-Module $modulePath
+
+          EnsureAdminPrivileges "Not running as administrator. You need to run PoweShell with administrator privileges to setup the local cluster."
+
+          #StartLocalCluster
+          
+          Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
+      - name: Dump Env
+        shell: pwsh
+        if: ${{ always() }}
+        run: gci env:

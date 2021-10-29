@@ -38,4 +38,5 @@ jobs:
       - name: Dump Env
         shell: pwsh
         if: ${{ always() }}
-        run: gci env:
+        run: |
+          gci env:

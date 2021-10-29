@@ -32,12 +32,11 @@ jobs:
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
-
-          #EnsureAdminPrivileges "Not running as administrator. You need to run PoweShell with administrator privileges to setup the local cluster."
-
-          #StartLocalCluster
           
-          Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
+          $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
+          echo $result
+          
+          exit 0
       - name: Dump Env
         shell: pwsh
         if: ${{ always() }}

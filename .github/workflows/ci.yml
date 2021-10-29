@@ -17,6 +17,14 @@ jobs:
           #  name: Linux
       fail-fast: false
     steps:
+      - name: Test
+        shell: pwsh
+        run: |
+          # Import the cluster setup utility module
+          $sdkInstallPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
+          echo $sdkInstallPath
+          $modulePath = Join-Path -Path $sdkInstallPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          echo $modulePath
       - name: Install Service Fabric
         run: choco install service-fabric-sdk --verbose
       #- name: Set up 5-node cluster
@@ -24,10 +32,13 @@ jobs:
       #  run: "%PROGRAMFILES%\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager\ServiceFabricLocalClusterManager.exe" -waitformutex -SetupFiveNodeCluster
       - name: Set up 5-node cluster
         shell: pwsh
+        if: ${{ always() }}
         run: |
           # Import the cluster setup utility module
           $sdkInstallPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
+          echo $sdkInstallPath
           $modulePath = Join-Path -Path $sdkInstallPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          echo $modulePath
           Import-Module $modulePath
 
           EnsureAdminPrivileges "Not running as administrator. You need to run PoweShell with administrator privileges to setup the local cluster."

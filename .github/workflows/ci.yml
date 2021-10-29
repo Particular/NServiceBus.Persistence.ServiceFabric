@@ -21,13 +21,15 @@ jobs:
       #  shell: pwsh
       #  run: "%PROGRAMFILES%\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager\ServiceFabricLocalClusterManager.exe" -waitformutex -SetupFiveNodeCluster
       - name: Set up 5-node cluster
-        shell: pwsh
+        shell: powershell
         run: |
           # Import the cluster setup utility module
-          $sdkInstallPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
-          echo "Service Fabric SDK Install Path: $sdkInstallPath"
+          $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
+          echo "Service Fabric SDK Install Path: $scriptsPath"
           
-          $modulePath = Join-Path -Path $sdkInstallPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          Get-ChildItem $sdkInstallPath
+          
+          $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
 

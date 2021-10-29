@@ -101,10 +101,7 @@
 
         [Timeout(600000)]
         [TestCaseSource(nameof(GetTestCases))]
-        // this pragma can be removed after upgrading to Particular.Analyzers 1.2.0
-#pragma warning disable PS0018 // A task-returning method should have a CancellationToken parameter unless it has a parameter implementing ICancellableContext
         public async Task _(string testName)
-#pragma warning restore PS0018 // A task-returning method should have a CancellationToken parameter unless it has a parameter implementing ICancellableContext
         {
             Console.WriteLine("GetTestCases " + testName);
             Result result = null;

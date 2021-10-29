@@ -31,7 +31,7 @@ jobs:
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
 
-          EnsureAdminPrivileges "Not running as administrator. You need to run PoweShell with administrator privileges to setup the local cluster."
+          #EnsureAdminPrivileges "Not running as administrator. You need to run PoweShell with administrator privileges to setup the local cluster."
 
           #StartLocalCluster
           

@@ -54,5 +54,5 @@ jobs:
         run: |
           gci env:
       - name: Run tests
-        run: dotnet test src\TestHarness\TestHarness.csproj --configuration Release --no-build --logger "GitHubActions;report-warnings=false"
+        uses: Particular/run-tests-action@v1.0.0
 

@@ -1,0 +1,58 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+  workflow_dispatch:
+env:
+  DOTNET_NOLOGO: true
+jobs:
+  build:
+    name: Windows
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: 5.0.x
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Build
+        run: msbuild src -p:Configuration=Release -restore -m -p:RestorePackagesConfig=true
+      - name: Upload packages
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: NuGet packages
+          path: nugets/
+          retention-days: 7
+      - name: Set up 5-node cluster
+        shell: powershell
+        run: |
+          # Import the cluster setup utility module
+          $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
+          echo "Service Fabric SDK Install Path: $scriptsPath"
+          
+          Get-ChildItem $sdkInstallPath
+          
+          $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          echo "Service Fabric Scripting Module Path: $modulePath"
+          Import-Module $modulePath
+          
+          $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
+          echo $result
+          
+          exit 0
+      - name: Dump Env
+        shell: pwsh
+        if: ${{ always() }}
+        run: |
+          gci env:
+      - name: Run tests
+        uses: Particular/run-tests-action@v1.0.0
+        

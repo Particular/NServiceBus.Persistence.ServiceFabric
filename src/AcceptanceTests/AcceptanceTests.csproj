@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>NServiceBus.Persistence.ServiceFabric.AcceptanceTests</RootNamespace>
     <SignAssembly>true</SignAssembly>

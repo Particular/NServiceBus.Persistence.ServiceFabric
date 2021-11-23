@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v1.8.2
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 3.1.x
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Build
@@ -48,11 +48,6 @@ jobs:
           echo $result
           
           exit 0
-      - name: Dump Env
-        shell: pwsh
-        if: ${{ always() }}
-        run: |
-          gci env:
       - name: Run tests
         uses: Particular/run-tests-action@v1.0.0
 

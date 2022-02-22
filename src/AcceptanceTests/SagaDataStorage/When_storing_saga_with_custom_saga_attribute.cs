@@ -65,18 +65,19 @@
 
                 protected override void ConfigureHowToFindSaga(SagaPropertyMapper<CustomizedCollectionSagaData> mapper)
                 {
-                    mapper.ConfigureMapping<StartSaga>(m => m.SomeId).ToSaga(d => d.Id);
+                    mapper.ConfigureMapping<StartSaga>(m => m.SomeId).ToSaga(d => d.SomeId);
                 }
 
                 public Task Handle(StartSaga message, IMessageHandlerContext context)
                 {
-                    testContext.SagaId = Data.Id;
+                    testContext.SagaId = Data.SomeId;
 
                     return Task.FromResult(0);
                 }
 
                 public class CustomizedCollectionSagaData : ContainSagaData
                 {
+                    public Guid SomeId { get; set; }
                 }
             }
         }

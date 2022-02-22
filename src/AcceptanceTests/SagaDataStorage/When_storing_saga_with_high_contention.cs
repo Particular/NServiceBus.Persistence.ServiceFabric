@@ -80,8 +80,12 @@
 
                 protected override void ConfigureHowToFindSaga(SagaPropertyMapper<HighContentionSagaData> mapper)
                 {
-                    mapper.ConfigureMapping<StartSaga>(m => m.SomeId).ToSaga(d => d.SomeId);
-                    mapper.ConfigureMapping<AdditionalMessage>(m => m.SomeId).ToSaga(d => d.SomeId);
+                    mapper.MapSaga(m => m.SomeId)
+                        .ToMessage<StartSaga>(d => d.SomeId)
+                        .ToMessage<AdditionalMessage>(d => d.SomeId);
+
+                    //mapper.ConfigureMapping<StartSaga>(m => m.SomeId).ToSaga();
+                    //mapper.ConfigureMapping<AdditionalMessage>(m => m.SomeId).ToSaga(d => d.SomeId);
                 }
 
                 public async Task Handle(StartSaga message, IMessageHandlerContext context)

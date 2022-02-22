@@ -18,6 +18,7 @@
         [Test]
         public async Task Should_use_saga_data_type_name()
         {
+            System.Diagnostics.Debugger.Break();
             var context = await Scenario.Define<Context>()
                 .WithEndpoint<SagaEndpoint>(b => b.When(session => session.SendLocal(new StartSaga { SomeId = Guid.NewGuid() })))
                 .Done(c => c.SagaId.HasValue)
@@ -73,7 +74,7 @@
 
                 public class ConventionBasedSagaData : ContainSagaData
                 {
-                    public Guid SomeId { get; set; }
+                    public Guid SomeId { get; set; } = Guid.NewGuid();
                 }
             }
         }

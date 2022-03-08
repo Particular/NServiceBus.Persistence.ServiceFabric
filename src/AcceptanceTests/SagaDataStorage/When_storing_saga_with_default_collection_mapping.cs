@@ -66,7 +66,6 @@
 
                 public Task Handle(StartSaga message, IMessageHandlerContext context)
                 {
-                    Data.SomeId = message.SomeId;
                     testContext.SagaId = ((IContainSagaData)Data).Id;
 
                     return Task.FromResult(0);

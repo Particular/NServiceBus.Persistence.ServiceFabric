@@ -87,7 +87,6 @@
 
                 public async Task Handle(StartSaga message, IMessageHandlerContext context)
                 {
-                    Data.SomeId = message.SomeId;
                     testContext.Watch.Start();
                     testContext.SagaStarted = true;
 

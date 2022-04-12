@@ -8,7 +8,6 @@
     using NServiceBus.Features;
     using NServiceBus.Logging;
     using NServiceBus.Persistence.ServiceFabric;
-    using NServiceBus.Pipeline;
     using NUnit.Framework;
 
     [TestFixture]
@@ -44,7 +43,6 @@
                     !x.FullName.Contains("JetBrains") &&
                     !x.FullName.StartsWith("Newtonsoft.Json") &&
                     !x.FullName.StartsWith("Autofac") &&
-                    x.Name != "GitVersionInformation" &&
                     x.Namespace != "Particular.Licensing" &&
                     x.Namespace != "NServiceBus.Features" &&
                     x.Name != "ProcessedByFody" &&
@@ -118,10 +116,7 @@
                                //Ignore Newtonsoft attributes
                                !type.Namespace.Contains("Newtonsoft") &&
                                //Ignore Resharper annotations
-                               !type.Namespace.Contains("JetBrains") &&
-                               //TODO: remove when gitversion is updated
-                               !type.Name.EndsWith("ReleaseDateAttribute") &&
-                               !type.Name.EndsWith("NugetVersionAttribute"));
+                               !type.Namespace.Contains("JetBrains"));
         }
     }
 }

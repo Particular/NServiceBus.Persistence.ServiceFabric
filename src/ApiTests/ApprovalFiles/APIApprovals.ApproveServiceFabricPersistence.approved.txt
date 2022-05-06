@@ -31,7 +31,7 @@ namespace NServiceBus.Persistence.ServiceFabric
     {
         public static NServiceBus.Persistence.ServiceFabric.IServiceFabricStorageSession ServiceFabricSession(this NServiceBus.Persistence.ISynchronizedStorageSession session) { }
     }
-    [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.All, Inherited=false)]
+    [System.AttributeUsage(System.AttributeTargets.Class, Inherited=false)]
     public sealed class ServiceFabricSagaAttribute : System.Attribute
     {
         public string CollectionName;

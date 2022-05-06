@@ -10,10 +10,7 @@
     [TestFixture]
     public class StorageSessionTests : INeed<IReliableStateManager>
     {
-        public void Need(IReliableStateManager stateManager)
-        {
-            this.stateManager = stateManager;
-        }
+        public void Need(IReliableStateManager stateManager) => this.stateManager = stateManager;
 
         [SetUp]
         public void SetUp()

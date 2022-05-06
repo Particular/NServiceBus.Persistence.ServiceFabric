@@ -47,10 +47,8 @@
             return new OutboxMessage(messageId, transportOperations);
         }
 
-        public Task<IOutboxTransaction> BeginTransaction(ContextBag context, CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult<IOutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager, reliableStateManager.CreateTransaction(), transactionTimeout));
-        }
+        public Task<IOutboxTransaction> BeginTransaction(ContextBag context, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IOutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager, reliableStateManager.CreateTransaction(), transactionTimeout));
 
         public async Task Store(OutboxMessage message, IOutboxTransaction transaction, ContextBag context, CancellationToken cancellationToken = default)
         {
@@ -61,7 +59,7 @@
                 operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body.ToArray(), t.Headers);
             }
 
-            var tx = ((ServiceFabricOutboxTransaction)transaction).Transaction;
+            var tx = ((ServiceFabricOutboxTransaction)transaction).Session.Transaction;
             if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations), transactionTimeout, cancellationToken).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");

@@ -5,7 +5,7 @@ namespace NServiceBus.Persistence.ServiceFabric
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
 
-    class StorageSession : ICompletableSynchronizedStorageSession, IServiceFabricStorageSession
+    class StorageSession
     {
         public StorageSession(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout, bool ownsTransaction)
         {
@@ -17,16 +17,14 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public void Dispose()
         {
-            if (ownsTransaction)
+            if (!disposed && ownsTransaction)
             {
                 Transaction.Dispose();
+                disposed = true;
             }
         }
 
-        public Task CompleteAsync(CancellationToken cancellationToken = default)
-        {
-            return ownsTransaction ? Transaction.CommitAsync() : Task.CompletedTask;
-        }
+        public Task CompleteAsync(CancellationToken cancellationToken = default) => ownsTransaction ? Transaction.CommitAsync() : Task.CompletedTask;
 
         public IReliableStateManager StateManager { get; }
 
@@ -35,5 +33,6 @@ namespace NServiceBus.Persistence.ServiceFabric
         public TimeSpan TransactionTimeout { get; }
 
         bool ownsTransaction;
+        bool disposed;
     }
 }

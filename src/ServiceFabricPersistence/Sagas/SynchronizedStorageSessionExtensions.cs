@@ -7,7 +7,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     static class SynchronizedStorageSessionExtensions
     {
-        public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this StorageSession session, string collectionName, CancellationToken cancellationToken = default)
+        public static Task<IReliableDictionary<Guid, SagaEntry>> Sagas(this ServiceFabricStorageSession session, string collectionName, CancellationToken cancellationToken = default)
         {
             return session.StateManager.GetOrAddAsync<IReliableDictionary<Guid, SagaEntry>>(collectionName, session.TransactionTimeout);
         }

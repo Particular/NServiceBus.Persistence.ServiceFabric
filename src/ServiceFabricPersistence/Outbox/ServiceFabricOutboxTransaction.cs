@@ -8,25 +8,13 @@
 
     class ServiceFabricOutboxTransaction : IOutboxTransaction
     {
-        internal ITransaction Transaction { get; }
-        internal IReliableStateManager StateManager { get; }
-        internal TimeSpan TransactionTimeout { get; }
+        internal StorageSession Session { get; }
 
-        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout)
-        {
-            StateManager = stateManager;
-            Transaction = transaction;
-            TransactionTimeout = transactionTimeout;
-        }
+        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout) =>
+            Session = new StorageSession(stateManager, transaction, transactionTimeout, false);
 
-        public void Dispose()
-        {
-            Transaction.Dispose();
-        }
+        public void Dispose() => Session.Dispose();
 
-        public Task Commit(CancellationToken cancellationToken = default)
-        {
-            return Transaction.CommitAsync();
-        }
+        public Task Commit(CancellationToken cancellationToken = default) => Session.CompleteAsync(cancellationToken);
     }
 }

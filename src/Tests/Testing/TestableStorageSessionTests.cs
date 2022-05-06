@@ -11,10 +11,7 @@
     [TestFixture]
     public class TestableStorageSessionTests : INeed<IReliableStateManager>
     {
-        public void Need(IReliableStateManager stateManager)
-        {
-            this.stateManager = stateManager;
-        }
+        public void Need(IReliableStateManager stateManager) => this.stateManager = stateManager;
 
         [Test]
         public async Task CanBeUsed()

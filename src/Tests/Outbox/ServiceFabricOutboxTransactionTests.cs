@@ -50,7 +50,7 @@ namespace NServiceBus.Persistence.ServiceFabric.Tests.Outbox
         [TearDown]
         public void TearDown() => outboxTransaction.Dispose();
 
-        private IReliableStateManager stateManager;
-        private ServiceFabricOutboxTransaction outboxTransaction;
+        IReliableStateManager stateManager;
+        ServiceFabricOutboxTransaction outboxTransaction;
     }
 }

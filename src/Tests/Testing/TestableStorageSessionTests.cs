@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using global::TestRunner;
     using Microsoft.ServiceFabric.Data;
@@ -16,7 +17,7 @@
         [Test]
         public async Task CanBeUsed()
         {
-            var dictionary = await stateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test4", TimeSpan.FromSeconds(5));
+            var dictionary = await stateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
 
             using (var tx = stateManager.CreateTransaction())
             {
@@ -47,7 +48,7 @@
             public async Task Handle(MyMessage message, IMessageHandlerContext context)
             {
                 var session = context.SynchronizedStorageSession.ServiceFabricSession();
-                var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test4", TimeSpan.FromSeconds(5));
+                var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
                 await dictionary.AddAsync(session.Transaction, "Key", "Value");
             }
         }

@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using Extensibility;
     using global::TestRunner;
@@ -24,7 +25,7 @@
         {
             await session.Open(new ContextBag());
 
-            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test", TimeSpan.FromSeconds(5));
+            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             await session.CompleteAsync();
 
@@ -43,7 +44,7 @@
             var serviceFabricOutboxTransaction = new ServiceFabricOutboxTransaction(stateManager);
             await session.TryOpen(serviceFabricOutboxTransaction, new ContextBag());
 
-            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test1", TimeSpan.FromSeconds(5));
+            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             await session.CompleteAsync();
 
@@ -60,7 +61,7 @@
         {
             await session.Open(new ContextBag());
 
-            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test2", TimeSpan.FromSeconds(5));
+            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             session.Dispose();
 
@@ -78,7 +79,7 @@
             var serviceFabricOutboxTransaction = new ServiceFabricOutboxTransaction(stateManager);
             await session.TryOpen(serviceFabricOutboxTransaction, new ContextBag());
 
-            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test3", TimeSpan.FromSeconds(5));
+            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             session.Dispose();
 

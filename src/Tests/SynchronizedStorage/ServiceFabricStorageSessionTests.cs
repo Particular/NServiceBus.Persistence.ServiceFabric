@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using Extensibility;
     using global::TestRunner;
     using Microsoft.ServiceFabric.Data;
     using Microsoft.ServiceFabric.Data.Collections;
@@ -19,8 +20,10 @@
         }
 
         [Test]
-        public async Task CompleteAsync_completes_transaction()
+        public async Task CompleteAsync_transaction_owned_completes_transaction()
         {
+            await session.Open(new ContextBag());
+
             var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test", TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             await session.CompleteAsync();
@@ -35,8 +38,11 @@
         }
 
         [Test]
-        public async Task CompleteAsync_completes_action_within_transaction()
+        public async Task CompleteAsync_transaction_not_owned_does_not_complete_transaction()
         {
+            var serviceFabricOutboxTransaction = new ServiceFabricOutboxTransaction(stateManager);
+            await session.TryOpen(serviceFabricOutboxTransaction, new ContextBag());
+
             var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test1", TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             await session.CompleteAsync();
@@ -45,14 +51,15 @@
             {
                 var value = await dictionary.TryGetValueAsync(tx, "Key");
 
-                Assert.True(value.HasValue);
-                Assert.AreEqual("Value", value.Value);
+                Assert.False(value.HasValue);
             }
         }
 
         [Test]
-        public async Task Dispose_without_complete_rolls_back()
+        public async Task Dispose_transaction_owned_without_complete_rolls_back()
         {
+            await session.Open(new ContextBag());
+
             var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test2", TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             session.Dispose();
@@ -66,8 +73,11 @@
         }
 
         [Test]
-        public async Task Dispose_without_complete_does_not_execute_actions()
+        public async Task Dispose_transaction_not_owned_without_complete_does_not_execute_actions()
         {
+            var serviceFabricOutboxTransaction = new ServiceFabricOutboxTransaction(stateManager);
+            await session.TryOpen(serviceFabricOutboxTransaction, new ContextBag());
+
             var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test3", TimeSpan.FromSeconds(5));
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             session.Dispose();

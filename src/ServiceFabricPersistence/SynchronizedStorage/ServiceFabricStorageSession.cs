@@ -10,46 +10,55 @@ namespace NServiceBus.Persistence.ServiceFabric
 
     class ServiceFabricStorageSession : ICompletableSynchronizedStorageSession, IServiceFabricStorageSession
     {
-        readonly IReliableStateManager stateManager;
-        readonly TimeSpan transactionTimeout;
-
         public ServiceFabricStorageSession(IReliableStateManager stateManager, TimeSpan transactionTimeout)
         {
-            this.transactionTimeout = transactionTimeout;
-            this.stateManager = stateManager;
+            TransactionTimeout = transactionTimeout;
+            StateManager = stateManager;
         }
 
-        public void Dispose() => Session.Dispose();
+        public IReliableStateManager StateManager { get; }
+
+        public ITransaction Transaction { get; private set; }
+
+        public TimeSpan TransactionTimeout { get; }
+
+        public void Dispose()
+        {
+            if (!disposed && ownsTransaction)
+            {
+                Transaction.Dispose();
+                disposed = true;
+            }
+        }
 
         public ValueTask<bool> TryOpen(IOutboxTransaction transaction, ContextBag context,
-            CancellationToken cancellationToken = new CancellationToken())
+            CancellationToken cancellationToken = default)
         {
             if (transaction is ServiceFabricOutboxTransaction outboxTransaction)
             {
-                Session = outboxTransaction.Session;
+                Transaction = outboxTransaction.Transaction;
+                ownsTransaction = false;
                 return new ValueTask<bool>(true);
             }
+
             return new ValueTask<bool>(false);
         }
 
         public ValueTask<bool> TryOpen(TransportTransaction transportTransaction, ContextBag context,
-            CancellationToken cancellationToken = new CancellationToken()) =>
+            CancellationToken cancellationToken = default) =>
             new ValueTask<bool>(false);
 
-        public Task Open(ContextBag contextBag, CancellationToken cancellationToken = new CancellationToken())
+        public Task Open(ContextBag contextBag, CancellationToken cancellationToken = default)
         {
-            Session = new StorageSession(stateManager, stateManager.CreateTransaction(), transactionTimeout, ownsTransaction: true);
+            ownsTransaction = true;
+            Transaction = StateManager.CreateTransaction();
             return Task.CompletedTask;
         }
 
-        public Task CompleteAsync(CancellationToken cancellationToken = default) => Session.CompleteAsync(cancellationToken);
+        public Task CompleteAsync(CancellationToken cancellationToken = default) =>
+            ownsTransaction ? Transaction.CommitAsync() : Task.CompletedTask;
 
-        public IReliableStateManager StateManager => Session.StateManager;
-
-        public ITransaction Transaction => Session.Transaction;
-
-        public TimeSpan TransactionTimeout => Session.TransactionTimeout;
-
-        internal StorageSession Session { get; private set; }
+        bool ownsTransaction;
+        bool disposed;
     }
 }

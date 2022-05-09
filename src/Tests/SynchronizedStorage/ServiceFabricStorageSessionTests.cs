@@ -8,14 +8,14 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class StorageSessionTests : INeed<IReliableStateManager>
+    public class ServiceFabricStorageSessionTests : INeed<IReliableStateManager>
     {
         public void Need(IReliableStateManager stateManager) => this.stateManager = stateManager;
 
         [SetUp]
         public void SetUp()
         {
-            session = new StorageSession(stateManager, stateManager.CreateTransaction(), TimeSpan.FromSeconds(4), true);
+            session = new ServiceFabricStorageSession(stateManager, TimeSpan.FromSeconds(4));
         }
 
         [Test]
@@ -81,12 +81,9 @@
         }
 
         [TearDown]
-        public void TearDown()
-        {
-            session.Dispose();
-        }
+        public void TearDown() => session.Dispose();
 
         IReliableStateManager stateManager;
-        StorageSession session;
+        ServiceFabricStorageSession session;
     }
 }

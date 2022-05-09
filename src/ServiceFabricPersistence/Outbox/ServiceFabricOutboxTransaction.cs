@@ -1,6 +1,5 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.ServiceFabric.Data;
@@ -8,13 +7,13 @@
 
     class ServiceFabricOutboxTransaction : IOutboxTransaction
     {
-        internal StorageSession Session { get; }
+        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager) =>
+            Transaction = stateManager.CreateTransaction();
 
-        public ServiceFabricOutboxTransaction(IReliableStateManager stateManager, ITransaction transaction, TimeSpan transactionTimeout) =>
-            Session = new StorageSession(stateManager, transaction, transactionTimeout, false);
+        internal ITransaction Transaction { get; }
 
-        public void Dispose() => Session.Dispose();
+        public void Dispose() => Transaction.Dispose();
 
-        public Task Commit(CancellationToken cancellationToken = default) => Session.CompleteAsync(cancellationToken);
+        public Task Commit(CancellationToken cancellationToken = default) => Transaction.CommitAsync();
     }
 }

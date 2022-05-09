@@ -48,7 +48,7 @@
         }
 
         public Task<IOutboxTransaction> BeginTransaction(ContextBag context, CancellationToken cancellationToken = default) =>
-            Task.FromResult<IOutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager, reliableStateManager.CreateTransaction(), transactionTimeout));
+            Task.FromResult<IOutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager));
 
         public async Task Store(OutboxMessage message, IOutboxTransaction transaction, ContextBag context, CancellationToken cancellationToken = default)
         {
@@ -59,7 +59,7 @@
                 operations[i] = new StoredTransportOperation(t.MessageId, t.Options, t.Body.ToArray(), t.Headers);
             }
 
-            var tx = ((ServiceFabricOutboxTransaction)transaction).Session.Transaction;
+            var tx = ((ServiceFabricOutboxTransaction)transaction).Transaction;
             if (!await Outbox.TryAddAsync(tx, message.MessageId, new StoredOutboxMessage(message.MessageId, operations), transactionTimeout, cancellationToken).ConfigureAwait(false))
             {
                 throw new Exception($"Outbox message with id '{message.MessageId}' is already present in storage.");
@@ -85,14 +85,10 @@
             }
         }
 
-        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken = default)
-        {
+        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken = default) =>
             // Both, the old and the new queues are cleaned up. This ensures that under no circumstance something is left over in the old outbox
             // The operational lock on the old queue should be short lived and should not collide with anything (there's no longer an active producer that enqueues to this queue).
-            return Task.WhenAll(
-                CleanUpOldOutboxQueue(olderThan, cancellationToken),
-                CleanUpNewOutboxQueue(olderThan, cancellationToken));
-        }
+            Task.WhenAll(CleanUpOldOutboxQueue(olderThan, cancellationToken), CleanUpNewOutboxQueue(olderThan, cancellationToken));
 
         async Task CleanUpOldOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
         {

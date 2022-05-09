@@ -48,6 +48,8 @@
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             await session.CompleteAsync();
 
+            serviceFabricOutboxTransaction.Dispose();
+
             using (var tx = stateManager.CreateTransaction())
             {
                 var value = await dictionary.TryGetValueAsync(tx, "Key");
@@ -74,7 +76,7 @@
         }
 
         [Test]
-        public async Task Dispose_transaction_not_owned_without_complete_does_not_execute_actions()
+        public async Task Dispose_transaction_not_owned_without_complete_rolls_back()
         {
             var serviceFabricOutboxTransaction = new ServiceFabricOutboxTransaction(stateManager);
             await session.TryOpen(serviceFabricOutboxTransaction, new ContextBag());
@@ -83,11 +85,34 @@
             await dictionary.AddAsync(session.Transaction, "Key", "Value");
             session.Dispose();
 
+            serviceFabricOutboxTransaction.Dispose();
+
             using (var tx = stateManager.CreateTransaction())
             {
                 var value = await dictionary.TryGetValueAsync(tx, "Key");
 
                 Assert.False(value.HasValue);
+            }
+        }
+
+        [Test]
+        public async Task Dispose_transaction_not_owned_does_not_rollback_transaction()
+        {
+            var serviceFabricOutboxTransaction = new ServiceFabricOutboxTransaction(stateManager);
+            await session.TryOpen(serviceFabricOutboxTransaction, new ContextBag());
+
+            var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(Path.GetTempFileName(), TimeSpan.FromSeconds(5));
+            await dictionary.AddAsync(session.Transaction, "Key", "Value");
+            session.Dispose();
+
+            await serviceFabricOutboxTransaction.Commit();
+
+            using (var tx = stateManager.CreateTransaction())
+            {
+                var value = await dictionary.TryGetValueAsync(tx, "Key");
+
+                Assert.True(value.HasValue);
+                Assert.AreEqual("Value", value.Value);
             }
         }
 

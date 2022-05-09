@@ -60,6 +60,5 @@
         class MyMessage { }
 
         IReliableStateManager stateManager;
-        string collectionName;
     }
 }

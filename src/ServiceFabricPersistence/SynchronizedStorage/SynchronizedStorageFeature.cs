@@ -20,6 +20,8 @@
                 var transactionTimeout = settings.TransactionTimeout();
                 return new ServiceFabricStorageSession(stateManager, transactionTimeout);
             });
+            context.Services.AddScoped(provider =>
+                provider.GetRequiredService<ICompletableSynchronizedStorageSession>().ServiceFabricSession());
         }
     }
 }

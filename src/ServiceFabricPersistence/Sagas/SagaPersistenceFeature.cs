@@ -11,7 +11,7 @@
             Defaults(s =>
             {
                 s.SetDefault<ISagaIdGenerator>(idGenerator);
-                s.EnableFeature(typeof(SynchronizedStorageFeature));
+                s.EnableFeatureByDefault<SynchronizedStorageFeature>();
             });
 
             DependsOn<Sagas>();

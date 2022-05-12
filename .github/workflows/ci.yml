@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: 6.0.x
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Build
@@ -37,16 +37,16 @@ jobs:
           # Import the cluster setup utility module
           $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
           echo "Service Fabric SDK Install Path: $scriptsPath"
-          
+
           Get-ChildItem $sdkInstallPath
-          
+
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
-          
+
           $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
           echo $result
-          
+
           exit 0
       - name: Run tests
         uses: Particular/run-tests-action@v1.3.0

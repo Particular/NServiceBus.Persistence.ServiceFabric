@@ -36,7 +36,7 @@
         static Guid DeterministicGuid(string src)
         {
             var stringbytes = Encoding.UTF8.GetBytes(src);
-            using (var sha1CryptoServiceProvider = new SHA1CryptoServiceProvider())
+            using (var sha1CryptoServiceProvider = SHA1.Create())
             {
                 var hashedBytes = sha1CryptoServiceProvider.ComputeHash(stringbytes);
                 Array.Resize(ref hashedBytes, 16);

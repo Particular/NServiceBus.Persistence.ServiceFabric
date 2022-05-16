@@ -21,8 +21,10 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+      - name: Add nuget
+        uses: nuget/setup-nuget@v1
+      - name: Restore nuget packages for sfproj
+        run: nuget restore src/NServiceBus.Persistence.ServiceFabric.sln
       - name: Build
         run: dotnet msbuild src/NServiceBus.Persistence.ServiceFabric.sln -property:Configuration=Release -property:Platform="x64" -restore -m -property:RestorePackagesConfig=true
       - name: Upload packages

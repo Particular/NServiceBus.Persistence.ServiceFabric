@@ -38,11 +38,6 @@
     <ApplicationProjectTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Service Fabric Tools\Microsoft.VisualStudio.Azure.Fabric.ApplicationProject.targets</ApplicationProjectTargetsPath>
   </PropertyGroup>
   <Import Project="$(ApplicationProjectTargetsPath)" Condition="Exists('$(ApplicationProjectTargetsPath)')" />
-  <Target Name="Logging" BeforeTargets="BeforeBuild">
-    <Message Text="###########HERE######" Importance="high" />
-    <Message Text="$(MSBuildExtensionsPath32)" Importance="high" />
-    <Message Text="$(VisualStudioVersion)" Importance="high" />
-  </Target>
   <Target Name="ReleaseAfterBuild" AfterTargets="AfterBuild">
     <MSBuild Projects="$(ProjectPath)" Targets="Package" />
   </Target>

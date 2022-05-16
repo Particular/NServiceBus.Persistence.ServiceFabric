@@ -5,7 +5,10 @@
     <ProjectGuid>6722aac7-f141-4492-85bb-be0c82ef7f98</ProjectGuid>
     <ProjectVersion>2.0</ProjectVersion>
     <MinToolsVersion>1.5</MinToolsVersion>
-    <SupportedMSBuildNuGetPackageVersion>1.7.1</SupportedMSBuildNuGetPackageVersion>
+    <SupportedMSBuildNuGetPackageVersion>1.7.6</SupportedMSBuildNuGetPackageVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputPath>pkg\$(Configuration)</OutputPath>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">

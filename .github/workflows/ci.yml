@@ -21,10 +21,8 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
       - name: Build
-        run: msbuild src -p:Configuration=Release -restore -m -p:RestorePackagesConfig=true
+        run: dotnet msbuild src -property:Configuration=Release -restore -m -property:RestorePackagesConfig=true
       - name: Upload packages
         uses: actions/upload-artifact@v3
         with:

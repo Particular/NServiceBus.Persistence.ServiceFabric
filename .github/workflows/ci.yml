@@ -24,7 +24,7 @@ jobs:
       - name: Add nuget
         uses: nuget/setup-nuget@v1
       - name: Restore nuget packages for sfproj
-        run: nuget restore src/**/*.sfproj
+        run: nuget restore src/NServiceBus.Persistence.ServiceFabric.sln
       - name: Build
         run: dotnet msbuild src/NServiceBus.Persistence.ServiceFabric.sln -property:Configuration=Release -property:Platform="x64" -restore -m -property:RestorePackagesConfig=true
       - name: Upload packages

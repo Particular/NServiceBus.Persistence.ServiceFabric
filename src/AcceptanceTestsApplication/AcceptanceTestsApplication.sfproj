@@ -7,9 +7,6 @@
     <MinToolsVersion>1.5</MinToolsVersion>
     <SupportedMSBuildNuGetPackageVersion>1.7.1</SupportedMSBuildNuGetPackageVersion>
   </PropertyGroup>
-  <PropertyGroup>
-    <OutputPath>pkg\$(Configuration)</OutputPath>
-  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>

@@ -21,6 +21,8 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
+      - name: Logging
+        run: type "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\v17.0\Service Fabric Tools\Microsoft.VisualStudio.Azure.Fabric.ApplicationProject.targets"
       - name: Build
         run: dotnet msbuild src/NServiceBus.Persistence.ServiceFabric.sln -property:Configuration=Release -property:Platform="x64" -restore -m -property:RestorePackagesConfig=true
       - name: Upload packages

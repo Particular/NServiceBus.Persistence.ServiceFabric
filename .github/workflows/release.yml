@@ -23,7 +23,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: 6.0.x
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
       - name: Build
@@ -56,13 +56,13 @@ jobs:
         run: |
           # Creating the expected file layout for the Octopus package, including intermediate directories
           mkdir -p packaging/content
-          
+
           # Octopus expects NuGet packages to have an extra .nzip extension for NuGet, .czip for Chocolatey
           $nugets = Get-ChildItem -Path "./nugets/*.nupkg"
           foreach ($file in $nugets) {
             cp $file "./packaging/content/$($file.Name).nzip"
           }
-          
+
           # Octopus Deploy scripts need an executable file to recreate this metadata
           @"
           `$Branch = "${{github.ref_name}}"
@@ -72,7 +72,7 @@ jobs:
           `$Minor = "${{env.MinVerMinor}}"
           `$Commit = "${{github.sha}}"
           "@ > packaging/Metadata.ps1
-          
+
           # Create the Octopus package
           octo pack --id="${{env.PARTICULAR_REPO_NAME}}.Deploy" --version="${{env.MinVerVersion}}" --format="nupkg" --basePath="packaging" --outFolder="octopus-package"
         shell: pwsh

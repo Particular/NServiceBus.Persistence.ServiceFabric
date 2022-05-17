@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="$(PkgNServiceBus_AcceptanceTests_Sources)\**\*.cs" />
+    <Compile Remove="$(PkgNServiceBus_AcceptanceTests_Sources)\**\*.cs"  Condition="'$(PkgNServiceBus_AcceptanceTests_Sources)' != ''" />
     <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\EndpointTemplates\*.cs" />
     <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\Outbox\*.cs" />
     <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\Sagas\*.cs" />

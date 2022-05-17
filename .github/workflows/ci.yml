@@ -21,12 +21,12 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
-      - name: Add nuget
+      - name: Add Nuget CLI
         uses: nuget/setup-nuget@v1
       - name: Restore nuget packages for sfproj
-        run: nuget restore src/NServiceBus.Persistence.ServiceFabric.sln
+        run: nuget install src/AcceptanceTestsApplication/packages.config -OutputDirectory src/packages
       - name: Build
-        run: dotnet msbuild src/NServiceBus.Persistence.ServiceFabric.sln -property:Configuration=Release -property:Platform="x64" -restore -m -property:RestorePackagesConfig=true
+        run: dotnet msbuild src/NServiceBus.Persistence.ServiceFabric.sln -p:Configuration=Release -restore -m -p:RestorePackagesConfig=true
       - name: Upload packages
         uses: actions/upload-artifact@v3
         with:

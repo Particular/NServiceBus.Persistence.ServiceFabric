@@ -13,8 +13,10 @@
     {
         internal OutboxPersistenceFeature()
         {
+            Defaults(s => s.EnableFeatureByDefault<SynchronizedStorageFeature>());
+
             DependsOn<Outbox>();
-            Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
+            DependsOn<SynchronizedStorageFeature>();
         }
 
         protected override void Setup(FeatureConfigurationContext context)

@@ -1,6 +1,7 @@
 ﻿namespace NServiceBus.Persistence.ServiceFabric.Tests
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using global::TestRunner;
     using Microsoft.ServiceFabric.Data;
@@ -11,15 +12,14 @@
     [TestFixture]
     public class TestableStorageSessionTests : INeed<IReliableStateManager>
     {
-        public void Need(IReliableStateManager stateManager)
-        {
-            this.stateManager = stateManager;
-        }
+        public void Need(IReliableStateManager stateManager) => this.stateManager = stateManager;
 
         [Test]
         public async Task CanBeUsed()
         {
-            var dictionary = await stateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test4", TimeSpan.FromSeconds(5));
+            string collectionName = Path.GetTempFileName();
+
+            var dictionary = await stateManager.GetOrAddAsync<IReliableDictionary<string, string>>(collectionName, TimeSpan.FromSeconds(5));
 
             using (var tx = stateManager.CreateTransaction())
             {
@@ -29,6 +29,7 @@
                 {
                     SynchronizedStorageSession = testableSession
                 };
+                handlerContext.Extensions.Set("CollectionName", collectionName);
 
                 var handler = new HandlerUsingSynchronizedStorageSessionExtension();
                 await handler.Handle(new MyMessage(), handlerContext);
@@ -50,7 +51,8 @@
             public async Task Handle(MyMessage message, IMessageHandlerContext context)
             {
                 var session = context.SynchronizedStorageSession.ServiceFabricSession();
-                var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>("test4", TimeSpan.FromSeconds(5));
+                string collectionName = context.Extensions.Get<string>("CollectionName");
+                var dictionary = await session.StateManager.GetOrAddAsync<IReliableDictionary<string, string>>(collectionName, TimeSpan.FromSeconds(5));
                 await dictionary.AddAsync(session.Transaction, "Key", "Value");
             }
         }

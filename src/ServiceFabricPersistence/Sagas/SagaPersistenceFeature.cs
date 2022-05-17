@@ -8,9 +8,14 @@
     {
         internal SagaPersistenceFeature()
         {
+            Defaults(s =>
+            {
+                s.SetDefault<ISagaIdGenerator>(idGenerator);
+                s.EnableFeatureByDefault<SynchronizedStorageFeature>();
+            });
+
             DependsOn<Sagas>();
-            Defaults(s => s.SetDefault<ISagaIdGenerator>(idGenerator));
-            Defaults(s => s.EnableFeature(typeof(SynchronizedStorageFeature)));
+            DependsOn<SynchronizedStorageFeature>();
         }
 
         protected override void Setup(FeatureConfigurationContext context)
@@ -19,10 +24,10 @@
             var jsonSerializerSettings = SagaSettings.GetJsonSerializerSettings(settings);
             var readerCreator = SagaSettings.GetReaderCreator(settings);
             var writerCreator = SagaSettings.GetWriterCreator(settings);
-            var infoCache = new SagaInfoCache(jsonSerializerSettings, readerCreator, writerCreator);
-            var persister = new SagaPersister(infoCache);
 
-            context.Services.AddSingleton<ISagaPersister>(persister);
+            var infoCache = new SagaInfoCache(jsonSerializerSettings, readerCreator, writerCreator);
+
+            context.Services.AddSingleton<ISagaPersister>(new SagaPersister(infoCache));
 
             idGenerator.Initialize(infoCache);
             infoCache.Initialize(settings.Get<SagaMetadataCollection>());

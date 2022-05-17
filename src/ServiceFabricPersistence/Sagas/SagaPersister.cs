@@ -21,7 +21,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public async Task Complete(IContainSagaData sagaData, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
-            var storageSession = (StorageSession)session;
+            var storageSession = (ServiceFabricStorageSession)session;
 
             var entry = GetEntry(context, sagaData.Id);
 
@@ -38,7 +38,7 @@ namespace NServiceBus.Persistence.ServiceFabric
         public async Task<TSagaData> Get<TSagaData>(Guid sagaId, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
             where TSagaData : class, IContainSagaData
         {
-            var storageSession = (StorageSession)session;
+            var storageSession = (ServiceFabricStorageSession)session;
 
             var sagaInfo = sagaInfoCache.GetInfo(typeof(TSagaData));
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -65,7 +65,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public async Task Save(IContainSagaData sagaData, SagaCorrelationProperty correlationProperty, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
-            var storageSession = (StorageSession)session;
+            var storageSession = (ServiceFabricStorageSession)session;
             var sagaInfo = sagaInfoCache.GetInfo(sagaData.GetType());
             var sagas = await storageSession.Sagas(sagaInfo.SagaAttribute.CollectionName, cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -84,7 +84,7 @@ namespace NServiceBus.Persistence.ServiceFabric
 
         public async Task Update(IContainSagaData sagaData, ISynchronizedStorageSession session, ContextBag context, CancellationToken cancellationToken = default)
         {
-            var storageSession = (StorageSession)session;
+            var storageSession = (ServiceFabricStorageSession)session;
 
             var loadedEntry = GetEntry(context, sagaData.Id);
 

@@ -47,10 +47,8 @@
             return new OutboxMessage(messageId, transportOperations);
         }
 
-        public Task<IOutboxTransaction> BeginTransaction(ContextBag context, CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult<IOutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager, reliableStateManager.CreateTransaction(), transactionTimeout));
-        }
+        public Task<IOutboxTransaction> BeginTransaction(ContextBag context, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IOutboxTransaction>(new ServiceFabricOutboxTransaction(reliableStateManager));
 
         public async Task Store(OutboxMessage message, IOutboxTransaction transaction, ContextBag context, CancellationToken cancellationToken = default)
         {
@@ -87,14 +85,10 @@
             }
         }
 
-        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken = default)
-        {
+        internal Task CleanUpOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken = default) =>
             // Both, the old and the new queues are cleaned up. This ensures that under no circumstance something is left over in the old outbox
             // The operational lock on the old queue should be short lived and should not collide with anything (there's no longer an active producer that enqueues to this queue).
-            return Task.WhenAll(
-                CleanUpOldOutboxQueue(olderThan, cancellationToken),
-                CleanUpNewOutboxQueue(olderThan, cancellationToken));
-        }
+            Task.WhenAll(CleanUpOldOutboxQueue(olderThan, cancellationToken), CleanUpNewOutboxQueue(olderThan, cancellationToken));
 
         async Task CleanUpOldOutboxQueue(DateTimeOffset olderThan, CancellationToken cancellationToken)
         {

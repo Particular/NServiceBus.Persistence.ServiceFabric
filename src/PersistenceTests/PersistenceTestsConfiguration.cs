@@ -25,9 +25,7 @@
 
         public ISagaPersister SagaStorage { get; set; }
 
-        public ISynchronizedStorage SynchronizedStorage { get; set; }
-
-        public ISynchronizedStorageAdapter SynchronizedStorageAdapter { get; set; }
+        public Func<ICompletableSynchronizedStorageSession> CreateStorageSession { get; set; }
 
         public IOutboxStorage OutboxStorage { get; set; }
 
@@ -37,8 +35,6 @@
             stateManager = statefulService.StateManager;
 
             var timeout = SessionTimeout ?? TimeSpan.FromSeconds(4);
-            SynchronizedStorage = new SynchronizedStorage(stateManager, timeout);
-            SynchronizedStorageAdapter = new SynchronizedStorageAdapter();
 
             var sagaInfoCache = new SagaInfoCache();
             sagaInfoCache.Initialize(SagaMetadataCollection);
@@ -48,14 +44,13 @@
             sagaIdGenerator.Initialize(sagaInfoCache);
             SagaIdGenerator = sagaIdGenerator;
 
+            CreateStorageSession = () => new ServiceFabricStorageSession(stateManager, timeout);
+
             OutboxStorage = new OutboxStorage(statefulService.StateManager, timeout);
             await stateManager.RegisterOutboxStorage((OutboxStorage)OutboxStorage, cancellationToken).ConfigureAwait(false);
         }
 
-        public Task Cleanup(CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
+        public Task Cleanup(CancellationToken cancellationToken = default) => Task.CompletedTask;
 
         IReliableStateManager stateManager;
     }

@@ -36,6 +36,7 @@
             {
                 EndpointSetup<DefaultServer>(b =>
                 {
+                    b.ConfigureTransport().TransportTransactionMode = TransportTransactionMode.ReceiveOnly;
                     b.EnableOutbox();
                 });
             }

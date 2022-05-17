@@ -14,21 +14,21 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 0
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v2.1.0
         with:
           dotnet-version: 6.0.x
-      - name: Add Nuget CLI
-        uses: nuget/setup-nuget@v1
-      - name: Restore nuget packages for sfproj
-        run: nuget install src/AcceptanceTestsApplication/packages.config -OutputDirectory src/packages
+      - name: Add NuGet CLI
+        uses: nuget/setup-nuget@v1.0.6
+      - name: Restore sfproj packages
+        run: nuget restore src/AcceptanceTestsApplication/packages.config -PackagesDirectory src/packages
       - name: Build
-        run: dotnet msbuild src/NServiceBus.Persistence.ServiceFabric.sln -p:Configuration=Release -restore -m
+        run: dotnet build src --configuration Release
       - name: Upload packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.0.0
         with:
           name: NuGet packages
           path: nugets/

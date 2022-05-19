@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-2019 # Code signing requirement https://github.com/NuGet/Home/issues/7939
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 0
       - name: Parse repo name
@@ -21,13 +21,15 @@ jobs:
           echo "PARTICULAR_REPO_NAME=$RepoName" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         shell: pwsh
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v2.1.0
         with:
           dotnet-version: 6.0.x
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Add NuGet CLI
+        uses: nuget/setup-nuget@v1.0.6
+      - name: Restore sfproj packages
+        run: nuget restore src/AcceptanceTestsApplication/packages.config -PackagesDirectory src/packages
       - name: Build
-        run: msbuild src -p:Configuration=Release -restore -m -p:RestorePackagesConfig=true
+        run: dotnet build src --configuration Release
       - name: Install NuGetKeyVaultSignTool
         run: dotnet tool install --global NuGetKeyVaultSignTool
       - name: Sign NuGet Packages
@@ -43,7 +45,7 @@ jobs:
           --azure-key-vault-certificate ${{ secrets.AZURE_KEY_VAULT_CERTIFICATE_NAME }}
         shell: pwsh
       - name: Publish artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.0.0
         with:
           name: nugets
           path: nugets/*
@@ -77,7 +79,7 @@ jobs:
           octo pack --id="${{env.PARTICULAR_REPO_NAME}}.Deploy" --version="${{env.MinVerVersion}}" --format="nupkg" --basePath="packaging" --outFolder="octopus-package"
         shell: pwsh
       - name: Publish Octopus Package Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.0.0
         with:
           name: octopus-package
           path: octopus-package/*

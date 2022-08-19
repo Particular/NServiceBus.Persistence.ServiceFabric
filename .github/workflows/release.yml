@@ -22,20 +22,13 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1.0
       - name: Build
         run: msbuild src -p:Configuration=Release -restore -m -p:RestorePackagesConfig=true
-      - name: Install NuGetKeyVaultSignTool
-        run: dotnet tool install --global NuGetKeyVaultSignTool
-      - name: Sign NuGet Packages
-        run: |
-          NuGetKeyVaultSignTool sign nugets\*.nupkg `
-          --file-digest sha256 `
-          --timestamp-rfc3161 http://timestamp.digicert.com `
-          --timestamp-digest sha256 `
-          --azure-key-vault-url https://particularcodesigning.vault.azure.net `
-          --azure-key-vault-client-id ${{ secrets.AZURE_KEY_VAULT_CLIENT_ID }} `
-          --azure-key-vault-tenant-id ${{ secrets.AZURE_KEY_VAULT_TENANT_ID }} `
-          --azure-key-vault-client-secret ${{ secrets.AZURE_KEY_VAULT_CLIENT_SECRET }} `
-          --azure-key-vault-certificate ${{ secrets.AZURE_KEY_VAULT_CERTIFICATE_NAME }}
-        shell: pwsh
+      - name: Sign NuGet packages
+        uses: Particular/sign-nuget-packages-action@v1.0.0
+        with:
+          client-id: ${{ secrets.AZURE_KEY_VAULT_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_KEY_VAULT_TENANT_ID }}
+          client-secret: ${{ secrets.AZURE_KEY_VAULT_CLIENT_SECRET }}
+          certificate-name: ${{ secrets.AZURE_KEY_VAULT_CERTIFICATE_NAME }}
       - name: Publish artifacts
         uses: actions/upload-artifact@v3.1.0
         with:

@@ -54,5 +54,5 @@ jobs:
         run: |
           gci env:
       - name: Run tests
-        uses: Particular/run-tests-action@v1.3.0
+        uses: Particular/run-tests-action@v1.4.0
         

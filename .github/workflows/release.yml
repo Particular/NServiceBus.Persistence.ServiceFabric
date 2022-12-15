@@ -8,7 +8,7 @@ env:
   DOTNET_NOLOGO: true
 jobs:
   release:
-    runs-on: ubuntu-20.04
+    runs-on: windows-2019
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -17,11 +17,13 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v2.1.0
         with:
-          dotnet-version: 3.1.x
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1.1
+          dotnet-version: 6.0.x
+      - name: Add NuGet CLI
+        uses: nuget/setup-nuget@v1.1.1
+      - name: Restore sfproj packages
+        run: nuget restore src/AcceptanceTestsApplication/packages.config -PackagesDirectory src/packages
       - name: Build
-        run: msbuild src -p:Configuration=Release -restore -m -p:RestorePackagesConfig=true
+        run: dotnet build src --configuration Release
       - name: Sign NuGet packages
         uses: Particular/sign-nuget-packages-action@v1.0.0
         with:

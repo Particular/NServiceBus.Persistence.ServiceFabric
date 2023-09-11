@@ -1,13 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>8.0</LangVersion>
     <RootNamespace>NServiceBus.Persistence.ServiceFabric.PersistenceTests</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)NServiceBusTests.snk</AssemblyOriginatorKeyFile>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
 
@@ -18,10 +17,10 @@
 
   <ItemGroup>
     <!-- DO NOT REMOVE Microsoft.Azure.ServiceFabric.Data, it is added so that dependabot knows about version changes-->
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="6.0.1121" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="7.0.1816" />
     <!-- DO NOT REMOVE Newtonsoft.Json, it is added so that dependabot knows about version changes-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.1.1" />
+    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="9.0.0-alpha.2" />
     <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
   </ItemGroup>
 

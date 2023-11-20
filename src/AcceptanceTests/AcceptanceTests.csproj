@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="8.1.1" GeneratePathProperty="true" />
+    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="8.1.6" GeneratePathProperty="true" />
     <PackageReference Include="GitHubActionsTestLogger" Version="2.3.3" />
   </ItemGroup>
 

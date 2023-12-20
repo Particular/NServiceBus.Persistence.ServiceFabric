@@ -56,13 +56,7 @@
                     if (properties.TryGetValue(type.DependencyType, out var property))
                     {
                         var methodInfo = testFixtureType.GetInterfaceMap(type.GenericType).TargetMethods.FirstOrDefault();
-                        if (methodInfo != null)
-                        {
-                            methodInfo.Invoke(test.Fixture, new[]
-                            {
-                                property.GetValue(statefulService)
-                            });
-                        }
+                        methodInfo?.Invoke(test.Fixture, new[] { property.GetValue(statefulService) });
                     }
                 }
             }

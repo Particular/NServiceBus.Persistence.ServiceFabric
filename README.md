@@ -1,7 +1,7 @@
 # NServiceBus.Persistence.ServiceFabric
 
-The official [NServiceBus](https://github.com/Particular/NServiceBus) persistence implementation for [Service Fabric.](https://azure.microsoft.com/en-us/services/service-fabric/)
+NServiceBus.Persistence.ServiceFabric is the official persistence implementation for [Azure Service Fabric](https://azure.microsoft.com/en-us/services/service-fabric/).
 
-Learn more about NServiceBus.Persistence.ServiceFabric through our [documentation.](https://docs.particular.net/persistence/service-fabric)
+It is part of the [Particular Service Platform](https://particular.net/service-platform), which includes [NServiceBus](https://particular.net/nservicebus) and tools to build, monitor, and debug distributed systems.
 
-If you are interested in contributing, please follow the instructions [here.](https://github.com/Particular/NServiceBus/blob/develop/CONTRIBUTING.md)
+See the [Service Fabric Persistence documentation](https://docs.particular.net/persistence/service-fabric) to learn more.

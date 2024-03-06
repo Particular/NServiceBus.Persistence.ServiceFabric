@@ -56,6 +56,8 @@
                     if (properties.TryGetValue(type.DependencyType, out var property))
                     {
                         var methodInfo = testFixtureType.GetInterfaceMap(type.GenericType).TargetMethods.FirstOrDefault();
+#pragma warning disable IDE0031 // Use null propagation
+#pragma warning disable IDE1005 // Delegate invocation can be simplified.
                         if (methodInfo != null)
                         {
                             methodInfo.Invoke(test.Fixture, new[]
@@ -63,6 +65,8 @@
                                 property.GetValue(statefulService)
                             });
                         }
+#pragma warning restore IDE1005 // Delegate invocation can be simplified.
+#pragma warning restore IDE0031 // Use null propagation
                     }
                 }
             }

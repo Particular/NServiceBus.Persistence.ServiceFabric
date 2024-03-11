@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 env:
   DOTNET_NOLOGO: true
+defaults:
+  run:
+    shell: pwsh
 jobs:
   build:
     name: Windows
@@ -51,7 +54,6 @@ jobs:
 
           exit 0
       - name: Dump Env
-        shell: pwsh
         if: ${{ always() }}
         run: |
           gci env:

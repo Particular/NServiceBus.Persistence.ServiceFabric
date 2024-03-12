@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 env:
   DOTNET_NOLOGO: true
+defaults:
+  run:
+    shell: pwsh
 jobs:
   build:
     name: Windows
@@ -22,7 +25,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - name: Add NuGet CLI
-        uses: nuget/setup-nuget@v1.3.0
+        uses: nuget/setup-nuget@v2.0.0
       - name: Restore sfproj packages
         run: nuget restore src/AcceptanceTestsApplication/packages.config -PackagesDirectory src/packages
       - name: Build

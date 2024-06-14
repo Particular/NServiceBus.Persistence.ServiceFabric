@@ -1,0 +1,3 @@
+ComponentType: Persistence
+ComponentPackages:
+  - Name: NServiceBus.Persistence.ServiceFabric

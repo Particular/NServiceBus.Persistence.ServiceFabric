@@ -28,7 +28,7 @@ namespace NServiceBus.Persistence.ServiceFabric.Tests.Outbox
                 var value = await dictionary.TryGetValueAsync(tx, "Key");
 
                 Assert.That(value.HasValue, Is.True);
-                Assert.AreEqual("Value", value.Value);
+                Assert.That(value.Value, Is.EqualTo("Value"));
             }
         }
 

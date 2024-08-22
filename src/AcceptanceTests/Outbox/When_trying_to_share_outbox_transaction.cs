@@ -20,8 +20,8 @@
                 .Done(c => c.OrderAckReceived == 1)
                 .Run(TimeSpan.FromSeconds(20));
 
-            Assert.AreEqual(1, context.OrderAckReceived, "Order ack should have been received");
-            Assert.AreEqual(context.TestRunId.ToString(), context.Value, "TestRunId should have been stored in dictionary");
+            Assert.That(context.OrderAckReceived, Is.EqualTo(1), "Order ack should have been received");
+            Assert.That(context.Value, Is.EqualTo(context.TestRunId.ToString()), "TestRunId should have been stored in dictionary");
         }
 
         class Context : ScenarioContext

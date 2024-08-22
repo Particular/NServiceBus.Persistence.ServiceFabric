@@ -71,7 +71,7 @@
                 {
                     if (field.FieldType == typeof(ILog))
                     {
-                        Assert.IsTrue(field.IsStatic, "Logger fields should be static " + type.FullName);
+                        Assert.That(field.IsStatic, Is.True, "Logger fields should be static " + type.FullName);
                     }
                 }
             }
@@ -84,7 +84,7 @@
             {
                 Assert.That(featureType.IsPublic, Is.False, "Behaviors should internal " + featureType.FullName);
                 Assert.AreEqual("NServiceBus", featureType.Namespace, "Behaviors should be in the NServiceBus namespace since it reduces the 'wall of text' problem when looking at pipeline stack traces. " + featureType.FullName);
-                Assert.IsTrue(featureType.Name.EndsWith("Terminator") || featureType.Name.EndsWith("Behavior") || featureType.Name.EndsWith("Connector"), "Behaviors should be suffixed with 'Behavior' or 'Connector'. " + featureType.FullName);
+                Assert.That(featureType.Name.EndsWith("Terminator") || featureType.Name.EndsWith("Behavior") || featureType.Name.EndsWith("Connector"), Is.True, "Behaviors should be suffixed with 'Behavior' or 'Connector'. " + featureType.FullName);
             }
         }
 
@@ -93,7 +93,7 @@
         {
             foreach (var attributeType in GetAttributeTypes())
             {
-                Assert.IsTrue(attributeType.IsSealed, attributeType.FullName + " should be sealed.");
+                Assert.That(attributeType.IsSealed, Is.True, attributeType.FullName + " should be sealed.");
             }
         }
 

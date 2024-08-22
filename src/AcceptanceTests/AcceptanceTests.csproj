@@ -30,4 +30,8 @@
     <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\NServiceBusAcceptanceTest.cs" />
   </ItemGroup>
 
+  <ItemGroup>    
+    <PackageReference Include="NUnit" Version="3.14.0" />
+  </ItemGroup>
+
 </Project>

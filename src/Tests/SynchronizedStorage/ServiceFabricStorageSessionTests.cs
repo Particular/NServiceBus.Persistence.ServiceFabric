@@ -34,7 +34,7 @@
                 var value = await dictionary.TryGetValueAsync(tx, "Key");
 
                 Assert.True(value.HasValue);
-                Assert.AreEqual("Value", value.Value);
+                Assert.That(value.Value, Is.EqualTo("Value"));
             }
         }
 
@@ -112,7 +112,7 @@
                 var value = await dictionary.TryGetValueAsync(tx, "Key");
 
                 Assert.True(value.HasValue);
-                Assert.AreEqual("Value", value.Value);
+                Assert.That(value.Value, Is.EqualTo("Value"));
             }
         }
 

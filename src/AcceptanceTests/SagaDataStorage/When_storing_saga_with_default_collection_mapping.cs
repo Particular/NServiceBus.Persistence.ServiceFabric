@@ -29,7 +29,7 @@
             {
                 var conditionalValue = await collection.TryGetValueAsync(tx, context.SagaId.Value);
 
-                Assert.True(conditionalValue.HasValue);
+                Assert.That(conditionalValue.HasValue, Is.True);
             }
         }
 

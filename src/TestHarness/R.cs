@@ -1,6 +1,7 @@
 ﻿namespace TestHarness
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Fabric;
@@ -155,7 +156,7 @@
             }
         }
 
-        public static IEnumerable<ITestCaseData> GetTestCases()
+        public static IEnumerable GetTestCases()
         {
             string[] enumerable;
             try

@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Pinned packages to prevent transitive dependencies issues">
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="6.1.1390" />
+    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="7.1.2448" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

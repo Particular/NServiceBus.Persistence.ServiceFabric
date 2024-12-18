@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.0.0" />
+    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.2.4" />
     <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1" />
   </ItemGroup>
 

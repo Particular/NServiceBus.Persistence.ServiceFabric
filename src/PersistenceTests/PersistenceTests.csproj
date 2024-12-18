@@ -21,7 +21,7 @@
     <!-- DO NOT REMOVE Newtonsoft.Json, it is added so that dependabot knows about version changes-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.0.0" />
-    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1" />
   </ItemGroup>
 
 </Project>

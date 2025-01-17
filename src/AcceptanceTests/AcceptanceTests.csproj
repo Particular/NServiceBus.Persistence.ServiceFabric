@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -16,20 +16,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="8.1.1" GeneratePathProperty="true" />
     <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1" />
+    <PackageReference Include="NServiceBus.AcceptanceTests.Sources" Version="8.2.4" GeneratePathProperty="true" />
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.3.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.6.0" />
   </ItemGroup>
 
+   <!-- Reference required because project cannot target net481 -->
   <ItemGroup>
-    <Compile Remove="$(PkgNServiceBus_AcceptanceTests_Sources)\**\*.cs" Condition="'$(PkgNServiceBus_AcceptanceTests_Sources)' != ''" />
-    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\EndpointTemplates\*.cs" />
-    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\Outbox\*.cs" />
-    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\Sagas\*.cs" />
-    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\ScenarioDescriptors\*.cs" />
-    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\ConfigureEndpointAcceptanceTestingTransport.cs" />
-    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(TargetFramework)\**\NServiceBusAcceptanceTest.cs" />
+    <PackageReference Include="NServiceBus.AcceptanceTesting" Version="8.2.4" />
+  </ItemGroup>
+
+  <!-- Workaround required because project cannot target net481 -->
+  <!-- If project ever works with net481, TargetFramework property should be used directly ItemGroup below -->
+  <PropertyGroup>
+    <SourcePackageTargetFramework>net481</SourcePackageTargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(PkgNServiceBus_AcceptanceTests_Sources)' != ''" >
+    <Compile Remove="$(PkgNServiceBus_AcceptanceTests_Sources)\**\*.cs" />
+    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(SourcePackageTargetFramework)\**\EndpointTemplates\*.cs" />
+    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(SourcePackageTargetFramework)\**\Outbox\*.cs" />
+    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(SourcePackageTargetFramework)\**\Sagas\*.cs" />
+    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(SourcePackageTargetFramework)\**\ScenarioDescriptors\*.cs" />
+    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(SourcePackageTargetFramework)\**\ConfigureEndpointAcceptanceTestingTransport.cs" />
+    <Compile Include="$(PkgNServiceBus_AcceptanceTests_Sources)\contentFiles\cs\$(SourcePackageTargetFramework)\**\NServiceBusAcceptanceTest.cs" />
   </ItemGroup>
 
 </Project>

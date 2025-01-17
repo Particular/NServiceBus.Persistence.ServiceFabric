@@ -8,6 +8,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- DO NOT REMOVE Microsoft.Azure.ServiceFabric.Data, it is added so that dependabot knows about version changes-->
-    <PackageReference Include="Microsoft.ServiceFabric.Data" Version="6.0.1048" />
-    <!-- DO NOT REMOVE Newtonsoft.Json, it is added so that dependabot knows about version changes-->
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.0.0" />
-    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1" />
+    <PackageReference Include="NServiceBus.PersistenceTests.Sources" Version="8.2.4" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <!-- Workaround required because project cannot target net481 -->
+  <ItemGroup Condition="'$(PkgNServiceBus_PersistenceTests_Sources)' != ''">
+    <Compile Include="$(PkgNServiceBus_PersistenceTests_Sources)\contentFiles\cs\net481\**\*.cs" />
   </ItemGroup>
 
 </Project>

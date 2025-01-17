@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net481</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <OutputType>Exe</OutputType>
     <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>NServiceBus.Persistence.ServiceFabric.Tests</RootNamespace>

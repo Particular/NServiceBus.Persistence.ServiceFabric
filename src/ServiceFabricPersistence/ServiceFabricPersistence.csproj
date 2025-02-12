@@ -6,7 +6,7 @@
     <RootNamespace>NServiceBus.Persistence.ServiceFabric</RootNamespace>
     <AssemblyName>NServiceBus.Persistence.ServiceFabric</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)NServiceBus.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\NServiceBus.snk</AssemblyOriginatorKeyFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Description>Service Fabric persister for NServiceBus</Description>
   </PropertyGroup>

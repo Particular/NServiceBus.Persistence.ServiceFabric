@@ -7,7 +7,7 @@
     <LangVersion>8.0</LangVersion>
     <RootNamespace>NServiceBus.Persistence.ServiceFabric.PersistenceTests</RootNamespace>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(SolutionDir)Test.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\NServiceBusTests.snk</AssemblyOriginatorKeyFile>
     <IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
   </PropertyGroup>
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -24,7 +24,7 @@
 
    <!-- Reference required because project cannot target net481 -->
   <ItemGroup>
-    <PackageReference Include="NServiceBus.AcceptanceTesting" Version="8.2.4" />
+    <PackageReference Include="NServiceBus.AcceptanceTesting" Version="8.2.5" />
   </ItemGroup>
 
   <!-- Workaround required because project cannot target net481 -->

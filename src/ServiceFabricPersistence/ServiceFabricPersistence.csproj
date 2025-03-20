@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net472;net6.0</TargetFrameworks>
@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="6.1.2837" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NServiceBus" Version="8.2.4" />
+    <PackageReference Include="NServiceBus" Version="8.2.5" />
     <PackageReference Include="Particular.Packaging" Version="4.2.0" PrivateAssets="All" />
   </ItemGroup>
 

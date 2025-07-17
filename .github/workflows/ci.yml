@@ -14,7 +14,7 @@ defaults:
 jobs:
   build:
     name: Windows
-    runs-on: windows-latest
+    runs-on: windows-2025
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -62,6 +62,9 @@ jobs:
 
           #$result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
           #echo $result
+
+          echo "Installing 
+          
           & "$ENV:ProgramFiles\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
           echo "===== C:\SfDevCluster\Log\DevClusterSetup.log ======"
           cat C:\SfDevCluster\Log\DevClusterSetup.log

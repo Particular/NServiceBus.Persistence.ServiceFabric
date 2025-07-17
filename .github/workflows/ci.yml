@@ -14,7 +14,7 @@ defaults:
 jobs:
   build:
     name: Windows
-    runs-on: windows-2025
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -56,16 +56,30 @@ jobs:
           cat "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure\FiveNode\ClusterManifestTemplate.json"
           echo "============================"
 
-          #$modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
-          #echo "Service Fabric Scripting Module Path: $modulePath"
-          #Import-Module $modulePath
+          $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          echo "Service Fabric Scripting Module Path: $modulePath"
+          Import-Module $modulePath
+          echo "Connecting to local cluster"
+          Connect-ServiceFabricCluster
+          echo "Getting cluster manifest"
+          Get-ServiceFabricClusterManifest
+          echo "Getting cluster health"
+          Get-ServiceFabricClusterHealth
+          echo "Getting fabric nodes"
+          Get-ServiceFabricNode
+
+          echo "Starting FabricHostSvc"
+          Start-Service FabricHostSvc
+          echo "Waiting for FabricHostSvc to start"
+          Get-Service FabricHostSvc | Where-Object { $_.Status -ne 'Running' } | Wait-Service
+          
 
           #$result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
           #echo $result
           
-          & "$ENV:ProgramFiles\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
-          echo "===== C:\SfDevCluster\Log\DevClusterSetup.log ======"
-          cat C:\SfDevCluster\Log\DevClusterSetup.log
+          #& "$ENV:ProgramFiles\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
+          #echo "===== C:\SfDevCluster\Log\DevClusterSetup.log ======"
+          #cat C:\SfDevCluster\Log\DevClusterSetup.log
 
           exit 0
       - name: Run tests

@@ -44,6 +44,8 @@ jobs:
           echo "Service Fabric SDK Install Path: $scriptsPath"
 
           Get-ChildItem $scriptsPath
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup"
 
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"

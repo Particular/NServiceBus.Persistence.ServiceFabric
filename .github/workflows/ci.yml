@@ -50,6 +50,12 @@ jobs:
           Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure_Mesh"
           Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure\FiveNode"
 
+          echo "=== DevClusterSetup.psq ======================================"
+          cat "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
+          echo "=== NonSecure\FiveNode\ClusterManifestTemplate.json ======================================"
+          cat "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure\FiveNode\ClusterManifestTemplate.json"
+          echo "============================"
+
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath

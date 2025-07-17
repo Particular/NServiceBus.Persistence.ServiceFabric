@@ -46,6 +46,8 @@ jobs:
           Get-ChildItem $scriptsPath
           Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric"
           Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure_Mesh"
 
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"

@@ -43,13 +43,13 @@ jobs:
           $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
           echo "Service Fabric SDK Install Path: $scriptsPath"
 
-          Get-ChildItem $sdkInstallPath
+          Get-ChildItem $scriptsPath
 
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
 
-          $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
+          $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
           echo $result
 
           exit 0

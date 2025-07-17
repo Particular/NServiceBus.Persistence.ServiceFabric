@@ -62,8 +62,6 @@ jobs:
 
           #$result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
           #echo $result
-
-          echo "Installing 
           
           & "$ENV:ProgramFiles\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
           echo "===== C:\SfDevCluster\Log\DevClusterSetup.log ======"

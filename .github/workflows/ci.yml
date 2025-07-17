@@ -59,6 +59,12 @@ jobs:
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
+
+          echo "Starting FabricHostSvc"
+          Start-Service FabricHostSvc
+          echo "Waiting for FabricHostSvc to start"
+          Get-Service FabricHostSvc | Where-Object { $_.Status -ne 'Running' } | Wait-Service
+          
           echo "Connecting to local cluster"
           Connect-ServiceFabricCluster
           echo "Getting cluster manifest"
@@ -67,12 +73,6 @@ jobs:
           Get-ServiceFabricClusterHealth
           echo "Getting fabric nodes"
           Get-ServiceFabricNode
-
-          echo "Starting FabricHostSvc"
-          Start-Service FabricHostSvc
-          echo "Waiting for FabricHostSvc to start"
-          Get-Service FabricHostSvc | Where-Object { $_.Status -ne 'Running' } | Wait-Service
-          
 
           #$result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
           #echo $result

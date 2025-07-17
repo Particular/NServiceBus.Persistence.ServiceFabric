@@ -56,12 +56,13 @@ jobs:
           cat "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure\FiveNode\ClusterManifestTemplate.json"
           echo "============================"
 
-          $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
-          echo "Service Fabric Scripting Module Path: $modulePath"
-          Import-Module $modulePath
+          #$modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
+          #echo "Service Fabric Scripting Module Path: $modulePath"
+          #Import-Module $modulePath
 
-          $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
-          echo $result
+          #$result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
+          #echo $result
+          "$ENV:ProgramFiles\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
 
           exit 0
       - name: Run tests

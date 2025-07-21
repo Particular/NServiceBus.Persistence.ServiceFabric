@@ -43,14 +43,43 @@ jobs:
           $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
           echo "Service Fabric SDK Install Path: $scriptsPath"
 
-          Get-ChildItem $sdkInstallPath
+          Get-ChildItem $scriptsPath
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure_Mesh"
+          Get-ChildItem "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure\FiveNode"
+
+          echo "=== DevClusterSetup.psq ======================================"
+          cat "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
+          echo "=== NonSecure\FiveNode\ClusterManifestTemplate.json ======================================"
+          cat "C:\Program Files\Microsoft SDKs\Service Fabric\ClusterSetup\NonSecure\FiveNode\ClusterManifestTemplate.json"
+          echo "============================"
 
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"
           Import-Module $modulePath
 
-          $result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False
-          echo $result
+          echo "Starting FabricHostSvc"
+          Start-Service FabricHostSvc
+          echo "Waiting for FabricHostSvc to start"
+          Get-Service FabricHostSvc | Where-Object { $_.Status -ne 'Running' } | Wait-Service
+          
+          echo "Connecting to local cluster"
+          Connect-ServiceFabricCluster
+          echo "Getting cluster manifest"
+          Get-ServiceFabricClusterManifest
+          echo "Getting cluster health"
+          Get-ServiceFabricClusterHealth
+          echo "Getting fabric nodes"
+          Get-ServiceFabricNode
+
+          #$result = Set-LocalClusterReady -createOneNodeCluster $False -createMeshCluster $False -isSecure $False -Unsecure
+          #echo $result
+          
+          #& "$ENV:ProgramFiles\Microsoft SDKs\Service Fabric\ClusterSetup\DevClusterSetup.ps1"
+          #echo "===== C:\SfDevCluster\Log\DevClusterSetup.log ======"
+          #cat C:\SfDevCluster\Log\DevClusterSetup.log
 
           exit 0
       - name: Run tests

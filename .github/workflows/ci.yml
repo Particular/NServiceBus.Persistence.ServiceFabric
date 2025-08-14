@@ -37,13 +37,12 @@ jobs:
           path: nugets/
           retention-days: 7
       - name: Set up local 5-node Service Fabric cluster
+        shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
 
-          # Allow SF setup scripts to run (per docs)
           Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 
-          # Prefer SDK on the runner if present; otherwise install
           $setupDir = Join-Path ${env:ProgramW6432} 'Microsoft SDKs\Service Fabric\ClusterSetup'
           $devSetup = Join-Path $setupDir 'DevClusterSetup.ps1'
           $cleanPs  = Join-Path $setupDir 'CleanCluster.ps1'
@@ -62,7 +61,6 @@ jobs:
             Invoke-WebRequest -Uri $runtimeUrl -OutFile $runtimeExe
             Invoke-WebRequest -Uri $sdkUrl -OutFile $sdkMsi
 
-            # Silent installs; /accepteula required for runtime
             $p = Start-Process -FilePath $runtimeExe -ArgumentList '/accepteula /quiet /norestart' -Wait -PassThru
             if ($p.ExitCode -ne 0 -and $p.ExitCode -ne 3010) { throw "Runtime install failed: $($p.ExitCode)" }
 
@@ -75,10 +73,23 @@ jobs:
             Install-ServiceFabric
           }
 
-          # Create a local 5-node cluster (default for DevClusterSetup.ps1)
+          # Clean any previous local cluster (no -ForceRemove)
+          if (Test-Path $cleanPs) {
+            try { & $cleanPs -ErrorAction Stop }
+            catch {
+              Write-Warning "CleanCluster.ps1 failed; attempting manual cleanup..."
+              # Manual fallback
+              $svc = Get-Service -Name FabricHostSvc -ErrorAction SilentlyContinue
+              if ($svc) { Stop-Service FabricHostSvc -Force -ErrorAction SilentlyContinue }
+              Get-Process fabric*,FabricHost -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+              if (Test-Path 'C:\SfDevCluster') { Remove-Item 'C:\SfDevCluster' -Recurse -Force -ErrorAction SilentlyContinue }
+            }
+          }
+
+          # Create a local 5-node cluster (default)
           & $devSetup | Tee-Object -FilePath $env:TEMP\DevClusterSetup.out
 
-          # Verify cluster comes up WITHOUT importing SF module (avoid pwsh compat issues)
+          # Verify readiness via service & ports (no SF module import)
           $deadline = (Get-Date).AddMinutes(5)
           do {
             $svc = Get-Service -Name FabricHostSvc -ErrorAction SilentlyContinue
@@ -92,7 +103,7 @@ jobs:
           if (-not ($okSvc -and $ok19080 -and $ok19000)) {
             Write-Host '--- tail C:\SfDevCluster\Log\DevClusterSetup.log ---'
             Get-Content 'C:\SfDevCluster\Log\DevClusterSetup.log' -Tail 200 -ErrorAction SilentlyContinue
-            throw 'Service Fabric cluster failed to become ready (service/ports not reachable).'
+            throw 'Service Fabric cluster failed to become ready.'
           }
 
           Write-Host 'Service Fabric Explorer: http://localhost:19080/Explorer'

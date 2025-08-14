@@ -86,6 +86,9 @@ jobs:
             }
           }
 
+          # REMOVE the FabricCounters scheduled task before cluster creation
+          Unregister-ScheduledTask -TaskName FabricCounters -Confirm:$false -ErrorAction SilentlyContinue
+
           # Create a local 5-node cluster (default)
           & $devSetup | Tee-Object -FilePath $env:TEMP\DevClusterSetup.out
 

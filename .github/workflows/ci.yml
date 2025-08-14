@@ -76,11 +76,6 @@ jobs:
             Install-ServiceFabric
           }
 
-          # Clean any previous local cluster (non-fatal if nothing is there)
-          if (Test-Path $cleanPs) {
-            & $cleanPs -ForceRemove -ErrorAction SilentlyContinue
-          }
-
           # Create a local 5-node cluster (default for DevClusterSetup.ps1)
           & $devSetup
 

@@ -40,10 +40,10 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          # Allow SF setup scripts to run
+          # Allow SF setup scripts to run (per docs)
           Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 
-          # Prefer the SDK already on the image (many windows-latest images include SF)
+          # Prefer SDK on the runner if present; otherwise install
           $setupDir = Join-Path ${env:ProgramW6432} 'Microsoft SDKs\Service Fabric\ClusterSetup'
           $devSetup = Join-Path $setupDir 'DevClusterSetup.ps1'
           $cleanPs  = Join-Path $setupDir 'CleanCluster.ps1'
@@ -53,7 +53,6 @@ jobs:
             $dl = Join-Path $env:TEMP 'SFInstall'
             New-Item -ItemType Directory -Force -Path $dl | Out-Null
 
-            # Current official links from Microsoft Learn (11.1.208.1 runtime, 8.1.208 SDK)
             $runtimeUrl = 'https://download.microsoft.com/download/b/8/a/b8a2fb98-0ec1-41e5-be98-9d8b5abf7856/MicrosoftServiceFabric.11.1.208.1.exe'
             $sdkUrl     = 'https://download.microsoft.com/download/b/8/a/b8a2fb98-0ec1-41e5-be98-9d8b5abf7856/MicrosoftServiceFabricSDK.8.1.208.msi'
 
@@ -63,7 +62,7 @@ jobs:
             Invoke-WebRequest -Uri $runtimeUrl -OutFile $runtimeExe
             Invoke-WebRequest -Uri $sdkUrl -OutFile $sdkMsi
 
-            # Silent installs
+            # Silent installs; /accepteula required for runtime
             $p = Start-Process -FilePath $runtimeExe -ArgumentList '/accepteula /quiet /norestart' -Wait -PassThru
             if ($p.ExitCode -ne 0 -and $p.ExitCode -ne 3010) { throw "Runtime install failed: $($p.ExitCode)" }
 
@@ -72,29 +71,29 @@ jobs:
           }
 
           if (-not (Test-Path $devSetup)) {
-            Write-Host 'Service Fabric SDK not found on image; installing...'
+            Write-Host 'Service Fabric SDK not found; installing...'
             Install-ServiceFabric
           }
 
           # Create a local 5-node cluster (default for DevClusterSetup.ps1)
-          & $devSetup
+          & $devSetup | Tee-Object -FilePath $env:TEMP\DevClusterSetup.out
 
-          # Wait until the cluster is reachable/healthy
-          Import-Module ServiceFabric -ErrorAction SilentlyContinue
+          # Verify cluster comes up WITHOUT importing SF module (avoid pwsh compat issues)
           $deadline = (Get-Date).AddMinutes(5)
-          $ready = $false
-          while ((Get-Date) -lt $deadline -and -not $ready) {
-            try {
-              Connect-ServiceFabricCluster | Out-Null
-              $state = (Get-ServiceFabricClusterHealth).AggregatedHealthState
-              Write-Host "Cluster health: $state"
-              if ($state -in 'Ok','Warning') { $ready = $true }
-              if (-not $ready) { Start-Sleep -Seconds 5 }
-            } catch {
-              Start-Sleep -Seconds 5
-            }
+          do {
+            $svc = Get-Service -Name FabricHostSvc -ErrorAction SilentlyContinue
+            $okSvc = $svc -and $svc.Status -eq 'Running'
+            $ok19080 = (Test-NetConnection -ComputerName 'localhost' -Port 19080 -WarningAction SilentlyContinue).TcpTestSucceeded
+            $ok19000 = (Test-NetConnection -ComputerName 'localhost' -Port 19000 -WarningAction SilentlyContinue).TcpTestSucceeded
+            if ($okSvc -and $ok19080 -and $ok19000) { break }
+            Start-Sleep -Seconds 5
+          } while ((Get-Date) -lt $deadline)
+
+          if (-not ($okSvc -and $ok19080 -and $ok19000)) {
+            Write-Host '--- tail C:\SfDevCluster\Log\DevClusterSetup.log ---'
+            Get-Content 'C:\SfDevCluster\Log\DevClusterSetup.log' -Tail 200 -ErrorAction SilentlyContinue
+            throw 'Service Fabric cluster failed to become ready (service/ports not reachable).'
           }
-          if (-not $ready) { throw 'Service Fabric cluster failed to become healthy in time.' }
 
           Write-Host 'Service Fabric Explorer: http://localhost:19080/Explorer'
       - name: Run tests

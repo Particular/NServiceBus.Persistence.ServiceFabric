@@ -1,7 +1,8 @@
 > [!CAUTION] 
 > **NServiceBus.Persistence.ServiceFabric has been officially sunsetted.**  
 > We will continue to provide support and address critical fixes during the sunset period, but no new features will be added.  
-> New projects should use a different persister, see https://docs.particular.net/persistence/#supported-persisters 
+> New projects should use a different persister, see https://docs.particular.net/persistence/#supported-persisters.  
+> For information on the date when this component will stop receiving any update check our [support policy page](https://docs.particular.net/nservicebus/upgrades/supported-versions#persistence-packages-nservicebus-persistence-servicefabric).
 
 # NServiceBus.Persistence.ServiceFabric
 

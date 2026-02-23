@@ -1,3 +1,8 @@
+> [!CAUTION] 
+> **NServiceBus.Persistence.ServiceFabric has been officially sunsetted.**  
+> We will continue to provide support and address critical fixes during the sunset period, but no new features will be added.  
+> New projects should use a different persister, see https://docs.particular.net/persistence/#supported-persisters 
+
 # NServiceBus.Persistence.ServiceFabric
 
 NServiceBus.Persistence.ServiceFabric is the official persistence implementation for [Azure Service Fabric](https://azure.microsoft.com/en-us/services/service-fabric/).

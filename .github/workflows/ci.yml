@@ -36,14 +36,18 @@ jobs:
           name: NuGet packages
           path: nugets/
           retention-days: 7
+      # mysql bin has conflicting dlls with fabric than prevents fabric from starting
+      - name: Remove conflict dll paths
+        shell: powershell
+        run: |
+          get-command libprotobuf.dll | format-list
+          Remove-Item -Recurse -Force "C:\Program Files\MySQL\MySQL Server 8.0\bin"
       - name: Set up 5-node cluster
         shell: powershell
         run: |
           # Import the cluster setup utility module
           $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
           echo "Service Fabric SDK Install Path: $scriptsPath"
-
-          Get-ChildItem $sdkInstallPath
 
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"

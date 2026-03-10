@@ -17,33 +17,37 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.2
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4.0.0
+        uses: actions/setup-dotnet@v4.3.1
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
       - name: Add NuGet CLI
-        uses: nuget/setup-nuget@v1.0.7
+        uses: nuget/setup-nuget@v2.0.0
       - name: Restore sfproj packages
         run: nuget restore src/AcceptanceTestsApplication/packages.config -PackagesDirectory src/packages
       - name: Build
         run: dotnet build src --configuration Release
       - name: Upload packages
-        uses: actions/upload-artifact@v4.3.1
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: NuGet packages
           path: nugets/
           retention-days: 7
+      # mysql bin has conflicting dlls with fabric than prevents fabric from starting
+      - name: Remove conflict dll paths
+        shell: powershell
+        run: |
+          get-command libprotobuf.dll | format-list
+          Remove-Item -Recurse -Force "C:\Program Files\MySQL\MySQL Server 8.0\bin"
       - name: Set up 5-node cluster
         shell: powershell
         run: |
           # Import the cluster setup utility module
           $scriptsPath = (Get-ItemProperty 'HKLM:\Software\Microsoft\Service Fabric SDK').FabricSDKScriptsPath
           echo "Service Fabric SDK Install Path: $scriptsPath"
-
-          Get-ChildItem $sdkInstallPath
 
           $modulePath = Join-Path -Path $scriptsPath -ChildPath "DefaultLocalClusterSetup.psm1"
           echo "Service Fabric Scripting Module Path: $modulePath"

@@ -2,6 +2,3 @@
 
 # Justification: Test project
 dotnet_diagnostic.CA2007.severity = none
-
-# Remove once https://github.com/dotnet/roslyn/issues/82704 has been solved
-dotnet_diagnostic.IDE0060.severity = suggestion

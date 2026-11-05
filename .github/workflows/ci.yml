@@ -41,7 +41,7 @@ jobs:
         shell: powershell
         run: |
           get-command libprotobuf.dll | format-list
-          Remove-Item -Recurse -Force "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+          Remove-Item -Recurse -Force "C:\Program Files\MySQL\MySQL Server 8.4\bin"
       - name: Set up 5-node cluster
         shell: powershell
         run: |
